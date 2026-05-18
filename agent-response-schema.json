@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://infios.example/schemas/agent-response.json",
+  "$comment": "Shared agent response schema for Infios agentic products. Defines the structured format all monitoring and domain agents use to surface proposals, escalations, and information to the Archer Chat Agent and human operators. Authored by the UX team. See AGENT-ARCHITECTURE.md section 6.2 for design rationale.",
+  "title": "AgentProposal",
+  "description": "A single proposal surfaced by a monitoring or domain agent. Every Tier 2 action emitted by any agent (Pick Path, Carrier, Order Priority, etc.) conforms to this shape. The Archer Chat Agent consumes AgentProposals from sub-agents, applies the approval gate, and presents the human operator with a structured decision.",
+  "type": "object",
+  "required": [
+    "agentId",
+    "proposalType",
+    "confidence",
+    "summary",
+    "detail",
+    "criticality",
+    "tier",
+    "product",
+    "timestamp"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "agentId": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Stable identifier for the proposing agent. Matches the spec filename in /agents/ minus the .md extension.",
+      "examples": ["pick-path", "labor", "order-priority", "carrier", "exception", "slotting", "equipment", "quality"]
+    },
+    "proposalType": {
+      "type": "string",
+      "enum": ["recommendation", "escalation", "information"],
+      "description": "recommendation = agent proposes a specific action; escalation = agent declines to recommend and surfaces a decision to the human; information = agent reports a signal with no action attached."
+    },
+    "confidence": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Per-action calibration. How sure THIS specific proposal is, not a rolling per-agent stat. Operators read this the way they would read a confidence interval."
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 280,
+      "description": "One-line human-readable summary surfaced in the action card title and in the unified decision queue."
+    },
+    "detail": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Full reasoning. Rendered in the expanded action card and in the action log audit trail."
+    },
+    "escalationReason": {
+      "type": "string",
+      "description": "When proposalType is 'escalation', the agent's own explanation of why a human is needed. Free text, lives next to the decision. Required by convention when proposalType === 'escalation', optional otherwise."
+    },
+    "options": {
+      "type": "array",
+      "description": "Alternative actions surfaced when the agent declines to recommend (uncertainty as a first-class state). UI shows 'N options drafted · no recommendation chosen'.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "description", "tradeoff"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable identifier for this option within the proposal (e.g., 'reroute-saia', 'extend-window', 'split-shipment')."
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Short button-label-style text shown to the human."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Sentence-length expansion of what taking this option does."
+          },
+          "tradeoff": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The cost or risk attached to this option. Forces the agent to name the downside, not just the upside."
+          }
+        }
+      }
+    },
+    "impacts": {
+      "type": "array",
+      "description": "Downstream effects of the proposed action. Each impact names an affected area, describes the effect, and rates its severity.",
+      "items": {
+        "type": "object",
+        "required": ["area", "description", "severity"],
+        "additionalProperties": false,
+        "properties": {
+          "area": {
+            "type": "string",
+            "minLength": 1,
+            "description": "The area or system affected (e.g., 'outbound-wave-3', 'lane-mem-chi', 'SKU-WH-4419')."
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "description": "What changes for that area if the proposal is approved."
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["low", "medium", "high"],
+            "description": "How material the impact is. Drives sort order and visual emphasis in the action card."
+          }
+        }
+      }
+    },
+    "criticality": {
+      "type": "string",
+      "enum": ["urgent", "standard"],
+      "description": "Tagged at generation time by the Archer Chat Agent. urgent = escalates if the supervisor is unavailable; standard = queues. Determines the visual chip and the escalation path. Always the first visual element in the action card."
+    },
+    "tier": {
+      "type": "string",
+      "enum": ["tier-1-prohibited", "tier-2-approval", "tier-3-autonomous"],
+      "description": "The autonomy tier this proposal occupies. tier-1-prohibited = the agent must never act here (this shape is used to log the prohibition, not to propose); tier-2-approval = propose, human confirms (the dominant case); tier-3-autonomous = the agent executed; this is a notification, not a request."
+    },
+    "product": {
+      "type": "string",
+      "enum": ["wa", "tm", "om"],
+      "description": "Which product domain this proposal belongs to. Drives the product badge in the cross-pillar dashboard's unified decision queue and supports cross-product correlation (e.g., a TM carrier delay surfacing as an impact on WA outbound orders). The cross-pillar dashboard itself is a view, not a product an agent emits from — hence no 'cross' value here."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp at the moment the proposal was emitted. Used for the action log audit trail and for the supervisor's 'time pending' indicator."
+    }
+  }
+}

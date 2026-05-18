@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "moonshot",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "--directory", "C:\\Users\\apcan\\Documents\\moonshot\\moonshot-repo-13-may", "3456"],
+      "port": 3456
+    }
+  ]
+}
