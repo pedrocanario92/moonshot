@@ -1,0 +1,2508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>WMS Agent CLI — Warehouse Advantage</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════ DS TOKENS ═══════════ */
+:root {
+  --wa-header-bg:#262523; --wa-nav-bg:#324154; --wa-nav-accent:#CADF35;
+  --wa-nav-hover:rgba(255,255,255,.08); --wa-nav-text:rgba(255,255,255,.70);
+  --infios-font-family:'Noto Sans',sans-serif;
+  --infios-spacing-3xs:4px;  --infios-spacing-2xs:8px;  --infios-spacing-xs:12px;
+  --infios-spacing-s:16px;   --infios-spacing-m:20px;   --infios-spacing-l:24px;
+  --infios-spacing-2xl:32px;
+  --infios-radius-desktop:8px; --infios-radius-pill:9999px;
+  --infios-color-bg:#FFFFFF; --infios-color-bg-alt:#F4F4F4;
+  --infios-color-bg-surface:#FFFFFF;
+  --infios-color-bg-fill-brand:#171F29; --infios-color-bg-fill-brand-hover:#58636E;
+  --infios-color-bg-fill-secondary-hover:#D5DCE2;
+  --infios-color-bg-fill-overlay:rgba(23,31,41,.35);
+  --infios-color-bg-fill-success-subtle:#E6FFE6;
+  --infios-color-bg-fill-warning-subtle:#FFFBE6;
+  --infios-color-bg-fill-error-subtle:#FFF0F0;
+  --infios-color-bg-fill-info-subtle:#E6F7FF;
+  --infios-color-text:#171F29; --infios-color-text-secondary:#324155;
+  --infios-color-text-tertiary:#58636E; --infios-color-text-disabled:#98A4B0;
+  --infios-color-text-error:#D0413A; --infios-color-text-success:#2C812C;
+  --infios-color-text-warning:#B64C00; --infios-color-text-info:#2B7AB1;
+  --infios-color-text-link:#5436CC;
+  --infios-color-border-tertiary:#D5DCE2; --infios-color-border-focus:#5436CC;
+  --infios-color-border-surface:#98A4B0;
+  --infios-color-border-success:#2C812C; --infios-color-border-error:#D0413A;
+  --infios-shadow-card:0 2px 8px rgba(35,38,37,.10);
+  --infios-shadow-modal:0 4px 24px rgba(35,38,37,.18);
+  --infios-shadow-tile:0 2px 30px 0 rgba(0,0,0,.15);
+}
+
+/* ═══════════ RESET ═══════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--infios-font-family);font-size:14px;line-height:20px;
+  color:var(--infios-color-text);background:var(--infios-color-bg-alt);
+  -webkit-font-smoothing:antialiased}
+button,input,select,textarea{font-family:inherit;font-size:inherit}
+a{text-decoration:none;color:inherit}
+:focus-visible{outline:2px solid var(--infios-color-border-focus);outline-offset:2px;border-radius:var(--infios-radius-desktop)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important;animation-duration:.01ms!important}}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes pulse-dot{0%,100%{opacity:.6}50%{opacity:1}}
+  .pulse{animation:pulse-dot 1.4s ease-in-out infinite}
+}
+
+/* ═══════════ PLATFORM SHELL — Figma spec ═══════════ */
+.platform{display:flex;flex-direction:column;height:100vh}
+
+/* Header */
+.platform-header{height:56px;background:#FFFFFF;border-bottom:1px solid #D5DCE2;
+  display:flex;align-items:center;flex-shrink:0;z-index:200}
+.header-menu-btn{width:44px;height:56px;display:flex;align-items:center;justify-content:center;
+  border:none;background:transparent;cursor:pointer;color:#324155;flex-shrink:0;
+  border-right:1px solid #D5DCE2;transition:background .12s}
+.header-menu-btn:hover{background:#F4F4F4}
+.header-logo{height:56px;padding:0 16px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;background:#171F29;border-right:1px solid rgba(255,255,255,.08)}
+.logo-wordmark{font-weight:700;font-size:18px;color:#CADF35;letter-spacing:-.5px}
+.header-title{font-weight:700;font-size:14px;color:#171F29;padding:0 16px;flex:1}
+.header-actions{display:flex;align-items:center;height:100%;gap:0}
+.header-icon-btn{width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  border:none;background:transparent;cursor:pointer;color:#324155;
+  border-radius:8px;transition:background .15s;margin:0 2px}
+.header-icon-btn:hover{background:#F4F4F4}
+.header-user{display:flex;align-items:center;gap:10px;padding:0 16px;height:100%;
+  border-left:1px solid #D5DCE2}
+.header-user-name{font-size:12px;color:#324155}
+.header-avatar{width:32px;height:32px;background:#E6F7FF;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#2B7AB1;font-size:12px;font-weight:700}
+.role-toggle{display:flex;align-items:center;background:#F4F4F4;border:1px solid #D5DCE2;
+  border-radius:8px;padding:2px;gap:2px;margin:0 12px}
+.role-btn{height:28px;padding:0 12px;border:none;background:transparent;cursor:pointer;
+  border-radius:6px;font-size:12px;font-weight:600;color:#58636E;transition:background .15s,color .15s}
+.role-btn.is-active{background:#FFFFFF;color:#171F29;box-shadow:0 1px 3px rgba(35,38,37,.12)}
+
+/* Subnav */
+.platform-subnav{height:40px;background:#E7E7E7;border-bottom:1px solid var(--infios-color-border-tertiary);
+  display:flex;align-items:center;flex-shrink:0;padding:0;gap:0}
+.subnav-title{font-size:14px;font-weight:700;color:#324154;padding:0 20px;line-height:40px}
+.subnav-breadcrumb{font-size:13px;color:var(--infios-color-text-tertiary);padding:0 20px;
+  display:flex;align-items:center;gap:6px}
+.subnav-breadcrumb strong{color:var(--infios-color-text-secondary);font-weight:700}
+.cond-tab{height:40px;padding:0 18px;display:flex;align-items:center;gap:6px;
+  border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;
+  color:var(--infios-color-text-tertiary);border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;white-space:nowrap}
+.cond-tab:hover{color:var(--infios-color-text-secondary)}
+.cond-tab.is-active{color:var(--infios-color-text-link);border-bottom-color:var(--infios-color-text-link);font-weight:700}
+.back-link{display:flex;align-items:center;gap:6px;height:40px;padding:0 16px 0 12px;
+  border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;
+  color:var(--infios-color-text-secondary);border-right:1px solid var(--infios-color-border-tertiary);
+  transition:color .15s;flex-shrink:0}
+.back-link:hover{color:var(--infios-color-text)}
+
+/* Body */
+.platform-body{flex:1;overflow:hidden;display:flex;gap:12px;
+  padding:12px;background:#F4F4F4}
+.platform-right{flex:1;display:flex;flex-direction:column;overflow:hidden;
+  border-radius:8px;background:#FFFFFF;box-shadow:0 2px 8px rgba(35,38,37,.08)}
+
+/* Main */
+.platform-main{flex:1;overflow:hidden;display:flex;background:#FFFFFF;padding:20px;gap:20px}
+
+/* ═══════════ SHARED COMPONENTS ═══════════ */
+.crit-badge{display:inline-flex;align-items:center;height:18px;padding:0 7px;
+  border-radius:9999px;font-size:11px;font-weight:700;letter-spacing:.3px;white-space:nowrap;flex-shrink:0}
+.badge-urgent,.badge-error{background:var(--infios-color-text-error);color:#fff}
+.badge-warning{background:#B64C00;color:#fff}
+.badge-info{background:var(--infios-color-text-info);color:#fff}
+.badge-standard{background:var(--infios-color-text-info);color:#fff}
+.badge-success{background:var(--infios-color-text-success);color:#fff}
+.badge-neutral{background:var(--infios-color-text-tertiary);color:#fff}
+
+.btn{height:32px;padding:0 14px;border:none;border-radius:8px;font-family:inherit;
+  font-size:13px;font-weight:700;cursor:pointer;transition:background .15s,color .15s;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;flex-shrink:0}
+.btn:disabled{opacity:.45;cursor:default}
+.btn-primary{background:var(--infios-color-bg-fill-brand);color:#FFFFFF;height:36px}
+.btn-primary:hover:not(:disabled){background:var(--infios-color-bg-fill-brand-hover)}
+.btn-outline{background:#fff;border:1px solid var(--infios-color-bg-fill-brand);
+  color:var(--infios-color-bg-fill-brand);height:36px}
+.btn-outline:hover:not(:disabled){background:var(--infios-color-bg-alt)}
+.btn-ghost{background:transparent;border:1px solid var(--infios-color-border-tertiary);
+  color:var(--infios-color-text-secondary);height:36px}
+.btn-ghost:hover:not(:disabled){background:var(--infios-color-bg-fill-secondary-hover)}
+.btn-link-purple{background:transparent;border:none;color:var(--infios-color-text-link);
+  height:auto;padding:0;font-size:13px;font-weight:700;cursor:pointer}
+.btn-link-purple:hover{text-decoration:underline}
+.btn-full{width:100%}
+
+/* ═══════════ CHAT PANEL ═══════════ */
+.chat-panel{display:flex;flex-direction:column;background:var(--infios-color-bg-surface);
+  border-radius:8px;box-shadow:var(--infios-shadow-tile);overflow:hidden;
+  transition:flex .15s ease}
+
+/* Agent context bar */
+.agent-ctx-bar{height:40px;background:var(--infios-color-bg-alt);flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 12px;border-bottom:1px solid var(--infios-color-border-tertiary)}
+.agent-ctx-left{display:flex;align-items:center;gap:8px}
+.agent-ctx-avatar{width:28px;height:28px;background:var(--infios-color-bg-fill-brand);
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;font-weight:700;flex-shrink:0}
+.agent-ctx-name{font-size:13px;font-weight:700;color:var(--infios-color-text)}
+.agent-ctx-sub{font-size:12px;color:var(--infios-color-text-tertiary)}
+.agent-ctx-right{display:flex;align-items:center;gap:6px}
+.ctx-dot{width:7px;height:7px;border-radius:50%;background:var(--infios-color-text-success);flex-shrink:0}
+.ctx-status{font-size:12px;color:var(--infios-color-text-tertiary)}
+
+/* Message thread */
+.chat-thread{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+
+.msg-row{display:flex;gap:10px}
+.msg-row.user-msg{justify-content:flex-end}
+.msg-row.agent-msg{justify-content:flex-start}
+.msg-row.sys-msg{justify-content:center;padding:4px 0}
+.msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;margin-top:17px}
+.msg-avatar.agent-av{background:var(--wa-nav-bg);color:#fff}
+.msg-avatar.user-av{background:#324154;color:#fff}
+.msg-body{max-width:72%;display:flex;flex-direction:column;gap:4px}
+.msg-meta{font-size:11px;color:var(--infios-color-text-disabled)}
+.msg-row.user-msg .msg-meta{text-align:right}
+.msg-bubble{padding:12px 16px;border-radius:8px;font-size:14px;line-height:20px}
+.msg-bubble.agent{background:var(--infios-color-bg-alt);color:var(--infios-color-text)}
+.msg-bubble.user{background:var(--infios-color-bg-fill-brand);color:#fff}
+.sys-divider{display:flex;align-items:center;gap:8px;width:100%}
+.sys-divider__line{flex:1;height:1px;background:var(--infios-color-border-tertiary)}
+.sys-divider__text{font-size:11px;font-weight:600;color:var(--infios-color-text-disabled);white-space:nowrap}
+
+/* Action card */
+.action-card{background:#fff;border:1px solid var(--infios-color-border-tertiary);
+  border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.ac-hd{display:flex;align-items:center;gap:8px}
+.ac-desc{font-size:14px;font-weight:700;color:var(--infios-color-text)}
+.ac-impact{font-size:12px;color:var(--infios-color-text-warning);font-weight:600}
+.ac-status{font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px;
+  transition:color .15s}
+.ac-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.ac-dot.amber{background:#B64C00} .ac-dot.red{background:#D0413A}
+.ac-dot.blue{background:#2B7AB1} .ac-dot.green{background:#2C812C}
+.ac-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.ac-esc-link{font-size:12px;font-weight:700;color:var(--infios-color-text-link);
+  background:none;border:none;cursor:pointer;padding:0;text-align:left}
+.ac-esc-link:hover{text-decoration:underline}
+
+/* Input zone */
+.chat-footer{border-top:1px solid var(--infios-color-border-tertiary);
+  padding:12px 14px;display:flex;flex-direction:column;gap:8px;flex-shrink:0}
+.input-bar-wrap{display:flex;align-items:center;gap:8px;
+  border:1px solid var(--infios-color-border-tertiary);border-radius:8px;
+  background:#fff;padding:0 4px 0 10px}
+.attach-icon{color:var(--infios-color-text-tertiary);display:flex;align-items:center;
+  cursor:pointer;padding:4px;border-radius:4px;transition:color .12s;flex-shrink:0}
+.attach-icon:hover{color:var(--infios-color-text)}
+.chat-input{flex:1;border:none;background:transparent;padding:10px 6px;
+  font-size:14px;line-height:20px;color:var(--infios-color-text);resize:none;
+  min-height:40px;max-height:120px;outline:none}
+.chat-input::placeholder{color:var(--infios-color-text-disabled)}
+.send-btn{width:36px;height:36px;flex-shrink:0;background:var(--infios-color-bg-fill-brand);
+  border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--wa-nav-accent);transition:background .12s;margin:2px}
+.send-btn:hover{background:var(--infios-color-bg-fill-brand-hover)}
+
+/* Row below input bar */
+.input-sub-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.quick-chip{height:28px;padding:0 14px;border:1px solid var(--infios-color-border-tertiary);
+  border-radius:9999px;background:#fff;font-size:12px;color:var(--infios-color-text-secondary);
+  cursor:pointer;transition:background .12s,border-color .12s;font-family:inherit;white-space:nowrap}
+.quick-chip:hover{background:var(--infios-color-bg-alt);border-color:var(--infios-color-text-tertiary)}
+
+.agent-sw-row{display:flex;align-items:center;gap:8px}
+.agent-sw-label{font-size:12px;color:var(--infios-color-text-tertiary);white-space:nowrap;font-weight:600}
+.agent-sw-select{height:32px;padding:8px 12px;border:1px solid var(--infios-color-border-tertiary);
+  border-radius:8px;background:var(--infios-color-bg-alt);font-size:13px;font-weight:600;
+  color:var(--infios-color-text-secondary);cursor:pointer;min-width:200px}
+
+/* Mode selector pill */
+.mode-wrap{position:relative}
+.mode-pill{height:28px;padding:0 12px;display:inline-flex;align-items:center;gap:6px;
+  border:1px solid var(--infios-color-border-tertiary);border-radius:9999px;
+  background:#fff;font-size:13px;font-weight:600;color:var(--infios-color-text-secondary);
+  cursor:pointer;transition:border-color .12s;font-family:inherit;white-space:nowrap;user-select:none}
+.mode-pill:hover{border-color:var(--infios-color-text-tertiary)}
+.mode-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.mode-dot.op{background:var(--infios-color-text-success)}
+.mode-dot.an{background:var(--infios-color-text-link)}
+.mode-popover{position:absolute;bottom:calc(100% + 6px);left:0;
+  background:#fff;border:1px solid var(--infios-color-border-tertiary);
+  border-radius:8px;box-shadow:var(--infios-shadow-card);
+  min-width:160px;overflow:hidden;
+  opacity:0;pointer-events:none;transform:translateY(4px);
+  transition:opacity .15s,transform .15s;z-index:50}
+.mode-popover.open{opacity:1;pointer-events:all;transform:translateY(0)}
+.mode-option{display:flex;align-items:center;gap:8px;width:100%;padding:8px 12px;
+  border:none;background:transparent;cursor:pointer;font-size:13px;font-weight:600;
+  color:var(--infios-color-text-secondary);text-align:left;font-family:inherit;
+  transition:background .1s}
+.mode-option:hover{background:var(--infios-color-bg-alt)}
+.mode-option.is-active{color:var(--infios-color-text);background:var(--infios-color-bg-fill-secondary-hover)}
+
+/* ═══════════ ESCALATION SPLIT ═══════════ */
+.cli-view{flex:1;display:flex;gap:20px;overflow:hidden}
+.chat-panel.full{flex:1}
+.chat-panel.esc{flex:0 0 70%;min-width:0}
+.esc-panel{flex:0 0 30%;min-width:260px;display:flex;flex-direction:column;
+  background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);
+  overflow:hidden;transition:opacity .15s}
+.esc-panel.fading{opacity:0}
+
+/* Panel header */
+.panel-hd{padding:16px 18px;border-bottom:1px solid var(--infios-color-border-tertiary);
+  flex-shrink:0;display:flex;flex-direction:column;gap:4px}
+.panel-hd__title{font-size:17px;font-weight:700;color:#324154}
+.panel-hd__title.err{color:var(--infios-color-text-error)}
+.panel-hd__sub{font-size:12px;color:var(--infios-color-text-tertiary)}
+.panel-hd__badge-row{display:flex;align-items:center;gap:6px;margin-top:4px}
+.panel-body{flex:1;overflow-y:auto;padding:16px 18px;display:flex;flex-direction:column;gap:14px}
+.panel-note{font-size:12px;color:var(--infios-color-text-tertiary);font-style:italic;
+  padding:12px 18px;border-top:1px solid var(--infios-color-border-tertiary);flex-shrink:0}
+
+/* Stepper */
+.stepper{display:flex;flex-direction:column}
+.step{display:flex;gap:10px;padding-bottom:12px}
+.step:last-child{padding-bottom:0}
+.step-ind{width:20px;flex-shrink:0;display:flex;flex-direction:column;align-items:center}
+.step-circle{width:16px;height:16px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;margin-top:2px}
+.step-circle.done{background:var(--infios-color-text-success)}
+.step-circle.active{background:#B64C00}
+.step-circle.active-blue{background:var(--infios-color-text-info)}
+.step-circle.pending{background:#fff;border:2px solid var(--infios-color-border-tertiary)}
+.step-line{width:2px;flex:1;background:var(--infios-color-border-tertiary);margin-top:2px}
+.step-line.done{background:var(--infios-color-text-success)}
+.step-content{flex:1;padding-top:1px}
+.step-label{font-size:13px;font-weight:600;color:var(--infios-color-text-secondary);line-height:18px}
+.step-label.active{color:var(--infios-color-text);font-weight:700}
+.step-label.pending{color:var(--infios-color-text-disabled);font-weight:400}
+.step-time{font-size:11px;color:var(--infios-color-text-disabled);font-variant-numeric:tabular-nums}
+
+/* Context block */
+.ctx-block{background:var(--infios-color-bg-alt);border-radius:8px;padding:12px;
+  display:flex;flex-direction:column;gap:6px}
+.ctx-row{display:flex;gap:6px;font-size:12px}
+.ctx-lbl{color:var(--infios-color-text-tertiary);flex-shrink:0;width:96px;
+  text-transform:uppercase;letter-spacing:.3px;font-size:11px;padding-top:1px}
+.ctx-val{color:var(--infios-color-text-secondary);font-weight:600;font-size:12px}
+.ctx-val.warn{color:var(--infios-color-text-warning)}
+
+/* Note block */
+.note-block{border-left:3px solid var(--infios-color-border-tertiary);
+  padding:8px 10px;font-size:13px;color:var(--infios-color-text-tertiary);
+  font-style:italic;line-height:18px;background:var(--infios-color-bg-alt);border-radius:0 4px 4px 0}
+
+/* Manager context card */
+.mgr-ctx{background:#fff;border:1px solid var(--infios-color-border-tertiary);
+  border-radius:8px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.mgr-ctx__title{font-size:15px;font-weight:700;color:var(--infios-color-text)}
+.mgr-ctx__sub{font-size:12px;color:var(--infios-color-text-tertiary)}
+.mgr-ctx__impact{font-size:13px;color:var(--infios-color-text-warning);font-weight:600}
+.mgr-ctx__elapsed{font-size:12px;color:var(--infios-color-text-error);font-weight:600}
+.zone-pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;
+  background:var(--infios-color-bg-alt);border-radius:8px;font-size:11px;font-weight:600;
+  color:var(--infios-color-text-secondary)}
+
+/* Manager action buttons */
+.mgr-actions{display:flex;flex-direction:column;gap:8px}
+.mgr-actions .btn{height:40px;font-size:13px;font-weight:700}
+
+/* Resolution blocks */
+.resolution-block{border-radius:8px;padding:12px;font-size:13px;font-weight:600;line-height:18px}
+.resolution-block.success{background:var(--infios-color-bg-fill-success-subtle);
+  border:1px solid var(--infios-color-border-success);color:var(--infios-color-text-success)}
+.resolution-block.error{background:var(--infios-color-bg-fill-error-subtle);
+  border:1px solid var(--infios-color-text-error);color:var(--infios-color-text-error)}
+.resolution-block.info{background:var(--infios-color-bg-fill-info-subtle);
+  border:1px solid var(--infios-color-text-info);color:var(--infios-color-text-info)}
+.res-link{display:block;margin-top:6px;font-size:12px;font-weight:600;
+  color:var(--infios-color-text-link);background:none;border:none;cursor:pointer;text-align:left;padding:0}
+.res-link:hover{text-decoration:underline}
+
+/* ═══════════ HANDOFF MODAL ═══════════ */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:var(--infios-color-bg-fill-overlay);
+  display:flex;align-items:center;justify-content:center}
+.modal-overlay[hidden]{display:none}
+.modal-box{background:#fff;border-radius:8px;width:480px;max-width:calc(100vw - 48px);
+  box-shadow:var(--infios-shadow-modal);display:flex;flex-direction:column;overflow:hidden}
+.modal-hd{height:48px;display:flex;align-items:center;padding:0 20px;
+  border-bottom:1px solid var(--infios-color-border-tertiary);flex-shrink:0}
+.modal-title{font-size:16px;font-weight:700;color:var(--infios-color-text);flex:1}
+.modal-close{width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  border:none;background:transparent;cursor:pointer;color:var(--infios-color-text-tertiary);
+  border-radius:8px;transition:background .12s}
+.modal-close:hover{background:var(--infios-color-bg-fill-secondary-hover)}
+.modal-body{padding:20px;display:flex;flex-direction:column;gap:10px}
+.modal-summary-lbl{font-size:11px;font-weight:700;color:var(--infios-color-text-tertiary);
+  text-transform:uppercase;letter-spacing:.5px}
+.modal-summary-ta{border:1px solid var(--infios-color-border-tertiary);border-radius:8px;
+  padding:12px;font-size:14px;line-height:20px;color:var(--infios-color-text);
+  background:var(--infios-color-bg-alt);resize:vertical;min-height:96px;width:100%}
+.modal-summary-ta:focus{outline:2px solid var(--infios-color-border-focus);border-color:var(--infios-color-border-focus)}
+.modal-hint{font-size:12px;color:var(--infios-color-text-tertiary);margin-top:4px}
+.modal-ft{padding:16px 20px;border-top:1px solid var(--infios-color-border-tertiary);
+  display:flex;flex-direction:column;gap:8px;align-items:stretch}
+
+/* ═══════════ SHIFT LOG VIEW ═══════════ */
+.log-view{flex:1;display:flex;overflow:hidden}
+.log-tile{flex:1;background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);
+  display:flex;flex-direction:column;overflow:hidden}
+
+/* Filter bar (chips) */
+.log-filter-bar{display:flex;align-items:center;gap:6px;padding:12px 16px;
+  border-bottom:1px solid var(--infios-color-border-tertiary);flex-shrink:0;flex-wrap:wrap}
+.log-filter-sep{width:1px;height:20px;background:var(--infios-color-border-tertiary);margin:0 2px;flex-shrink:0}
+.log-chip{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 10px;
+  border:1px solid var(--infios-color-border-tertiary);border-radius:9999px;
+  background:#fff;cursor:pointer;font-family:inherit;font-size:12px;font-weight:500;
+  color:var(--infios-color-text-secondary);transition:background .1s,border-color .1s,color .1s;
+  white-space:nowrap}
+.log-chip:hover{background:var(--infios-color-bg-alt);border-color:var(--infios-color-border-surface)}
+.log-chip.is-active{background:var(--infios-color-bg-fill-brand);border-color:var(--infios-color-bg-fill-brand);color:#fff;font-weight:700}
+.log-chip__badge{font-size:11px;font-weight:700;min-width:16px;height:16px;
+  border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px}
+.log-chip.is-active .log-chip__badge{background:rgba(255,255,255,0.2);color:#fff}
+.log-chip:not(.is-active) .log-chip__badge.red{color:var(--infios-color-text-error)}
+.log-chip:not(.is-active) .log-chip__badge.green{color:var(--infios-color-text-success)}
+.log-chip:not(.is-active) .log-chip__badge.blue{color:var(--infios-color-text-info)}
+.log-chip:not(.is-active) .log-chip__badge.gray{color:var(--infios-color-text-tertiary)}
+
+/* Log table */
+.log-table-wrap{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.log-table-scroll{flex:1;overflow-y:auto}
+.log-table{width:100%;border-collapse:collapse}
+.log-table th{position:sticky;top:0;background:var(--infios-color-bg-alt);
+  padding:10px 14px;text-align:left;font-size:11px;font-weight:700;
+  color:var(--infios-color-text-tertiary);text-transform:uppercase;letter-spacing:.4px;
+  border-bottom:1px solid var(--infios-color-border-tertiary);white-space:nowrap;z-index:2}
+.log-table td{padding:11px 14px;font-size:13px;color:var(--infios-color-text-secondary);
+  border-bottom:1px solid var(--infios-color-border-tertiary);vertical-align:top}
+.log-table tr.row-hover:hover td{filter:brightness(.97);cursor:pointer}
+.log-table tr.is-expanded td{border-bottom:none}
+
+/* Row backgrounds */
+.row-pending-urgent{background:var(--infios-color-bg-fill-warning-subtle)}
+.row-pending-std{background:#fff}
+.row-validated{background:var(--infios-color-bg-fill-success-subtle)}
+.row-auto{background:var(--infios-color-bg-alt)}
+
+/* Expand row */
+.expand-row td{padding:0;background:inherit}
+.expand-content{padding:14px 14px 16px;border-top:1px solid var(--infios-color-border-tertiary)}
+.expand-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.expand-field{display:flex;flex-direction:column;gap:2px}
+.expand-label{font-size:11px;font-weight:700;color:var(--infios-color-text-tertiary);
+  text-transform:uppercase;letter-spacing:.4px}
+.expand-value{font-size:13px;color:var(--infios-color-text-secondary)}
+.expand-btns{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Log footer */
+.log-footer{padding:10px 14px;border-top:1px solid var(--infios-color-border-tertiary);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+  background:#fff}
+.log-footer-count{font-size:12px;color:var(--infios-color-text-tertiary)}
+.log-shift-indicator{font-size:12px;color:var(--infios-color-text-tertiary);
+  padding:8px 14px;background:var(--infios-color-bg-fill-info-subtle);
+  border-bottom:1px solid var(--infios-color-border-tertiary);font-style:italic}
+
+/* ═══════════ UNIFIED SIDEBAR — Figma spec ═══════════ */
+.sessions-panel{width:260px;flex-shrink:0;overflow:hidden;
+  background:#FFFFFF;border:none;border-radius:8px;
+  display:flex;flex-direction:column;
+  box-shadow:0 2px 8px rgba(35,38,37,.08)}
+.sessions-panel.is-hidden{display:none}
+/* Sessions header row */
+.sp-hd{display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px 10px;flex-shrink:0}
+.sp-hd__title{font-size:14px;font-weight:400;color:#324155;line-height:20px}
+.sp-hd__icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center;
+  background:none;border:none;cursor:pointer;color:#58636E;border-radius:6px;transition:background .12s}
+.sp-hd__icon:hover{background:#F4F4F4}
+/* Dividers */
+.sp-divider{border:none;border-top:1px solid #D5DCE2;margin:0;flex-shrink:0}
+/* Nav items */
+.sp-nav{padding:8px;flex-shrink:0}
+.sp-nav-item{display:flex;align-items:center;gap:8px;width:100%;padding:0 8px;height:32px;
+  border:none;background:transparent;cursor:pointer;
+  font-family:inherit;font-size:14px;font-weight:400;color:#324155;
+  text-align:left;transition:background .1s,color .1s;border-radius:8px;white-space:nowrap}
+.sp-nav-item:hover{background:#F4F4F4;color:#171F29}
+.sp-nav-item.is-active{color:#5436CC;background:rgba(84,54,204,0.06)}
+.sp-nav-item svg{flex-shrink:0;color:inherit}
+/* New shift button */
+.sp-new-btn{display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:8px 8px 4px;padding:0 12px;height:32px;
+  background:#FFFFFF;border:1px solid #171F29;
+  color:#171F29;border-radius:8px;font-family:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;transition:background .12s;white-space:nowrap;width:calc(100% - 16px)}
+.sp-new-btn:hover{background:#F4F4F4}
+.sp-body{flex:1;overflow-y:auto;padding:0 8px 8px}
+/* Section labels */
+.sp-section{display:block;font-size:12px;font-weight:400;color:#58636E;
+  padding:8px 8px 4px;letter-spacing:0}
+/* Session items */
+.sp-item{display:flex;flex-direction:column;gap:2px;padding:6px 8px;
+  border-radius:8px;cursor:pointer;transition:background .1s}
+.sp-item:hover{background:#F4F4F4}
+.sp-item.is-active{background:rgba(84,54,204,0.06)}
+.sp-item__name{font-size:14px;color:#171F29;font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sp-item__meta{font-size:12px;color:#58636E;line-height:16px}
+.sp-item__live{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:#2C812C}
+.sp-item__live-dot{width:5px;height:5px;border-radius:50%;background:#2C812C;
+  animation:pulse-live 1.4s ease-in-out infinite}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes pulse-live{0%,100%{opacity:.5}50%{opacity:1}}
+}
+/* Shift log card */
+.sp-log-card{margin:4px 0;border-radius:8px;background:#FFFFFF;
+  border:1px solid #D5DCE2;overflow:hidden;cursor:pointer;transition:background .12s}
+.sp-log-card:hover{background:#F9F9F9}
+.sp-log-hd{display:flex;align-items:center;justify-content:space-between;padding:8px 12px 6px}
+.sp-log-title{font-size:13px;font-weight:600;color:#324155}
+.sp-log-chevron{color:#58636E}
+.sp-log-rows{padding:0 12px 8px;display:flex;flex-direction:column;gap:0}
+.sp-log-row{display:flex;align-items:center;justify-content:space-between;height:32px}
+.sp-log-label{font-size:14px;color:#324155}
+.sp-log-badge{font-size:11px;font-weight:700;min-width:20px;height:20px;
+  padding:0 5px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center}
+.sp-log-badge.pending,.sp-log-badge.validated,.sp-log-badge.auto,.sp-log-badge.queued{
+  background:#D0413A;color:#FFFFFF}
+
+/* ═══════════ NEW SHIFT MODAL ═══════════ */
+.shift-modal-overlay{position:fixed;inset:0;z-index:300;background:rgba(23,31,41,.45);
+  display:flex;align-items:center;justify-content:center}
+.shift-modal-overlay[hidden]{display:none}
+.shift-modal-box{background:#fff;border-radius:8px;width:400px;max-width:calc(100vw - 48px);
+  padding:24px;box-shadow:var(--infios-shadow-modal)}
+.shift-modal-title{font-size:16px;font-weight:700;color:var(--infios-color-text)}
+.shift-modal-body{font-size:13px;color:var(--infios-color-text-tertiary);margin-top:8px;line-height:18px}
+.shift-modal-warn{background:var(--infios-color-bg-fill-warning-subtle);
+  border:1px solid var(--infios-color-text-warning);border-radius:8px;
+  padding:12px;font-size:13px;color:var(--infios-color-text-warning);margin-top:16px;line-height:18px}
+.shift-modal-btns{display:flex;flex-direction:column;gap:8px;margin-top:20px}
+.shift-modal-confirm{width:100%;padding:12px;background:var(--infios-color-bg-fill-brand);
+  color:#FFFFFF;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;
+  cursor:pointer;transition:background .12s}
+.shift-modal-confirm:hover{background:var(--infios-color-bg-fill-brand-hover)}
+.shift-modal-cancel{width:100%;padding:12px;background:#fff;color:var(--infios-color-text);
+  border:1px solid var(--infios-color-border-tertiary);border-radius:8px;
+  font-family:inherit;font-size:14px;cursor:pointer;transition:background .12s}
+.shift-modal-cancel:hover{background:var(--infios-color-bg-alt)}
+
+/* ═══════════ TOAST ═══════════ */
+.toast{position:fixed;top:72px;left:50%;transform:translateX(-50%) translateY(-8px);
+  z-index:600;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;
+  color:#fff;white-space:nowrap;opacity:0;transition:opacity .2s,transform .2s;
+  pointer-events:none;text-align:center}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════ FLOOR MAP PAGE ═══════════ */
+.map-view{flex:1;display:flex;gap:16px;overflow:hidden}
+.map-tile{background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);
+  flex:1;display:flex;flex-direction:column;overflow:hidden;transition:flex 150ms ease}
+.map-tile.split{flex:0 0 calc(60% - 8px)}
+.map-hd{padding:16px 20px 14px;border-bottom:1px solid var(--infios-color-border-tertiary);
+  display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0;gap:16px}
+.map-hd__left{flex:1;min-width:0}
+.map-title{font-size:22px;font-weight:700;color:#171F29;line-height:1.2}
+.map-subtitle{font-size:13px;color:var(--infios-color-text-tertiary);margin-top:4px;line-height:18px}
+.map-hd__right{flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.map-updated{font-size:12px;color:var(--infios-color-text-tertiary)}
+.map-legend{display:flex;align-items:center;gap:14px}
+.map-legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--infios-color-text-tertiary);white-space:nowrap}
+/* Mini pin for legend */
+.legend-pin{width:16px;height:16px;border-radius:9999px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.legend-pin.autonomous{background:#2C812C}
+.legend-pin.awaiting{background:#5436CC}
+.legend-pin.escalated{background:#D0413A;position:relative}
+.legend-pin.escalated::after{content:'';position:absolute;width:24px;height:24px;
+  border-radius:9999px;border:1.5px solid rgba(208,65,58,0.4);pointer-events:none}
+
+/* Grid area */
+.map-grid-wrap{flex:1;overflow:hidden;padding:12px}
+.map-grid{display:grid;grid-template-columns:repeat(5,1fr);
+  grid-template-rows:repeat(3,1fr);gap:8px;height:100%;border-radius:6px;
+  background-color:#F4F4F4;
+  background-image:radial-gradient(circle,rgba(0,0,0,0.08) 1px,transparent 1px);
+  background-size:24px 24px;padding:8px}
+
+/* Zones */
+.zone{position:relative;border-radius:6px;background:#fff;
+  border:1px solid #D5DCE2;overflow:visible}
+.zone.operator-primary{border:2px solid #5436CC}
+.zone.dimmed{background:#F9F9F9;opacity:.6}
+.zone-label{position:absolute;top:8px;left:10px;font-size:10px;font-weight:600;
+  color:#58636E;text-transform:uppercase;letter-spacing:.06em;pointer-events:none;
+  line-height:1.3;max-width:calc(100% - 16px)}
+
+/* Pins */
+.pin-wrap{position:absolute;transform:translate(-50%,-50%);z-index:10}
+.pin-wrap.no-click{pointer-events:none;opacity:.4}
+.pin-ring{position:absolute;width:44px;height:44px;border-radius:9999px;
+  border:2px solid rgba(208,65,58,0.35);top:50%;left:50%;
+  transform:translate(-50%,-50%);pointer-events:none}
+@media(prefers-reduced-motion:no-preference){
+  @keyframes pulse-ring-map{0%,100%{opacity:.4}50%{opacity:.8}}
+  .pin-ring{animation:pulse-ring-map 1.6s ease-in-out infinite}
+}
+.pin{width:28px;height:28px;border-radius:9999px;display:flex;align-items:center;
+  justify-content:center;cursor:pointer;position:relative;z-index:1;
+  transition:transform .1s,box-shadow .1s}
+.pin-wrap:not(.no-click):hover .pin{transform:scale(1.15);box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.pin.autonomous{background:#2C812C}
+.pin.awaiting{background:#5436CC}
+.pin.escalated{background:#D0413A}
+.pin.resolved-queued{background:#5436CC;opacity:.4}
+.pin.selected{box-shadow:0 0 0 3px #171F29 !important}
+.pin-tooltip{position:absolute;bottom:calc(100% + 8px);left:50%;
+  transform:translateX(-50%);background:#171F29;color:#fff;font-size:11px;
+  padding:4px 10px;border-radius:4px;white-space:nowrap;pointer-events:none;
+  opacity:0;z-index:30;transition:opacity .1s}
+.pin-wrap:not(.no-click):hover .pin-tooltip{opacity:1}
+
+/* Detail panel */
+.map-detail{flex:0 0 40%;background:#fff;border-radius:8px;
+  box-shadow:var(--infios-shadow-tile);display:flex;flex-direction:column;overflow:hidden}
+.map-detail__hd{background:#F4F4F4;border-bottom:1px solid #D5DCE2;
+  padding:12px 16px;display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;border-radius:8px 8px 0 0}
+.map-detail__hd-left{display:flex;align-items:center;gap:7px}
+.map-detail__dot{width:8px;height:8px;border-radius:9999px;flex-shrink:0}
+.map-detail__status{font-size:12px;font-weight:600;color:var(--infios-color-text-secondary)}
+.map-detail__close{border:none;background:transparent;cursor:pointer;
+  color:#58636E;width:28px;height:28px;display:flex;align-items:center;justify-content:center;
+  border-radius:6px;transition:background .12s;flex-shrink:0}
+.map-detail__close:hover{background:var(--infios-color-bg-fill-secondary-hover)}
+.map-detail__body{padding:16px;overflow-y:auto;flex:1}
+.map-detail__title{font-size:16px;font-weight:700;color:#171F29;line-height:1.3}
+.map-detail__meta{font-size:13px;color:var(--infios-color-text-tertiary);margin-top:4px}
+.map-detail__zone-pill{display:inline-flex;align-items:center;height:22px;padding:0 10px;
+  background:#F4F4F4;border:1px solid #D5DCE2;border-radius:9999px;
+  font-size:12px;color:var(--infios-color-text-secondary);margin-top:8px}
+.map-detail__desc{font-size:13px;color:#171F29;margin-top:12px;line-height:19px}
+.map-detail__impact{background:#FFFBE6;border-left:3px solid #B64C00;
+  border-radius:8px;padding:10px;margin-top:8px;font-size:13px;color:#B64C00;line-height:18px}
+.map-detail__escalated{background:#FFF0F0;border-left:3px solid #D0413A;
+  border-radius:8px;padding:10px;margin-top:8px;font-size:13px;color:#D0413A;line-height:18px}
+.map-detail__auto{background:#E6FFE6;border:1px solid #2C812C;
+  border-radius:8px;padding:12px;margin-top:16px;font-size:13px;color:#2C812C;line-height:18px}
+.map-detail__auto-link{display:block;font-size:13px;color:#5436CC;margin-top:6px;cursor:pointer}
+.map-detail__auto-link:hover{text-decoration:underline}
+.map-detail__confirm{border-radius:8px;padding:12px;margin-top:16px;
+  font-size:13px;line-height:18px}
+.map-detail__confirm.success{background:#E6FFE6;border:1px solid #2C812C;color:#2C812C}
+.map-detail__confirm.info{background:#E6F7FF;border:1px solid #2B7AB1;color:#2B7AB1}
+.map-detail__confirm.error{background:#FFF0F0;border:1px solid #D0413A;color:#D0413A}
+/* action buttons */
+.map-btn-group{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.map-btn-primary{width:100%;padding:12px;background:#171F29;color:#fff;border:none;
+  border-radius:8px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;
+  transition:background .12s}
+.map-btn-primary:hover{background:#324154}
+.map-btn-outline{width:100%;padding:12px;background:#fff;color:#171F29;
+  border:1px solid #171F29;border-radius:8px;font-family:inherit;font-size:14px;
+  cursor:pointer;transition:background .12s}
+.map-btn-outline:hover{background:#F4F4F4}
+.map-btn-link{background:none;border:none;color:#5436CC;font-family:inherit;font-size:13px;
+  cursor:pointer;padding:4px 0;text-align:center;width:100%;display:block}
+.map-btn-link:hover{text-decoration:underline}
+/* Stepper */
+.map-stepper{margin-top:16px;display:flex;flex-direction:column;gap:0}
+.map-step{display:flex;align-items:flex-start;gap:10px;padding:7px 0;position:relative}
+.map-step::before{content:'';position:absolute;left:7px;top:22px;bottom:-7px;
+  width:1px;background:#D5DCE2}
+.map-step:last-child::before{display:none}
+.map-step__dot{width:16px;height:16px;border-radius:9999px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;margin-top:1px}
+.map-step__dot.done{background:#2C812C}
+.map-step__dot.active{background:#5436CC}
+.map-step__dot.pending{background:transparent;border:2px solid #D5DCE2}
+.map-step__label{font-size:12px;color:var(--infios-color-text-secondary);flex:1}
+.map-step__time{font-size:11px;color:var(--infios-color-text-tertiary)}
+/* crit badge */
+.map-crit-badge{display:inline-flex;align-items:center;height:20px;padding:0 8px;
+  border-radius:9999px;font-size:11px;font-weight:700;margin-bottom:8px}
+.map-crit-badge.standard{background:#E6F7FF;color:#2B7AB1}
+.map-crit-badge.urgent{background:#FFF0F0;color:#D0413A}
+/* sidebar badge */
+.sp-nav-badge{margin-left:auto;background:#D0413A;color:#fff;font-size:10px;font-weight:700;
+  min-width:18px;height:18px;border-radius:9999px;display:inline-flex;align-items:center;
+  justify-content:center;padding:0 5px;flex-shrink:0}
+.sp-nav-badge[data-zero]{display:none}
+
+/* ═══════════ AGENT PERFORMANCE PAGE ═══════════ */
+.perf-view{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:20px;padding:20px}
+.perf-hd{flex-shrink:0}
+.perf-hd h1{font-size:28px;font-weight:700;color:#171F29;line-height:1.15}
+.perf-hd__sub{font-size:14px;color:var(--infios-color-text-tertiary);margin-top:4px}
+.perf-section-label{font-size:11px;font-weight:700;color:var(--infios-color-text-tertiary);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+
+/* System health panel */
+.sys-health{background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);padding:20px;flex-shrink:0}
+.sys-health-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.sys-health-title{font-size:15px;font-weight:700;color:#171F29}
+.sys-stage-pill{background:#F4F4F4;border:1px solid #D5DCE2;border-radius:9999px;
+  font-size:12px;color:var(--infios-color-text-tertiary);padding:4px 12px}
+.sys-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.sys-tile{background:#F4F4F4;border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:4px}
+.sys-tile__value{font-size:24px;font-weight:700;line-height:1.1}
+.sys-tile__label{font-size:12px;color:var(--infios-color-text-tertiary);margin-top:2px}
+.sys-tile__note{font-size:11px;color:var(--infios-color-text-tertiary)}
+.sys-tile__pill{display:inline-flex;align-items:center;height:20px;padding:0 8px;
+  border-radius:9999px;font-size:10px;font-weight:700;letter-spacing:.04em;margin-top:6px;align-self:flex-start}
+.sys-tile__pill.healthy{background:#E6FFE6;color:#2C812C}
+.sys-tile__pill.warning{background:#FFFBE6;color:#B64C00}
+.sys-tile__pill.critical{background:#FFF0F0;color:#D0413A}
+
+/* Shift Intelligence card */
+.si-card{background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);padding:20px;flex-shrink:0;
+  display:flex;gap:24px;align-items:flex-start}
+.si-card__left{width:240px;flex-shrink:0}
+.si-avatar{width:48px;height:48px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;color:#fff;flex-shrink:0}
+.si-card__name{font-size:17px;font-weight:700;color:#171F29;margin-top:8px}
+.si-card__desc{font-size:13px;color:var(--infios-color-text-tertiary);margin-top:2px}
+.si-card__status{display:inline-flex;align-items:center;gap:5px;border-radius:9999px;
+  padding:4px 10px;font-size:12px;font-weight:600;margin-top:12px}
+.si-card__status.running{background:#E6FFE6;color:#2C812C}
+.si-card__note{font-size:12px;color:var(--infios-color-text-tertiary);font-style:italic;
+  border-top:1px solid #D5DCE2;padding-top:12px;margin-top:16px;line-height:18px}
+.si-card__right{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.si-metric{background:#F4F4F4;border-radius:8px;padding:12px}
+.si-metric__value{font-size:22px;font-weight:700;line-height:1.1}
+.si-metric__label{font-size:12px;color:var(--infios-color-text-tertiary);margin-top:3px}
+.si-metric__sub{font-size:11px;color:var(--infios-color-text-tertiary);margin-top:2px;line-height:15px}
+
+/* Domain agent grid */
+.agent-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.agent-card{background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);
+  display:flex;flex-direction:column;overflow:hidden}
+.agent-card__banner{background:#FFFBE6;border-bottom:1px solid #D5DCE2;
+  padding:12px 20px;font-size:12px;font-weight:700;color:#B64C00;flex-shrink:0}
+.agent-card__body{padding:20px;display:flex;flex-direction:column;gap:0;flex:1}
+.agent-card__hd{display:flex;align-items:center;gap:12px}
+.agent-avatar{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-size:15px;font-weight:700;color:#fff;flex-shrink:0}
+.agent-card__info{flex:1;min-width:0}
+.agent-card__name{font-size:15px;font-weight:700;color:#171F29}
+.agent-card__desc{font-size:12px;color:var(--infios-color-text-tertiary);margin-top:1px}
+.agent-status-pill{border-radius:9999px;font-size:11px;font-weight:700;
+  padding:3px 10px;white-space:nowrap;flex-shrink:0}
+.agent-status-pill.running{background:#E6FFE6;color:#2C812C}
+.agent-status-pill.paused{background:#F4F4F4;color:#58636E}
+/* metrics row */
+.agent-metrics-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;
+  border-top:1px solid #D5DCE2;padding-top:12px;margin-top:12px}
+.agent-metric-col{display:flex;flex-direction:column;gap:3px;padding:0 4px}
+.agent-metric-col:first-child{padding-left:0}
+.agent-metric-col:last-child{padding-right:0}
+.agent-metric__val{font-size:20px;font-weight:700;line-height:1}
+.agent-metric__lbl{font-size:10px;color:var(--infios-color-text-tertiary);text-transform:uppercase;letter-spacing:.04em}
+.agent-metric__pill{display:inline-flex;align-items:center;height:16px;padding:0 6px;
+  border-radius:9999px;font-size:10px;font-weight:700;margin-top:3px;align-self:flex-start}
+.agent-metric__pill.healthy{background:#E6FFE6;color:#2C812C}
+.agent-metric__pill.warning{background:#FFFBE6;color:#B64C00}
+.agent-metric__pill.critical{background:#FFF0F0;color:#D0413A}
+.agent-metric__note{font-size:11px;color:#B64C00;margin-top:3px}
+/* rate rows */
+.agent-rate-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.agent-rate-lbl{font-size:12px;color:var(--infios-color-text-tertiary)}
+.agent-rate-val{font-size:12px;font-weight:600}
+/* rejection note */
+.agent-rejection-note{background:#FFFBE6;border-radius:8px;padding:8px;
+  border-left:3px solid #B64C00;font-size:12px;color:#B64C00;font-style:italic;
+  margin-top:6px;line-height:17px}
+/* slider */
+.agent-slider-wrap{border-top:1px solid #D5DCE2;padding-top:12px;margin-top:12px}
+.agent-slider-labels{display:flex;justify-content:space-between;font-size:11px;
+  color:var(--infios-color-text-tertiary);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em}
+.ap-slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;
+  border-radius:9999px;outline:none;cursor:pointer;
+  background:linear-gradient(to right,#2C812C,#5436CC,#D0413A)}
+.ap-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:16px;height:16px;border-radius:50%;background:#fff;
+  border:2px solid #171F29;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:pointer}
+.ap-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;
+  background:#fff;border:2px solid #171F29;box-shadow:0 1px 3px rgba(0,0,0,.2);cursor:pointer;border-style:solid}
+.ap-slider.disabled{opacity:.5;pointer-events:none}
+.agent-slider-proj{background:#F4F4F4;border-radius:8px;padding:8px 10px;
+  margin-top:8px;display:flex;align-items:center;justify-content:space-between}
+.agent-slider-proj__lbl{font-size:12px;color:var(--infios-color-text-tertiary)}
+.agent-slider-proj__val{font-size:13px;font-weight:700;color:#171F29}
+.agent-paused-note{font-size:11px;color:var(--infios-color-text-tertiary);font-style:italic;margin-top:6px}
+/* permission notice */
+.perf-access-wrap{flex:1;display:flex;align-items:center;justify-content:center}
+.perf-access-tile{background:#fff;border-radius:8px;box-shadow:var(--infios-shadow-tile);
+  width:480px;padding:48px 32px;text-align:center}
+.perf-access-tile__title{font-size:16px;font-weight:700;color:#171F29;margin-top:12px}
+.perf-access-tile__body{font-size:14px;color:#58636E;margin-top:8px;line-height:20px}
+</style>
+</head>
+<body>
+<div class="platform">
+
+<!-- HEADER -->
+<header class="platform-header">
+  <button class="header-menu-btn" onclick="toggleNav()" aria-label="Toggle navigation">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+  </button>
+  <div class="header-logo"><span class="logo-wordmark">WA</span></div>
+  <div class="header-title">Warehouse Advantage</div>
+  <div class="header-actions">
+    <div class="role-toggle">
+      <button class="role-btn is-active" id="btn-operator" onclick="setRole('operator')">Operator</button>
+      <button class="role-btn" id="btn-manager" onclick="setRole('manager')">Manager</button>
+    </div>
+    <button class="header-icon-btn" title="Notifications">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </button>
+    <div class="header-user">
+      <span class="header-user-name" id="header-username">J. Santos — Operator</span>
+      <div class="header-avatar" id="header-avatar">JS</div>
+    </div>
+  </div>
+</header>
+
+<div class="platform-body">
+
+  <!-- SIDEBAR — flex child, always visible -->
+  <div class="sessions-panel" id="sessions-panel">
+    <!-- Header -->
+    <div class="sp-hd">
+      <span class="sp-hd__title">Sessions</span>
+      <button class="sp-hd__icon" aria-label="Menu">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <hr class="sp-divider">
+
+    <!-- Navigation items — folder icon per Figma -->
+    <div class="sp-nav">
+      <button class="sp-nav-item is-active" id="usb-cli" onclick="setView('cli')">
+        <!-- Terminal / chat -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        Agent CLI
+      </button>
+      <button class="sp-nav-item" id="usb-log" onclick="setView('log')">
+        <!-- Clipboard list -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+        Shift log
+      </button>
+      <button class="sp-nav-item" id="usb-map" onclick="setView('map')">
+        <!-- Map pin grid -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 3 20 10 16 17 20 21 17 21 3 17 6 10 2 3 6"/><line x1="10" y1="2" x2="10" y2="16"/><line x1="17" y1="6" x2="17" y2="20"/></svg>
+        Floor map
+        <span class="sp-nav-badge" id="map-badge">2</span>
+      </button>
+      <button class="sp-nav-item" id="usb-perf" onclick="setView('perf')">
+        <!-- Bar chart trending -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Agent performance
+      </button>
+      <button class="sp-nav-item">
+        <!-- Building / warehouse -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="1"/><polyline points="16 7 12 3 8 7"/><line x1="12" y1="3" x2="12" y2="7"/><rect x="9" y="13" width="6" height="9"/></svg>
+        Warehouse
+      </button>
+      <button class="sp-nav-item">
+        <!-- Gear / settings -->
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </button>
+    </div>
+    <hr class="sp-divider">
+
+    <!-- Sessions content -->
+    <div class="sp-body" id="sp-body"></div>
+  </div>
+
+  <!-- RIGHT COLUMN: subnav + main -->
+  <div class="platform-right">
+    <nav class="platform-subnav" id="subnav"></nav>
+    <main class="platform-main" id="main"></main>
+  </div>
+
+</div>
+</div>
+
+<!-- NEW SHIFT CONFIRM MODAL -->
+<div class="shift-modal-overlay" id="shift-modal" hidden>
+  <div class="shift-modal-box">
+    <div class="shift-modal-title">Start new shift?</div>
+    <div class="shift-modal-body">This will archive the current session and create a fresh Shift C context. Previous shift data remains accessible in the log.</div>
+    <div class="shift-modal-warn" id="shift-modal-warn" hidden>
+      <strong>Pending approvals:</strong> 2 actions are awaiting manager approval. Starting a new shift will not cancel them, but they will no longer appear in the active view.
+    </div>
+    <div class="shift-modal-btns">
+      <button class="shift-modal-confirm" onclick="confirmNewShift()">Start new shift</button>
+      <button class="shift-modal-cancel" onclick="closeShiftModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HANDOFF MODAL -->
+<div id="modal" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <div class="modal-hd">
+      <span class="modal-title" id="modal-title">Switch agent</span>
+      <button class="modal-close" onclick="closeModal()" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-summary-lbl">Handoff Summary</div>
+      <textarea class="modal-summary-ta" id="modal-ta" rows="4"></textarea>
+      <p class="modal-hint" id="modal-hint"></p>
+    </div>
+    <div class="modal-ft">
+      <button class="btn btn-primary btn-full" style="height:40px" onclick="confirmHandoff('summary')">Switch with summary</button>
+      <button class="btn-link-purple" style="text-align:center;width:100%;padding:4px 0;font-size:13px" onclick="confirmHandoff('clean')">Start clean — load report only</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════
+   DATA
+═══════════════════════════════ */
+const DATA = {
+  operational: {
+    agentName: 'Shift Agent',
+    warehouse: 'Berlin DC — Shift B',
+    contextStatus: 'loaded',
+    quickActions: ['Shift status', 'Pick exceptions', 'Dock arrivals'],
+    chat: [
+      { role: 'user', text: 'How many picks are behind target this hour?' },
+      {
+        role: 'agent', agent: 'Shift Agent', time: '14:28',
+        text: '23 picks behind target in Zone B. Primary cause: SKU-4821 staging delay. Replenishment recommended — awaiting your approval.',
+        actionCard: {
+          description: 'Trigger replenishment — SKU-4821, 200 units',
+          criticality: 'urgent',
+          impact: 'Zone B pick lanes stall in approximately 35 minutes',
+        }
+      },
+    ],
+  },
+  analysis: {
+    agents: [
+      { id: 'bi',          label: 'BI Agent',           initials: 'BI', descriptor: 'Patterns & what happened' },
+      { id: 'innovation',  label: 'Innovation Agent',   initials: 'IA', descriptor: 'Challenges assumptions' },
+      { id: 'opportunity', label: 'Opportunity Agent',  initials: 'OA', descriptor: 'Hidden signal & correlation' },
+    ],
+    activeAgent: 'bi',
+    chat: [
+      { role: 'agent', agent: 'BI Agent', time: '09:05', text: 'Good morning. I have this week\'s operational data loaded. What would you like to explore?' },
+      { role: 'user', text: 'Summarise this week\'s pick error rate trend.' },
+      { role: 'agent', agent: 'BI Agent', time: '09:06', text: 'Pick error rate averaged 3.2% this week, up from 2.8% last week. Peak errors occurred Tuesday 14:00–16:00. Zone C accounts for 61% of errors.' },
+      { role: 'user', text: 'Is Zone C layout the root cause?' },
+      { role: 'agent', agent: 'BI Agent', time: '09:08', text: 'Possibly. Zone C has the highest pick density per aisle — 34% above warehouse average. However, the Tuesday afternoon pattern suggests a timing factor, not just layout.' },
+    ],
+    handoffSummary: 'BI Agent found: pick error rate 3.2% this week (+0.4pp WoW). Peak on Tuesday 14:00–16:00. Zone C = 61% of errors. User was exploring whether Zone C layout is the root cause.',
+    switchResponses: {
+      innovation: 'Interesting starting point. Zone C errors peaking Tuesday afternoon — before assuming it is a layout problem, consider: is Tuesday when Zone C receives its largest replenishment? That would implicate slotting strategy, not layout.',
+      opportunity: 'Tuesday 14:00–16:00 is a recurring signal across three weeks of data. That consistency suggests a structural cause — shift changeover timing, replenishment cycles, or a carrier arrival pattern worth cross-referencing.',
+    },
+  },
+  escalation: {
+    action: {
+      id: 'ACT-0091',
+      description: 'Replenish SKU-7732 — Zone A, 200 units from Bay 4',
+      agent: 'Shift Agent', proposedAt: '14:31', criticality: 'urgent',
+      impact: 'Blocks Zone A pick lanes 3–6 in approximately 40 minutes',
+    },
+    supervisor: { name: 'M. Ferreira', role: 'Shift Supervisor', escalatesTo: 'J. Santos', escalatesToRole: 'Warehouse Manager', deadline: '14:37' },
+    conditions: {
+      not_logged_in: {
+        label: 'Not logged in', badge: 'OFF SYSTEM', badgeColor: 'error',
+        statusLine: 'Escalated to J. Santos (Warehouse Manager) — 14:31', statusColor: 'error',
+        note: 'No active session detected for M. Ferreira. Escalating immediately to J. Santos.',
+        stepper: [
+          { label: 'Action proposed',       time: '14:31', state: 'done'    },
+          { label: 'Supervisor check',      time: '14:31', state: 'done'    },
+          { label: 'Off-system detected',   time: '14:31', state: 'done'    },
+          { label: 'Escalated → J. Santos', time: '14:31', state: 'active'  },
+          { label: 'Awaiting manager',      time: null,    state: 'pending' },
+          { label: 'Resolution',            time: null,    state: 'pending' },
+        ],
+      },
+      no_response: {
+        label: 'No response', badge: 'NOT RESPONDING', badgeColor: 'warning',
+        statusLine: 'Awaiting M. Ferreira — escalating at 14:33 if no response', statusColor: 'warning',
+        note: 'Push notification sent to M. Ferreira at 14:31. Escalating if no response by 14:33.',
+        stepper: [
+          { label: 'Action proposed',        time: '14:31', state: 'done'    },
+          { label: 'Supervisor check',       time: '14:31', state: 'done'    },
+          { label: 'Push notification sent', time: '14:31', state: 'done'    },
+          { label: 'Waiting for response',   time: '14:33', state: 'active'  },
+          { label: 'Escalate if no response',time: null,    state: 'pending' },
+          { label: 'Resolution',             time: null,    state: 'pending' },
+        ],
+      },
+      in_approval: {
+        label: 'In approval', badge: 'BUSY', badgeColor: 'info',
+        statusLine: 'Queued behind ACT-0088 — M. Ferreira responding shortly', statusColor: 'info',
+        note: 'M. Ferreira is approving ACT-0088. This item is queued next. Max wait: 3 min.',
+        stepper: [
+          { label: 'Action proposed',          time: '14:31', state: 'done'    },
+          { label: 'Supervisor check',         time: '14:31', state: 'done'    },
+          { label: 'Queued behind ACT-0088',   time: '14:31', state: 'active'  },
+          { label: 'M. Ferreira becomes free', time: null,    state: 'pending' },
+          { label: 'Approval presented',       time: null,    state: 'pending' },
+          { label: 'Resolution',               time: null,    state: 'pending' },
+        ],
+      },
+      shift_boundary: {
+        label: 'Shift boundary', badge: 'SHIFT ENDED', badgeColor: 'error',
+        statusLine: 'Escalated to J. Santos (Warehouse Manager) — 14:31', statusColor: 'error',
+        note: 'M. Ferreira shift ended at 14:00. Escalating to incoming supervisor J. Santos.',
+        stepper: [
+          { label: 'Action proposed',         time: '14:31', state: 'done'    },
+          { label: 'Supervisor check',        time: '14:31', state: 'done'    },
+          { label: 'Shift boundary detected', time: '14:31', state: 'done'    },
+          { label: 'Escalated → J. Santos',   time: '14:31', state: 'active'  },
+          { label: 'Awaiting manager',        time: null,    state: 'pending' },
+          { label: 'Resolution',              time: null,    state: 'pending' },
+        ],
+      },
+    },
+  },
+  actionLog: [
+    { id: 1, state: 'pending',   criticality: 'urgent',   description: 'Replenish SKU-7732 — Zone A, 200 units from Bay 4',             agent: 'Shift Agent', actor: null,                         impact: 'Blocks Zone A pick lanes 3–6 in ~40 min',                 zone: 'Zone A',     time: '14:31' },
+    { id: 2, state: 'pending',   criticality: 'standard', description: 'Update dock schedule — Bay 2 arrival window +30 min',            agent: 'Dock Agent',  actor: null,                         impact: 'Carrier ETA shift — no immediate operational block',       zone: 'Dock Bay 2', time: '14:28' },
+    { id: 3, state: 'validated', criticality: null,        description: 'Triggered replenishment — SKU-4821, 200 units, Zone B',          agent: 'Shift Agent', actor: 'M. Ferreira (Supervisor)', impact: null,                                                       zone: 'Zone B',     time: '13:20' },
+    { id: 4, state: 'auto',      criticality: null,        description: 'Refreshed carrier ETA data — all active bays',                   agent: 'Dock Agent',  actor: null,                         impact: null,                                                       zone: 'All docks',  time: '14:22' },
+    { id: 5, state: 'auto',      criticality: null,        description: 'Synced shift handover summary — outgoing shift data compiled',    agent: 'Shift Agent', actor: null,                         impact: null,                                                       zone: 'All zones',  time: '13:00' },
+  ],
+  agentPerformance: {
+    system: {
+      contextLoadLatency: 3.2,
+      silentContextFailures: 0,
+      routingAccuracy: 94,
+      auditCompleteness: 100,
+      lastUpdated: '14:31',
+    },
+    shiftIntelligence: {
+      id: 'shift-intelligence', name: 'Shift Intelligence',
+      descriptor: 'Radar — monitors all zones continuously',
+      status: 'running', color: '#B45309', initials: 'SI',
+      metrics: {
+        anomaliesDetected24h: 14, signalToNoise: 78,
+        detectionLatency: 1.8, missedAnomalyRate: 2,
+      },
+    },
+    agents: [
+      { id: 'pick-path',      name: 'Pick Path Agent',       descriptor: 'Congestion & aisle routing',       status: 'running', color: '#1D4ED8', initials: 'PP',
+        metrics: { actions24h: 176, approvalRate: 99, autonomy: 85, escalationRate: 0, rejectionPattern: 'distributed', rejectionNote: null },
+        slider: { value: 75, projectedApprovalsPerShift: 8 } },
+      { id: 'labor',          name: 'Labor Agent',           descriptor: 'Workforce allocation & flex',      status: 'running', color: '#5436CC', initials: 'LA',
+        metrics: { actions24h: 89,  approvalRate: 91, autonomy: 55, escalationRate: 3, rejectionPattern: 'distributed', rejectionNote: null },
+        slider: { value: 55, projectedApprovalsPerShift: 14 } },
+      { id: 'order-priority', name: 'Order Priority Agent',  descriptor: 'SLA risk & reprioritisation',     status: 'running', color: '#0F766E', initials: 'OR',
+        metrics: { actions24h: 211, approvalRate: 97, autonomy: 80, escalationRate: 1, rejectionPattern: 'distributed', rejectionNote: null },
+        slider: { value: 70, projectedApprovalsPerShift: 6 } },
+      { id: 'carrier',        name: 'Carrier Agent',         descriptor: 'ETAs & reroutes',                 status: 'paused',  color: '#92400E', initials: 'CA',
+        metrics: { actions24h: 19,  approvalRate: 93, autonomy: 50, escalationRate: 0, rejectionPattern: 'distributed', rejectionNote: null },
+        slider: { value: 45, projectedApprovalsPerShift: 4 } },
+      { id: 'exception',      name: 'Exception Agent',       descriptor: 'Mispicks, damage, quality holds', status: 'running', color: '#B91C1C', initials: 'EX',
+        metrics: { actions24h: 47,  approvalRate: 72, autonomy: 30, escalationRate: 8, rejectionPattern: 'clustered',   rejectionNote: 'Rejections concentrated on damage-hold actions 13:00–15:00' },
+        slider: { value: 30, projectedApprovalsPerShift: 22 } },
+    ],
+  },
+  floorMap: {
+    warehouse: 'DC-07 Dallas',
+    lastUpdated: '14:31',
+    zones: [
+      { id: 'receiving',        label: 'Receiving',                    row: 1, col: 1, colSpan: 2, rowSpan: 1, operatorZone: false },
+      { id: 'storage-a',        label: 'Storage A',                    row: 1, col: 3, colSpan: 2, rowSpan: 1, operatorZone: false },
+      { id: 'storage-b',        label: 'Storage B',                    row: 1, col: 5, colSpan: 1, rowSpan: 1, operatorZone: false },
+      { id: 'pick-zone-c',      label: 'Pick Zone C',                  row: 2, col: 1, colSpan: 2, rowSpan: 1, operatorZone: true  },
+      { id: 'pick-zone-d',      label: 'Pick Zone D',                  row: 2, col: 3, colSpan: 2, rowSpan: 1, operatorZone: false },
+      { id: 'pack',             label: 'Pack',                         row: 2, col: 5, colSpan: 1, rowSpan: 1, operatorZone: false },
+      { id: 'staging-outbound', label: 'Staging / Outbound',           row: 3, col: 1, colSpan: 3, rowSpan: 1, operatorZone: false },
+      { id: 'shipping-docks',   label: 'Shipping Docks D-1 to D-8',   row: 3, col: 4, colSpan: 2, rowSpan: 1, operatorZone: false },
+    ],
+    pins: [
+      { id: 'pin-001', zoneId: 'pick-zone-c',      type: 'escalated',  posX: 68, posY: 72, title: 'Replenishment blocked — SKU-7732',     agent: 'Shift Agent',          criticality: 'urgent',   time: '14:31', description: 'SKU-7732 stock at 12 units in Pick Zone C. Below reorder threshold. Replenishment requires approval.',                                         impact: 'Blocks pick lanes 3–6 in approximately 40 minutes',               actionId: 'ACT-0091', status: 'escalated',  escalatedTo: 'J. Santos (Warehouse Manager)' },
+      { id: 'pin-002', zoneId: 'pick-zone-d',      type: 'awaiting',   posX: 55, posY: 45, title: 'Pick path reroute — aisle congestion', agent: 'Pick Path Agent',      criticality: 'standard', time: '14:28', description: 'Aisle D-4 showing congestion pattern for 22 minutes. Reroute via D-6 proposed.',                                                               impact: 'Non-urgent — throughput impact estimated 8%',                     actionId: 'ACT-0089', status: 'awaiting',   escalatedTo: null },
+      { id: 'pin-003', zoneId: 'storage-a',         type: 'autonomous', posX: 45, posY: 55, title: 'Carrier ETA refreshed — Bay 3',        agent: 'Carrier Agent',        criticality: null,       time: '14:22', description: 'Carrier ETA data refreshed for Storage A inbound bay. No action required.',                                                                    impact: null,                                                              actionId: null,       status: 'auto',       escalatedTo: null },
+      { id: 'pin-004', zoneId: 'staging-outbound',  type: 'escalated',  posX: 22, posY: 65, title: 'SLA breach risk — 14 orders',         agent: 'Order Priority Agent', criticality: 'urgent',   time: '14:29', description: '14 orders in Staging / Outbound at risk of SLA breach. Ship-by window closes at 15:00. Labor redeployment proposed.',                        impact: 'SLA breach affects 14 outbound orders — carrier window closes in 31 min', actionId: 'ACT-0090', status: 'escalated',  escalatedTo: 'J. Santos (Warehouse Manager)' },
+      { id: 'pin-005', zoneId: 'staging-outbound',  type: 'awaiting',   posX: 38, posY: 42, title: 'Dock schedule update — Bay 2',         agent: 'Dock Agent',           criticality: 'standard', time: '14:26', description: 'Bay 2 carrier arrival window shifted +30 min. Dock schedule update proposed.',                                                                 impact: 'Carrier ETA shift — no immediate operational block',              actionId: 'ACT-0088', status: 'awaiting',   escalatedTo: null },
+      { id: 'pin-006', zoneId: 'pick-zone-d',       type: 'autonomous', posX: 72, posY: 70, title: 'Shift handover compiled',              agent: 'Shift Agent',          criticality: null,       time: '13:00', description: 'Outgoing shift data compiled and logged automatically.',                                                                                      impact: null,                                                              actionId: null,       status: 'auto',       escalatedTo: null },
+      { id: 'pin-007', zoneId: 'storage-b',         type: 'awaiting',   posX: 50, posY: 55, title: 'Inventory discrepancy — SKU-3341',     agent: 'Exception Agent',      criticality: 'standard', time: '14:18', description: 'SKU-3341 cycle count shows 8-unit discrepancy vs WMS record. Investigation proposed.',                                                         impact: 'Fulfillment risk if discrepancy confirmed — 3 open orders reference this SKU', actionId: 'ACT-0087', status: 'awaiting',   escalatedTo: null },
+    ],
+  },
+};
+
+/* ═══════════════════════════════
+   STATE
+═══════════════════════════════ */
+let view       = 'cli';
+let uiState    = 'cli-default';
+let mode       = 'operational';
+let role       = 'operator';
+let condition  = 'not_logged_in';
+let resolution = null;
+let activeAgent    = 'bi';
+let pendingAgent   = null;
+let analysisMsgs   = DATA.analysis.chat.map(m => Object.assign({}, m));
+let logStateFilter = 'all';
+let logZoneFilter  = 'all';
+let expandedRow    = null;
+let modePopOpen      = false;
+let activeDrawer     = null;   // null | 'navigator'
+let currentShiftLabel = 'Shift B';
+let logShiftLabel    = null;   // null = show all, string = filtered to that shift
+let selectedPin      = null;   // pin id | null
+let resolvedPins     = {};     // pinId → 'approved'|'rejected'|'downgraded'|'queued'
+
+/* ═══════════════════════════════
+   SETTERS
+═══════════════════════════════ */
+function setView(v) {
+  if (view === 'map' && v !== 'map') selectedPin = null;
+  view = v;
+  if (v === 'cli') uiState = 'cli-default';
+  renderAll();
+}
+
+function setRole(r) {
+  role = r;
+  document.getElementById('btn-operator').classList.toggle('is-active', r === 'operator');
+  document.getElementById('btn-manager').classList.toggle('is-active', r === 'manager');
+  const names    = { operator: 'J. Santos — Operator', manager: 'M. Ferreira — Manager' };
+  const initials = { operator: 'JS', manager: 'MF' };
+  document.getElementById('header-username').textContent = names[r];
+  document.getElementById('header-avatar').textContent   = initials[r];
+  if (uiState === 'cli-escalation') renderEscPanel();
+  if (view === 'map') { selectedPin = null; } // close detail on role switch
+  if (view === 'log' || view === 'perf' || view === 'map') renderMain();
+  renderNavigator();
+}
+
+function setMode(m) {
+  mode = m;
+  modePopOpen = false;
+  renderAll();
+}
+
+function setCondition(c) {
+  condition = c;
+  resolution = null;
+  renderSubnav();
+  updateEscCard();
+  renderEscPanel();
+}
+
+/* ═══════════════════════════════
+   SIDEBAR OVERLAY NAV
+═══════════════════════════════ */
+let navOpen = true;
+
+function openNav() {
+  navOpen = true;
+  document.getElementById('sessions-panel').classList.remove('is-hidden');
+  renderNavigator();
+}
+
+function closeNav() {
+  navOpen = false;
+  document.getElementById('sessions-panel').classList.add('is-hidden');
+}
+
+function toggleNav() {
+  if (navOpen) closeNav();
+  else openNav();
+}
+
+/* keep backward-compat aliases used elsewhere in code */
+function openNavigator() { openNav(); }
+function closeNavigator() { closeNav(); }
+function toggleNavigator() { toggleNav(); }
+
+function renderNavigator() {
+  const isManager = role === 'manager';
+  const log = DATA.actionLog;
+  const counts = {
+    pending:   log.filter(r => r.state === 'pending').length,
+    validated: log.filter(r => r.state === 'validated').length,
+    auto:      log.filter(r => r.state === 'auto').length,
+    queued:    0,
+  };
+
+  const todayShifts = isManager
+    ? [{ label: 'Shift A', loc: 'Berlin DC', metric: '98 actions', active: false }]
+    : [];
+
+  const yesterdayShifts = isManager
+    ? [
+        { label: 'Shift C', loc: 'Berlin DC', metric: '114 actions' },
+        { label: 'Shift B', loc: 'Berlin DC', metric: '87 actions' },
+      ]
+    : [{ label: 'Shift B', loc: 'Berlin DC', metric: '87 actions' }];
+
+  const earlierShifts = isManager
+    ? [{ label: 'Shift A — Mon 04 May', loc: 'Berlin DC', metric: '102 actions' }]
+    : [{ label: 'Shift B — Mon 04 May', loc: 'Berlin DC', metric: '79 actions' }];
+
+  function itemHtml(s, isCurrent) {
+    if (isCurrent) {
+      return `<div class="sp-item is-active" onclick="closeNavigator();setView('cli')">
+        <span class="sp-item__name">${esc(s.label)}</span>
+        <span class="sp-item__live"><span class="sp-item__live-dot"></span>Active · ${esc(s.loc)}</span>
+      </div>`;
+    }
+    const key = s.label.replace(/\s/g, '_');
+    return `<div class="sp-item" onclick="navShiftClick('${esc(s.label)}')">
+      <span class="sp-item__name">${esc(s.label)}</span>
+      <span class="sp-item__meta">${esc(s.loc)} · ${esc(s.metric)}</span>
+    </div>`;
+  }
+
+  const todayHtml = todayShifts.map(s => itemHtml(s, false)).join('');
+  const yestHtml  = yesterdayShifts.map(s => itemHtml(s, false)).join('');
+  const earlyHtml = earlierShifts.map(s => itemHtml(s, false)).join('');
+
+  document.getElementById('sp-body').innerHTML = `
+    <button class="sp-new-btn" onclick="openShiftModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New shift
+    </button>
+
+    <span class="sp-section">Today</span>
+    ${itemHtml({ label: currentShiftLabel, loc: 'Berlin DC', metric: '' }, true)}
+    ${todayHtml}
+
+    ${yestHtml ? `<span class="sp-section">Yesterday</span>${yestHtml}` : ''}
+    ${earlyHtml ? `<span class="sp-section">Earlier</span>${earlyHtml}` : ''}
+
+    <hr class="sp-divider">
+
+    ${isManager ? `<div class="sp-log-card" style="margin-bottom:0" onclick="setView('perf');closeNavigator()">
+      <div class="sp-log-hd">
+        <span class="sp-log-title">Agent performance</span>
+        <span class="sp-log-chevron">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+    </div><hr class="sp-divider">` : ''}
+
+    <div class="sp-log-card" onclick="setView('log');closeNavigator()">
+      <div class="sp-log-hd">
+        <span class="sp-log-title">Shift log</span>
+        <span class="sp-log-chevron">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </div>
+      <div class="sp-log-rows">
+        <div class="sp-log-row">
+          <span class="sp-log-label">Pending approval</span>
+          <span class="sp-log-badge pending">${counts.pending}</span>
+        </div>
+        ${counts.queued > 0 ? `<div class="sp-log-row"><span class="sp-log-label">Queued</span><span class="sp-log-badge queued">${counts.queued}</span></div>` : ''}
+        <div class="sp-log-row">
+          <span class="sp-log-label">Validated</span>
+          <span class="sp-log-badge validated">${counts.validated}</span>
+        </div>
+        <div class="sp-log-row">
+          <span class="sp-log-label">Agent actions</span>
+          <span class="sp-log-badge auto">${counts.auto}</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function navShiftClick(shiftLabel) {
+  logShiftLabel = shiftLabel;
+  closeNavigator();
+  setView('log');
+}
+
+function openShiftModal() {
+  const hasPending = DATA.actionLog.some(r => r.state === 'pending');
+  document.getElementById('shift-modal-warn').hidden = !hasPending;
+  document.getElementById('shift-modal').hidden = false;
+}
+
+function closeShiftModal() {
+  document.getElementById('shift-modal').hidden = true;
+}
+
+function confirmNewShift() {
+  closeShiftModal();
+  closeNavigator();
+  currentShiftLabel = 'Shift C';
+  logShiftLabel = null;
+  showToast('Shift C started — session archived');
+}
+
+let _toastTimer = null;
+function showToast(msg, color) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color || '#324154';
+  clearTimeout(_toastTimer);
+  t.classList.remove('show');
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    t.classList.add('show');
+    _toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+  }));
+}
+
+function enterEscalation() {
+  uiState = 'cli-escalation';
+  renderAll();
+}
+
+function exitEscalation() {
+  uiState = 'cli-default';
+  renderAll();
+}
+
+function resolve(r) {
+  resolution = r;
+  updateEscCard();
+  renderEscPanel();
+}
+
+/* ═══════════════════════════════
+   RENDER ALL
+═══════════════════════════════ */
+function renderAll() {
+  renderSubnav();
+  renderSidebar();
+  renderNavigator();
+  renderMain();
+}
+
+/* ═══════════════════════════════
+   SUBNAV
+═══════════════════════════════ */
+function renderSubnav() {
+  const nav = document.getElementById('subnav');
+  if (view === 'log') {
+    nav.innerHTML = `<span class="subnav-breadcrumb">Warehouse Advantage <span style="opacity:.5">›</span> <strong>Shift log</strong></span>`;
+    return;
+  }
+  if (view === 'perf') {
+    nav.innerHTML = `<span class="subnav-breadcrumb">Warehouse Advantage <span style="opacity:.5">›</span> <strong style="color:var(--infios-color-text-link)">Agent performance</strong></span>`;
+    return;
+  }
+  if (view === 'map') {
+    nav.innerHTML = `<span class="subnav-breadcrumb">Warehouse Advantage <span style="opacity:.5">›</span> <strong>Floor map</strong></span>`;
+    return;
+  }
+  if (uiState === 'cli-default') {
+    nav.innerHTML = `<span class="subnav-title">Agent CLI</span>`;
+    return;
+  }
+  /* cli-escalation */
+  const conds = DATA.escalation.conditions;
+  const tabs = Object.entries(conds).map(([k, v]) =>
+    `<button class="cond-tab ${condition === k ? 'is-active' : ''}" onclick="setCondition('${k}')">${esc(v.label)}</button>`
+  ).join('');
+  nav.innerHTML = `
+    <button class="back-link" onclick="exitEscalation()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to chat
+    </button>${tabs}`;
+}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
+function renderSidebar() {
+  document.getElementById('usb-cli').classList.toggle('is-active', view === 'cli');
+  document.getElementById('usb-log').classList.toggle('is-active', view === 'log');
+  document.getElementById('usb-perf').classList.toggle('is-active', view === 'perf');
+  document.getElementById('usb-map').classList.toggle('is-active', view === 'map');
+  const badge = document.getElementById('map-badge');
+  if (badge) {
+    const cnt = escalatedCount();
+    badge.textContent = cnt > 0 ? cnt : '';
+    badge.toggleAttribute('data-zero', cnt === 0);
+  }
+  document.getElementById('sessions-panel').classList.toggle('is-hidden', !navOpen);
+}
+
+/* ═══════════════════════════════
+   MAIN
+═══════════════════════════════ */
+function renderMain() {
+  if (view === 'cli')       renderCLI();
+  else if (view === 'perf') renderPerf();
+  else if (view === 'map')  renderMap();
+  else                      renderLog();
+}
+
+/* ═══════════════════════════════
+   CLI VIEW
+═══════════════════════════════ */
+function renderCLI() {
+  const main = document.getElementById('main');
+  const isEsc = uiState === 'cli-escalation';
+  const chatClass = isEsc ? 'chat-panel esc' : 'chat-panel full';
+
+  const agentInfo = agentMeta();
+  const thread = mode === 'operational'
+    ? buildOpThread()
+    : buildAnalysisThread();
+  const inputZone = buildInputZone(agentInfo);
+
+  const chatPanelHTML = `
+    <div class="${chatClass}" id="chat-panel">
+      ${buildCtxBar(agentInfo)}
+      <div class="chat-thread" id="chat-thread">${thread}</div>
+      ${inputZone}
+    </div>`;
+
+  if (isEsc) {
+    main.innerHTML = `<div class="cli-view">${chatPanelHTML}<div class="esc-panel" id="esc-panel"></div></div>`;
+    renderEscPanel();
+  } else {
+    main.innerHTML = `<div class="cli-view">${chatPanelHTML}</div>`;
+  }
+
+  const ct = document.getElementById('chat-thread');
+  if (ct) ct.scrollTop = ct.scrollHeight;
+}
+
+function agentMeta() {
+  if (mode === 'operational') {
+    return { label: 'Shift Agent', initials: 'SA', warehouse: DATA.operational.warehouse };
+  }
+  const a = DATA.analysis.agents.find(a => a.id === activeAgent) || DATA.analysis.agents[0];
+  return { label: a.label, initials: a.initials, warehouse: DATA.operational.warehouse };
+}
+
+function buildCtxBar(ag) {
+  return `<div class="agent-ctx-bar">
+    <div class="agent-ctx-left">
+      <div class="agent-ctx-avatar">${esc(ag.initials)}</div>
+      <div>
+        <div class="agent-ctx-name">${esc(ag.label)}</div>
+        <div class="agent-ctx-sub">${esc(ag.warehouse)}</div>
+      </div>
+    </div>
+    <div class="agent-ctx-right">
+      <span class="ctx-dot"></span>
+      <span class="ctx-status">Context loaded</span>
+    </div>
+  </div>`;
+}
+
+function buildOpThread() {
+  return DATA.operational.chat.map(m => {
+    if (m.role === 'user') return buildUserMsg(m.text);
+    let cardHTML = '';
+    if (m.actionCard) cardHTML = buildActionCard(m.actionCard);
+    return buildAgentMsg('SA', 'Shift Agent', m.time, m.text, cardHTML);
+  }).join('');
+}
+
+function buildAnalysisThread() {
+  return analysisMsgs.map(m => {
+    if (m.role === 'user') return buildUserMsg(m.text);
+    if (m.role === 'system') {
+      return `<div class="msg-row sys-msg"><div class="sys-divider">
+        <div class="sys-divider__line"></div>
+        <span class="sys-divider__text">${esc(m.text)}</span>
+        <div class="sys-divider__line"></div>
+      </div></div>`;
+    }
+    const a = DATA.analysis.agents.find(a => a.id === m.agentId) || DATA.analysis.agents[0];
+    return buildAgentMsg(a ? a.initials : 'AI', m.agent || (a ? a.label : ''), m.time, m.text, '');
+  }).join('');
+}
+
+function buildUserMsg(text) {
+  const initials = role === 'operator' ? 'JS' : 'MF';
+  return `<div class="msg-row user-msg">
+    <div class="msg-body" style="align-items:flex-end">
+      <div class="msg-bubble user">${esc(text)}</div>
+    </div>
+    <div class="msg-avatar user-av">${initials}</div>
+  </div>`;
+}
+
+function buildAgentMsg(initials, name, time, text, extra) {
+  return `<div class="msg-row agent-msg">
+    <div class="msg-avatar agent-av">${esc(initials)}</div>
+    <div class="msg-body">
+      <div class="msg-meta">${esc(name)}${time ? ' · ' + esc(time) : ''}</div>
+      <div class="msg-bubble agent">${esc(text)}</div>
+      ${extra}
+    </div>
+  </div>`;
+}
+
+function buildActionCard(ac) {
+  const isEsc = uiState === 'cli-escalation';
+  const cond  = DATA.escalation.conditions[condition];
+
+  /* Status line content */
+  let statusText, statusColor, dotClass;
+  if (resolution) {
+    const rm = {
+      approved:   { text: 'Approved by J. Santos — 14:33',       color: 'var(--infios-color-text-success)', dot: 'green' },
+      rejected:   { text: 'Rejected by J. Santos — operator notified', color: 'var(--infios-color-text-error)',   dot: 'red'   },
+      downgraded: { text: 'Downgraded to standard — queued',      color: 'var(--infios-color-text-info)',    dot: 'blue'  },
+    };
+    const r = rm[resolution];
+    statusText = r.text; statusColor = r.color; dotClass = r.dot;
+  } else if (isEsc) {
+    const colorMap = { error: 'var(--infios-color-text-error)', warning: 'var(--infios-color-text-warning)', info: 'var(--infios-color-text-info)' };
+    statusText  = cond.statusLine;
+    statusColor = colorMap[cond.statusColor] || 'var(--infios-color-text-tertiary)';
+    const dotMap = { error: 'red', warning: 'amber', info: 'blue' };
+    dotClass = dotMap[cond.statusColor] || 'amber';
+  } else {
+    statusText  = 'Awaiting supervisor approval';
+    statusColor = 'var(--infios-color-text-tertiary)';
+    dotClass    = 'amber';
+  }
+
+  const showButtons = !isEsc && role === 'operator';
+  const showEscLink = !isEsc;
+
+  return `<div class="action-card" id="action-card">
+    <div class="ac-hd">
+      <span class="crit-badge badge-urgent">URGENT</span>
+      <span class="ac-desc">${esc(ac.description)}</span>
+    </div>
+    <div class="ac-impact">⚠ ${esc(ac.impact)}</div>
+    <div class="ac-status" id="ac-status" style="color:${statusColor}">
+      <span class="ac-dot ${dotClass} ${!resolution ? 'pulse' : ''}" id="ac-dot"></span>
+      <span id="ac-status-text">${esc(statusText)}</span>
+    </div>
+    ${showButtons ? `<div class="ac-btns">
+      <button class="btn btn-primary" onclick="approveAction()">Approve</button>
+      <button class="btn btn-outline" onclick="queueAction()">Queue</button>
+    </div>` : ''}
+    ${showEscLink ? `<button class="ac-esc-link" onclick="enterEscalation()">Simulate escalation →</button>` : ''}
+  </div>`;
+}
+
+function buildInputZone(ag) {
+  const placeholder = mode === 'operational' ? 'Ask Shift Agent…' : `Ask the ${esc(ag.label)}…`;
+
+  let subRow = '';
+  if (mode === 'operational') {
+    const chips = DATA.operational.quickActions.map(q =>
+      `<button class="quick-chip" onclick="chipClick('${esc(q)}')">${esc(q)}</button>`
+    ).join('');
+    subRow = `<div class="input-sub-row">${chips}</div>`;
+  } else {
+    const opts = DATA.analysis.agents.map(a =>
+      `<option value="${a.id}" ${a.id === activeAgent ? 'selected' : ''}>${esc(a.label)} — ${esc(a.descriptor)}</option>`
+    ).join('');
+    subRow = `<div class="input-sub-row">
+      <div class="agent-sw-row">
+        <span class="agent-sw-label">Agent:</span>
+        <select class="agent-sw-select" id="agent-select" onchange="onAgentChange(this.value)">${opts}</select>
+      </div>
+    </div>`;
+  }
+
+  const dotClass = mode === 'operational' ? 'op' : 'an';
+  const modeLabel = mode === 'operational' ? 'Operational' : 'Analysis';
+
+  return `<div class="chat-footer">
+    <div class="input-bar-wrap">
+      <span class="attach-icon" title="Attach file">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+      </span>
+      <textarea class="chat-input" id="chat-input" rows="1" placeholder="${placeholder}"
+        oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+      <button class="send-btn" onclick="sendMsg()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    ${subRow}
+    <div class="input-sub-row">
+      <div class="mode-wrap">
+        <button class="mode-pill" onclick="toggleModePopover(event)">
+          <span class="mode-dot ${dotClass}"></span>${modeLabel} <span style="opacity:.6;font-weight:400">∨</span>
+        </button>
+        <div class="mode-popover ${modePopOpen ? 'open' : ''}" id="mode-popover">
+          <button class="mode-option ${mode === 'operational' ? 'is-active' : ''}" onclick="setMode('operational')">
+            <span class="mode-dot op"></span> Operational
+          </button>
+          <button class="mode-option ${mode === 'analysis' ? 'is-active' : ''}" onclick="setMode('analysis')">
+            <span class="mode-dot an"></span> Analysis
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ═══════════════════════════════
+   ESC CARD UPDATE (in-place)
+═══════════════════════════════ */
+function updateEscCard() {
+  const dot  = document.getElementById('ac-dot');
+  const txt  = document.getElementById('ac-status-text');
+  const stat = document.getElementById('ac-status');
+  if (!dot || !txt || !stat) return;
+
+  const cond = DATA.escalation.conditions[condition];
+  const colorMap = { error: 'var(--infios-color-text-error)', warning: 'var(--infios-color-text-warning)', info: 'var(--infios-color-text-info)' };
+  const dotMap   = { error: 'red', warning: 'amber', info: 'blue' };
+
+  let statusText, statusColor, dotClass;
+  if (resolution) {
+    const rm = {
+      approved:   { text: 'Approved by J. Santos — 14:33',            color: 'var(--infios-color-text-success)', dot: 'green' },
+      rejected:   { text: 'Rejected by J. Santos — operator notified', color: 'var(--infios-color-text-error)',   dot: 'red'   },
+      downgraded: { text: 'Downgraded to standard — queued',           color: 'var(--infios-color-text-info)',    dot: 'blue'  },
+    };
+    const r = rm[resolution];
+    statusText = r.text; statusColor = r.color; dotClass = r.dot;
+  } else {
+    statusText  = cond.statusLine;
+    statusColor = colorMap[cond.statusColor] || 'var(--infios-color-text-tertiary)';
+    dotClass    = dotMap[cond.statusColor] || 'amber';
+  }
+
+  txt.textContent = statusText;
+  stat.style.color = statusColor;
+  dot.className = `ac-dot ${dotClass} ${resolution ? '' : 'pulse'}`;
+}
+
+/* ═══════════════════════════════
+   ESCALATION PANEL
+═══════════════════════════════ */
+function renderEscPanel() {
+  const el = document.getElementById('esc-panel');
+  if (!el) return;
+  el.classList.add('fading');
+  setTimeout(() => {
+    el.innerHTML = role === 'operator' ? buildOpPanel() : buildMgrPanel();
+    el.classList.remove('fading');
+  }, 150);
+}
+
+function buildOpPanel() {
+  const cond = DATA.escalation.conditions[condition];
+  const esc_d = DATA.escalation;
+  const stepHTML = cond.stepper.map((s, i) => {
+    const last = i === cond.stepper.length - 1;
+    const stateClass = s.state === 'active' ? 'active' : s.state === 'done' ? 'done' : 'pending';
+    const activeClass = condition === 'in_approval' && s.state === 'active' ? 'active-blue' : s.state === 'active' ? 'active' : stateClass;
+    const labelCls = s.state === 'active' ? 'active' : s.state === 'pending' ? 'pending' : '';
+    const pulse = s.state === 'active' ? 'pulse' : '';
+    const checkmark = s.state === 'done'
+      ? `<svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+      : '';
+    return `<div class="step">
+      <div class="step-ind">
+        <div class="step-circle ${activeClass} ${pulse}">${checkmark}</div>
+        ${!last ? `<div class="step-line ${s.state === 'done' ? 'done' : ''}"></div>` : ''}
+      </div>
+      <div class="step-content">
+        <div class="step-label ${labelCls}">${esc(s.label)}</div>
+        <div class="step-time">${s.time || '—'}</div>
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+    <div class="panel-hd">
+      <div class="panel-hd__title">Escalation status</div>
+      <div class="panel-hd__sub">${esc(esc_d.action.id)} · Zone A</div>
+      <div class="panel-hd__badge-row">
+        <span class="crit-badge badge-${cond.badgeColor}">${esc(cond.badge)}</span>
+        <span class="crit-badge badge-urgent">URGENT</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="stepper">${stepHTML}</div>
+      <div class="ctx-block">
+        <div class="ctx-row"><span class="ctx-lbl">Escalated to</span><span class="ctx-val">J. Santos — Warehouse Manager</span></div>
+        <div class="ctx-row"><span class="ctx-lbl">Impact</span><span class="ctx-val warn">${esc(esc_d.action.impact)}</span></div>
+        <div class="ctx-row"><span class="ctx-lbl">Elapsed</span><span class="ctx-val">2m 14s</span></div>
+      </div>
+      <div class="note-block">${esc(cond.note)}</div>
+    </div>
+    <div class="panel-note">You will be notified when this action is resolved.</div>
+  </div>`;
+}
+
+function buildMgrPanel() {
+  const cond  = DATA.escalation.conditions[condition];
+  const esc_d = DATA.escalation;
+
+  if (resolution) {
+    const rm = {
+      approved:   { cls: 'success', text: `Replenishment approved — SKU-7732, 200 units. Logged 14:33 by J. Santos.`, showLink: true },
+      rejected:   { cls: 'error',   text: `Action cancelled. Zone A operator notified.` },
+      downgraded: { cls: 'info',    text: `Downgraded to standard. Resurfaces at next supervisor login.` },
+    };
+    const r = rm[resolution];
+    return `<div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+      <div class="panel-hd">
+        <div class="panel-hd__title err">Incoming escalation</div>
+        <div class="panel-hd__sub">Received 14:33 · Shift Agent via escalation</div>
+      </div>
+      <div class="panel-body">
+        <div class="resolution-block ${r.cls}">${esc(r.text)}
+          ${r.showLink ? `<button class="res-link" onclick="setView('log')">View in action log →</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  return `<div style="display:flex;flex-direction:column;flex:1;overflow:hidden">
+    <div class="panel-hd">
+      <div class="panel-hd__title err">Incoming escalation</div>
+      <div class="panel-hd__sub">Received 14:33 · Shift Agent via escalation</div>
+      <div class="panel-hd__badge-row">
+        <span class="crit-badge badge-${cond.badgeColor}">${esc(cond.badge)}</span>
+        <span class="crit-badge badge-urgent">URGENT</span>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="mgr-ctx">
+        <div class="mgr-ctx__title">${esc(esc_d.action.description)}</div>
+        <div class="mgr-ctx__sub">Proposed by Shift Agent at ${esc(esc_d.action.proposedAt)}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin:2px 0">
+          <span class="zone-pill">Zone A</span>
+        </div>
+        <div class="mgr-ctx__impact">⚠ ${esc(esc_d.action.impact)}</div>
+        <div class="mgr-ctx__sub">M. Ferreira (${esc(cond.label)})</div>
+        <div class="mgr-ctx__elapsed">2 min 14 sec ago</div>
+      </div>
+      <div class="note-block">${esc(cond.note)}</div>
+      <div class="mgr-actions">
+        <button class="btn btn-primary btn-full" onclick="resolve('approved')">Approve — execute replenishment</button>
+        <button class="btn btn-outline btn-full" onclick="resolve('rejected')">Reject — cancel action</button>
+        <button class="btn-link-purple btn-full" style="padding:8px 0;text-align:center;font-size:13px" onclick="resolve('downgraded')">Downgrade to standard — move to queue</button>
+      </div>
+    </div>
+    <div class="panel-note">J. Santos · Warehouse Manager</div>
+  </div>`;
+}
+
+/* ═══════════════════════════════
+   HANDOFF MODAL
+═══════════════════════════════ */
+function onAgentChange(val) {
+  if (val === activeAgent) return;
+  pendingAgent = val;
+  document.getElementById('agent-select').value = activeAgent; /* reset — modal decides */
+  const toAgent = DATA.analysis.agents.find(a => a.id === val);
+  document.getElementById('modal-title').textContent = `Switch to ${toAgent.label}`;
+  document.getElementById('modal-ta').value = DATA.analysis.handoffSummary;
+  document.getElementById('modal-hint').textContent =
+    `Review before switching — the ${toAgent.label} will use this as its starting context.`;
+  document.getElementById('modal').removeAttribute('hidden');
+}
+
+function closeModal() {
+  pendingAgent = null;
+  document.getElementById('modal').setAttribute('hidden', '');
+}
+
+function confirmHandoff(type) {
+  const toAgent = DATA.analysis.agents.find(a => a.id === pendingAgent);
+  if (type === 'summary') {
+    const summary = document.getElementById('modal-ta').value.trim();
+    analysisMsgs.push({ role: 'system', text: `Switched to ${toAgent.label}` });
+    analysisMsgs.push({
+      role: 'agent', agent: toAgent.label, agentId: pendingAgent,
+      time: nowTime(), text: DATA.analysis.switchResponses[pendingAgent] || `${toAgent.label} ready.`
+    });
+  } else {
+    analysisMsgs = [{
+      role: 'agent', agent: toAgent.label, agentId: pendingAgent,
+      time: nowTime(), text: `${toAgent.label} ready. Shift report loaded. What would you like to explore?`
+    }];
+  }
+  activeAgent = pendingAgent;
+  pendingAgent = null;
+  document.getElementById('modal').setAttribute('hidden', '');
+  renderCLI();
+}
+
+/* ═══════════════════════════════
+   SHIFT LOG VIEW
+═══════════════════════════════ */
+function renderLog() {
+  const main = document.getElementById('main');
+  main.innerHTML = `<div class="log-view"><div class="log-tile">
+    <div class="log-filter-bar" id="log-filter-bar"></div>
+    <div class="log-table-wrap">
+      <div class="log-table-scroll"><table class="log-table" id="log-table"></table></div>
+      <div class="log-footer" id="log-footer"></div>
+    </div>
+  </div></div>`;
+  renderLogNav();
+  renderLogTable();
+}
+
+function renderLogNav() {
+  const log = DATA.actionLog;
+  const counts = {
+    all:       log.length,
+    pending:   log.filter(r => r.state === 'pending').length,
+    queued:    0,
+    validated: log.filter(r => r.state === 'validated').length,
+    auto:      log.filter(r => r.state === 'auto').length,
+  };
+
+  const stateChips = [
+    { key: 'all',       label: 'All',           badge: counts.all,       badgeCls: '' },
+    { key: 'pending',   label: 'Pending',       badge: counts.pending,   badgeCls: 'red' },
+    { key: 'queued',    label: 'Queued',        badge: counts.queued,    badgeCls: 'blue' },
+    { key: 'validated', label: 'Validated',     badge: counts.validated, badgeCls: 'green' },
+    { key: 'auto',      label: 'Agent actions', badge: counts.auto,      badgeCls: 'gray' },
+  ].map(c => `<button class="log-chip ${logStateFilter === c.key ? 'is-active' : ''}" onclick="setLogFilter('${c.key}')">
+    ${esc(c.label)}<span class="log-chip__badge ${c.badgeCls}">${c.badge}</span>
+  </button>`).join('');
+
+  const zones = ['All zones', 'Zone A', 'Zone B', 'Zone C', 'Dock bays'];
+  const zoneChips = zones.map(z => {
+    const key = z === 'All zones' ? 'all' : z;
+    return `<button class="log-chip ${logZoneFilter === key ? 'is-active' : ''}" onclick="setLogZone('${esc(key)}')">${esc(z)}</button>`;
+  }).join('');
+
+  const shiftBanner = logShiftLabel
+    ? `<span class="log-chip is-active" style="border-radius:9999px">${esc(logShiftLabel)}
+        <button onclick="logShiftLabel=null;renderLog()" style="margin-left:4px;background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:13px;padding:0;line-height:1" aria-label="Clear">×</button>
+      </span>`
+    : '';
+
+  const bar = document.getElementById('log-filter-bar');
+  if (bar) bar.innerHTML = `
+    ${shiftBanner}${shiftBanner ? '<span class="log-filter-sep"></span>' : ''}
+    ${stateChips}
+    <span class="log-filter-sep"></span>
+    ${zoneChips}`;
+}
+
+function setLogFilter(f) { logStateFilter = f; expandedRow = null; renderLogNav(); renderLogTable(); }
+function setLogZone(z)   { logZoneFilter  = z; expandedRow = null; renderLogNav(); renderLogTable(); }
+
+function filteredLog() {
+  return DATA.actionLog.filter(r => {
+    const stateMatch = logStateFilter === 'all' || r.state === logStateFilter ||
+      (logStateFilter === 'auto' && r.state === 'auto');
+    const zoneMatch  = logZoneFilter  === 'all' || r.zone === logZoneFilter ||
+      (logZoneFilter === 'Dock bays' && r.zone.startsWith('Dock'));
+    return stateMatch && zoneMatch;
+  });
+}
+
+function renderLogTable() {
+  const rows = filteredLog();
+  const showActor = role === 'manager';
+  const thead = `<thead><tr>
+    <th>State</th>
+    <th>Description</th>
+    <th>Agent</th>
+    ${showActor ? '<th>Actor</th>' : ''}
+    <th>Zone</th>
+    <th>Time</th>
+  </tr></thead>`;
+
+  const tbody = rows.map(r => buildLogRows(r, showActor)).join('');
+
+  const table = document.getElementById('log-table');
+  if (table) table.innerHTML = thead + `<tbody>${tbody}</tbody>`;
+
+  const footer = document.getElementById('log-footer');
+  if (footer) {
+    const exportBtn = role === 'manager'
+      ? `<button class="btn btn-ghost" style="height:32px;font-size:12px">Export shift report</button>`
+      : '';
+    footer.innerHTML = `<span class="log-footer-count">Showing ${rows.length} of ${DATA.actionLog.length} actions</span>${exportBtn}`;
+  }
+}
+
+function buildLogRows(r, showActor) {
+  const isExpanded = expandedRow === r.id;
+  const rowBg = { 'pending-urgent': 'row-pending-urgent', 'pending-standard': 'row-pending-std', validated: 'row-validated', auto: 'row-auto' };
+  const bgKey = r.state === 'pending' ? (r.criticality === 'urgent' ? 'pending-urgent' : 'pending-standard') : r.state;
+  const bgCls = rowBg[bgKey] || '';
+
+  /* STATE cell */
+  let stateCell;
+  if (r.state === 'pending' && r.criticality === 'urgent') {
+    stateCell = `<span class="crit-badge badge-urgent">URGENT</span>`;
+  } else if (r.state === 'pending') {
+    stateCell = `<span class="crit-badge badge-info">STANDARD</span>`;
+  } else if (r.state === 'validated') {
+    stateCell = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--infios-color-text-success)">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>Validated</span>`;
+  } else {
+    stateCell = `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;color:var(--infios-color-text-tertiary)">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Agent action</span>`;
+  }
+
+  /* ACTOR cell */
+  let actorCell = '';
+  if (showActor) {
+    if (r.state === 'pending' && r.criticality === 'urgent') actorCell = `<td style="font-style:italic;color:var(--infios-color-text-disabled)">Awaiting approval</td>`;
+    else if (r.state === 'pending') actorCell = `<td>—</td>`;
+    else if (r.state === 'validated') actorCell = `<td style="font-weight:700">${esc(r.actor)}</td>`;
+    else actorCell = `<td style="font-style:italic;color:var(--infios-color-text-disabled)">No approval required</td>`;
+  }
+
+  const descCell = r.impact
+    ? `<td><div style="font-weight:600;color:var(--infios-color-text)">${esc(r.description)}</div>
+         <div style="font-size:12px;color:var(--infios-color-text-warning);margin-top:2px">${esc(r.impact)}</div></td>`
+    : `<td style="color:var(--infios-color-text)">${esc(r.description)}</td>`;
+
+  const mainRow = `<tr class="${bgCls} row-hover ${isExpanded ? 'is-expanded' : ''}" onclick="toggleExpand(${r.id})">
+    <td>${stateCell}</td>
+    ${descCell}
+    <td>${esc(r.agent)}</td>
+    ${actorCell}
+    <td>${esc(r.zone)}</td>
+    <td style="font-variant-numeric:tabular-nums;white-space:nowrap">${esc(r.time)}</td>
+  </tr>`;
+
+  if (!isExpanded) return mainRow;
+
+  const canApprove = r.state === 'pending';
+  const approvebtns = canApprove
+    ? `<div class="expand-btns" style="margin-top:12px">
+        <button class="btn btn-primary" onclick="event.stopPropagation();logApprove(${r.id})">Approve</button>
+        <button class="btn btn-ghost" onclick="event.stopPropagation();logQueue(${r.id})">Queue</button>
+      </div>` : '';
+
+  const expandRow = `<tr class="${bgCls}"><td colspan="${showActor ? 6 : 5}" class="expand-row">
+    <div class="expand-content">
+      <div class="expand-grid">
+        <div class="expand-field"><span class="expand-label">Agent</span><span class="expand-value">${esc(r.agent)}</span></div>
+        <div class="expand-field"><span class="expand-label">Zone</span><span class="expand-value">${esc(r.zone)}</span></div>
+        ${r.impact ? `<div class="expand-field" style="grid-column:1/-1"><span class="expand-label">Impact</span><span class="expand-value" style="color:var(--infios-color-text-warning)">${esc(r.impact)}</span></div>` : ''}
+        ${r.actor ? `<div class="expand-field"><span class="expand-label">Approved by</span><span class="expand-value">${esc(r.actor)}</span></div>` : ''}
+        ${r.state === 'auto' ? `<div class="expand-field"><span class="expand-label">Note</span><span class="expand-value" style="font-style:italic;color:var(--infios-color-text-tertiary)">Executed automatically — no approval required</span></div>` : ''}
+      </div>
+      ${approvebtns}
+    </div>
+  </td></tr>`;
+
+  return mainRow + expandRow;
+}
+
+function toggleExpand(id) {
+  expandedRow = expandedRow === id ? null : id;
+  renderLogTable();
+}
+
+function logApprove(id) {
+  const r = DATA.actionLog.find(x => x.id === id);
+  if (r) { r.state = 'validated'; r.actor = role === 'manager' ? 'M. Ferreira (Manager)' : 'J. Santos (Operator)'; }
+  expandedRow = null;
+  renderLogNav();
+  renderLogTable();
+}
+
+function logQueue(id) {
+  const r = DATA.actionLog.find(x => x.id === id);
+  if (r) r.criticality = 'standard';
+  expandedRow = null;
+  renderLogTable();
+}
+
+/* ═══════════════════════════════
+   OPERATIONAL ACTION CARD INTERACTIONS
+═══════════════════════════════ */
+function approveAction() {
+  /* visual feedback — just mark approved in chat card */
+  const stat = document.getElementById('ac-status');
+  const txt  = document.getElementById('ac-status-text');
+  const dot  = document.getElementById('ac-dot');
+  if (!stat) return;
+  stat.style.color = 'var(--infios-color-text-success)';
+  if (txt) txt.textContent = 'Approved — executing replenishment';
+  if (dot) { dot.className = 'ac-dot green'; }
+  /* hide buttons */
+  const btns = document.querySelector('.ac-btns');
+  if (btns) btns.remove();
+}
+
+function queueAction() {
+  const txt = document.getElementById('ac-status-text');
+  if (txt) txt.textContent = 'Queued — will surface at next supervisor login';
+  const btns = document.querySelector('.ac-btns');
+  if (btns) btns.remove();
+}
+
+/* ═══════════════════════════════
+   INPUT HELPERS
+═══════════════════════════════ */
+function chipClick(label) {
+  const input = document.getElementById('chat-input');
+  if (input) { input.value = label; input.focus(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+}
+
+function sendMsg() {
+  const input = document.getElementById('chat-input');
+  if (!input) return;
+  const text = input.value.trim();
+  if (!text) return;
+  if (mode === 'analysis') {
+    analysisMsgs.push({ role: 'user', text });
+  }
+  input.value = ''; input.style.height = 'auto';
+  renderCLI();
+}
+
+function toggleModePopover(e) {
+  e.stopPropagation();
+  modePopOpen = !modePopOpen;
+  const pop = document.getElementById('mode-popover');
+  if (pop) pop.classList.toggle('open', modePopOpen);
+}
+
+document.addEventListener('click', () => {
+  if (modePopOpen) { modePopOpen = false; const p = document.getElementById('mode-popover'); if (p) p.classList.remove('open'); }
+});
+
+/* ═══════════════════════════════
+   FLOOR MAP PAGE
+═══════════════════════════════ */
+function escalatedCount() {
+  return DATA.floorMap.pins.filter(p => p.type === 'escalated' && !resolvedPins[p.id]).length;
+}
+
+function renderMap() {
+  const main = document.getElementById('main');
+  const fm = DATA.floorMap;
+  const hasSplit = selectedPin !== null;
+  const pin = hasSplit ? fm.pins.find(p => p.id === selectedPin) : null;
+
+  main.innerHTML = `
+<div class="map-view" style="padding:16px">
+  <div class="map-tile${hasSplit ? ' split' : ''}">
+    <div class="map-hd">
+      <div class="map-hd__left">
+        <div class="map-title">${fm.warehouse}</div>
+        <div class="map-subtitle">Live agent activity · ${fm.pins.filter(p=>p.type==='escalated'&&!resolvedPins[p.id]).length} escalation${escalatedCount()===1?'':'s'} · ${fm.pins.filter(p=>p.type==='awaiting'&&!resolvedPins[p.id]).length} awaiting approval</div>
+      </div>
+      <div class="map-hd__right">
+        <div class="map-updated">Updated ${fm.lastUpdated}</div>
+        <div class="map-legend">
+          <div class="map-legend-item"><span class="legend-pin escalated"></span> Escalated</div>
+          <div class="map-legend-item"><span class="legend-pin awaiting"></span> Awaiting</div>
+          <div class="map-legend-item"><span class="legend-pin autonomous"></span> Autonomous</div>
+        </div>
+      </div>
+    </div>
+    <div class="map-grid-wrap">
+      <div class="map-grid">${buildZoneGrid()}</div>
+    </div>
+  </div>
+  ${hasSplit && pin ? buildDetailPanel(pin) : ''}
+</div>`;
+}
+
+function buildZoneGrid() {
+  const fm = DATA.floorMap;
+  const isOperator = role === 'operator';
+
+  return fm.zones.map(zone => {
+    const zonePins = fm.pins.filter(p => p.zoneId === zone.id);
+    const isDimmed = isOperator && !zone.operatorZone;
+    const cls = ['zone', zone.operatorZone ? 'operator-primary' : '', isDimmed ? 'dimmed' : ''].filter(Boolean).join(' ');
+    const style = `grid-column:${zone.col}/span ${zone.colSpan};grid-row:${zone.row}/span ${zone.rowSpan};`;
+
+    const pinsHtml = zonePins.map(pin => buildPinHTML(pin, !isDimmed)).join('');
+
+    return `<div class="${cls}" style="${style}">
+  <div class="zone-label">${zone.label}</div>
+  ${pinsHtml}
+</div>`;
+  }).join('');
+}
+
+function buildPinHTML(pin, isInteractive) {
+  const res = resolvedPins[pin.id];
+  const isSelected = selectedPin === pin.id;
+  const isRejected = res === 'rejected';
+  const isQueued = res === 'queued';
+  const isDowngraded = res === 'downgraded';
+
+  if (isRejected) return ''; // rejected pins vanish
+
+  const noClick = !isInteractive;
+  const wrapCls = ['pin-wrap', noClick ? 'no-click' : ''].filter(Boolean).join(' ');
+
+  let pinCls = 'pin';
+  if (isQueued) pinCls += ' resolved-queued';
+  else if (isDowngraded) pinCls += ' awaiting'; // downgraded from escalated → purple
+  else pinCls += ' ' + pin.type;
+  if (isSelected) pinCls += ' selected';
+
+  const showRing = (pin.type === 'escalated' && !res) || (isDowngraded);
+  const ringHtml = showRing ? '<div class="pin-ring"></div>' : '';
+
+  const pinSvg = pin.type === 'autonomous'
+    ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1L7.5 4.5H11L8.5 7L9.5 10.5L6 8.5L2.5 10.5L3.5 7L1 4.5H4.5L6 1Z" fill="white" stroke="white" stroke-width=".5"/></svg>`
+    : pin.type === 'escalated' && !isDowngraded
+    ? `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 2V7M6 9.5V10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>`
+    : `<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="3" fill="white"/></svg>`;
+
+  const clickAttr = isInteractive && !noClick ? `onclick="selectPin('${pin.id}')"` : '';
+
+  return `<div class="${wrapCls}" style="left:${pin.posX}%;top:${pin.posY}%">
+  ${ringHtml}
+  <div class="${pinCls}" ${clickAttr}>${pinSvg}</div>
+  <div class="pin-tooltip">${pin.title}</div>
+</div>`;
+}
+
+function selectPin(pinId) {
+  selectedPin = pinId;
+  renderAll();
+}
+
+function closeDetail() {
+  selectedPin = null;
+  renderAll();
+}
+
+function buildDetailPanel(pin) {
+  const res = resolvedPins[pin.id];
+  const isManager = role === 'manager';
+  const zone = DATA.floorMap.zones.find(z => z.id === pin.zoneId);
+
+  // Header dot color
+  const dotColor = pin.type === 'escalated' && !res ? '#D0413A'
+    : pin.type === 'awaiting' && !res ? '#5436CC'
+    : '#2C812C';
+
+  const statusLabel = res === 'approved' ? 'Approved'
+    : res === 'queued' ? 'Queued'
+    : res === 'downgraded' ? 'Downgraded — awaiting'
+    : pin.type === 'escalated' ? 'Escalated'
+    : pin.type === 'awaiting' ? 'Awaiting approval'
+    : 'Autonomous';
+
+  // Criticality badge
+  const critBadge = pin.criticality
+    ? `<div class="map-crit-badge ${pin.criticality}">${pin.criticality === 'urgent' ? '⚠ URGENT' : 'STANDARD'}</div>`
+    : '';
+
+  // Impact block
+  const impactHtml = pin.impact && !res
+    ? `<div class="map-detail__impact">${pin.impact}</div>`
+    : '';
+
+  // Escalation info block
+  const escalatedHtml = pin.escalatedTo && !res
+    ? `<div class="map-detail__escalated">Escalated to ${pin.escalatedTo}</div>`
+    : '';
+
+  // Autonomous info block
+  const autoHtml = pin.type === 'autonomous'
+    ? `<div class="map-detail__auto">
+        Logged automatically — no approval required.
+        <span class="map-detail__auto-link" onclick="setView('log')">View in action log →</span>
+      </div>`
+    : '';
+
+  // Confirmation block (post-action)
+  let confirmHtml = '';
+  if (res === 'approved')    confirmHtml = `<div class="map-detail__confirm success">Action approved and queued for execution. Agent will confirm completion.</div>`;
+  if (res === 'queued')      confirmHtml = `<div class="map-detail__confirm info">Action queued for next available window. Pin will clear when executed.</div>`;
+  if (res === 'downgraded')  confirmHtml = `<div class="map-detail__confirm info">Escalation downgraded. Action now awaiting standard approval.</div>`;
+
+  // Action buttons
+  let actionsHtml = '';
+  if (!res && pin.type !== 'autonomous') {
+    if (pin.type === 'escalated') {
+      if (isManager) {
+        actionsHtml = `
+<div class="map-btn-group">
+  <button class="map-btn-primary" onclick="approvePin('${pin.id}')">Approve action</button>
+  <button class="map-btn-outline" onclick="queuePin('${pin.id}')">Queue for next window</button>
+  <button class="map-btn-link" onclick="downgradePin('${pin.id}')">Downgrade escalation — send back for operator review</button>
+</div>`;
+      } else {
+        actionsHtml = `<div style="margin-top:16px;font-size:13px;color:#58636E;">This action requires manager approval. Escalated to ${pin.escalatedTo || 'your manager'}.</div>`;
+      }
+    } else if (pin.type === 'awaiting') {
+      actionsHtml = `
+<div class="map-btn-group">
+  <button class="map-btn-primary" onclick="approvePin('${pin.id}')">Approve action</button>
+  <button class="map-btn-outline" onclick="queuePin('${pin.id}')">Queue for next window</button>
+</div>`;
+    }
+  }
+
+  // Stepper for escalated pins
+  let stepperHtml = '';
+  if (pin.type === 'escalated' && !res) {
+    stepperHtml = `
+<div class="map-stepper">
+  <div class="map-step"><div class="map-step__dot done"></div><div class="map-step__label">Agent detected anomaly</div><div class="map-step__time">${pin.time}</div></div>
+  <div class="map-step"><div class="map-step__dot done"></div><div class="map-step__label">Action proposed</div><div class="map-step__time">${pin.time}</div></div>
+  <div class="map-step"><div class="map-step__dot active"></div><div class="map-step__label">Escalated — awaiting manager</div><div class="map-step__time">Now</div></div>
+  <div class="map-step"><div class="map-step__dot pending"></div><div class="map-step__label">Approved &amp; executed</div><div class="map-step__time">—</div></div>
+</div>`;
+  }
+
+  return `
+<div class="map-detail">
+  <div class="map-detail__hd">
+    <div class="map-detail__hd-left">
+      <div class="map-detail__dot" style="background:${dotColor}"></div>
+      <div class="map-detail__status">${statusLabel}</div>
+    </div>
+    <button class="map-detail__close" onclick="closeDetail()" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1L13 13M13 1L1 13" stroke="#58636E" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="map-detail__body">
+    ${critBadge}
+    <div class="map-detail__title">${pin.title}</div>
+    <div class="map-detail__meta">${pin.agent} · ${pin.time}</div>
+    <div class="map-detail__zone-pill">${zone ? zone.label : pin.zoneId}</div>
+    <div class="map-detail__desc">${pin.description}</div>
+    ${impactHtml}
+    ${escalatedHtml}
+    ${autoHtml}
+    ${confirmHtml}
+    ${actionsHtml}
+    ${stepperHtml}
+  </div>
+</div>`;
+}
+
+function approvePin(pinId) {
+  resolvedPins[pinId] = 'approved';
+  renderAll();
+}
+
+function rejectPin(pinId) {
+  resolvedPins[pinId] = 'rejected';
+  selectedPin = null;
+  renderAll();
+}
+
+function queuePin(pinId) {
+  resolvedPins[pinId] = 'queued';
+  renderAll();
+}
+
+function downgradePin(pinId) {
+  resolvedPins[pinId] = 'downgraded';
+  renderAll();
+}
+
+/* ═══════════════════════════════
+   AGENT PERFORMANCE PAGE
+═══════════════════════════════ */
+function renderPerf() {
+  const main = document.getElementById('main');
+  const isManager = role === 'manager';
+
+  if (!isManager) {
+    main.innerHTML = `
+      <div class="perf-access-wrap">
+        <div class="perf-access-tile">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#58636E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <div class="perf-access-tile__title">Access restricted</div>
+          <div class="perf-access-tile__body">Agent performance metrics are available to warehouse managers and operations managers only.</div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const sys = DATA.agentPerformance.system;
+  const si  = DATA.agentPerformance.shiftIntelligence;
+  const agents = DATA.agentPerformance.agents;
+
+  main.innerHTML = `
+    <div class="perf-view">
+      <div class="perf-hd">
+        <h1>Agent performance</h1>
+        <div class="perf-hd__sub">Berlin DC · Last updated ${esc(sys.lastUpdated)}</div>
+      </div>
+      ${buildSysHealth(sys)}
+      <div>
+        <div class="perf-section-label">Radar layer</div>
+        ${buildSICard(si)}
+      </div>
+      <div>
+        <div class="perf-section-label">Domain agents</div>
+        <div class="agent-grid">${agents.map(buildAgentCard).join('')}</div>
+      </div>
+    </div>`;
+}
+
+function buildSysHealth(sys) {
+  function tileInfo(value, type) {
+    if (type === 'latency') {
+      if (value >= 10) return { cls: 'critical', label: 'CRITICAL', color: '#D0413A' };
+      if (value >= 5)  return { cls: 'warning',  label: 'WARNING',  color: '#B64C00' };
+      return { cls: 'healthy', label: 'HEALTHY', color: '#2C812C' };
+    }
+    if (type === 'failures') {
+      return value > 0
+        ? { cls: 'critical', label: 'CRITICAL', color: '#D0413A' }
+        : { cls: 'healthy',  label: 'HEALTHY',  color: '#2C812C' };
+    }
+    if (type === 'routing') {
+      if (value < 80) return { cls: 'critical', label: 'CRITICAL', color: '#D0413A' };
+      if (value < 90) return { cls: 'warning',  label: 'WARNING',  color: '#B64C00' };
+      return { cls: 'healthy', label: 'HEALTHY', color: '#2C812C' };
+    }
+    if (type === 'audit') {
+      return value < 100
+        ? { cls: 'critical', label: 'CRITICAL', color: '#D0413A' }
+        : { cls: 'healthy',  label: 'HEALTHY',  color: '#2C812C' };
+    }
+  }
+  const lat  = tileInfo(sys.contextLoadLatency,    'latency');
+  const fail = tileInfo(sys.silentContextFailures,  'failures');
+  const rout = tileInfo(sys.routingAccuracy,        'routing');
+  const aud  = tileInfo(sys.auditCompleteness,      'audit');
+
+  return `
+    <div class="sys-health">
+      <div class="sys-health-hd">
+        <span class="sys-health-title">System health</span>
+        <span class="sys-stage-pill">Stage 2 baseline</span>
+      </div>
+      <div class="sys-tiles">
+        <div class="sys-tile">
+          <div class="sys-tile__value" style="color:${lat.color}">${sys.contextLoadLatency}s</div>
+          <div class="sys-tile__label">Context load latency</div>
+          <div class="sys-tile__note">Target &lt; 5s</div>
+          <span class="sys-tile__pill ${lat.cls}">${lat.label}</span>
+        </div>
+        <div class="sys-tile">
+          <div class="sys-tile__value" style="color:${fail.color}">${sys.silentContextFailures}</div>
+          <div class="sys-tile__label">Silent context failures</div>
+          <div class="sys-tile__note">Target = 0 · Any non-zero is critical</div>
+          <span class="sys-tile__pill ${fail.cls}">${fail.label}</span>
+        </div>
+        <div class="sys-tile">
+          <div class="sys-tile__value" style="color:${rout.color}">${sys.routingAccuracy}%</div>
+          <div class="sys-tile__label">Role-correct routing</div>
+          <div class="sys-tile__note">Target ≥ 90%</div>
+          <span class="sys-tile__pill ${rout.cls}">${rout.label}</span>
+        </div>
+        <div class="sys-tile">
+          <div class="sys-tile__value" style="color:${aud.color}">${sys.auditCompleteness}%</div>
+          <div class="sys-tile__label">Audit completeness</div>
+          <div class="sys-tile__note">Target = 100% · Non-negotiable</div>
+          <span class="sys-tile__pill ${aud.cls}">${aud.label}</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildSICard(si) {
+  const m = si.metrics;
+  const stnColor = m.signalToNoise >= 80 ? '#2C812C' : '#B64C00';
+  const mmColor  = '#B64C00';
+  return `
+    <div class="si-card">
+      <div class="si-card__left">
+        <div class="si-avatar" style="background:${esc(si.color)}">${esc(si.initials)}</div>
+        <div class="si-card__name">${esc(si.name)}</div>
+        <div class="si-card__desc">${esc(si.descriptor)}</div>
+        <span class="si-card__status running">
+          <svg width="6" height="6" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3" fill="#2C812C"/></svg>
+          RUNNING
+        </span>
+        <div class="si-card__note">This agent feeds the Lead Agent — it does not propose actions or receive approvals. Its health directly affects all domain agents below.</div>
+      </div>
+      <div class="si-card__right">
+        <div class="si-metric">
+          <div class="si-metric__value" style="color:#171F29">${m.anomaliesDetected24h}</div>
+          <div class="si-metric__label">Anomalies detected 24H</div>
+        </div>
+        <div class="si-metric">
+          <div class="si-metric__value" style="color:${stnColor}">${m.signalToNoise}%</div>
+          <div class="si-metric__label">Signal-to-noise ratio</div>
+          <div class="si-metric__sub">Of flagged anomalies that led to real actions</div>
+        </div>
+        <div class="si-metric">
+          <div class="si-metric__value" style="color:#2C812C">${m.detectionLatency} min</div>
+          <div class="si-metric__label">Avg detection-to-alert</div>
+        </div>
+        <div class="si-metric">
+          <div class="si-metric__value" style="color:${mmColor}">~${m.missedAnomalyRate}%</div>
+          <div class="si-metric__label">Est. missed anomaly rate</div>
+          <div class="si-metric__sub" style="font-style:italic">Estimated — hardest metric to measure</div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function buildAgentCard(a) {
+  const m = a.metrics;
+  const isPaused = a.status === 'paused';
+
+  // Approval rate threshold
+  function approvalInfo(r) {
+    if (r >= 80) return { color: '#2C812C', pillCls: 'healthy', pillLabel: 'HEALTHY' };
+    if (r >= 60) return { color: '#B64C00', pillCls: 'warning', pillLabel: 'WARNING' };
+    return { color: '#D0413A', pillCls: 'critical', pillLabel: 'CRITICAL' };
+  }
+  const apr = approvalInfo(m.approvalRate);
+
+  // Escalation rate color
+  function escColor(r) {
+    if (r <= 2) return '#2C812C';
+    if (r <= 5) return '#B64C00';
+    return '#D0413A';
+  }
+
+  // Rejection pattern
+  const rejColor = m.rejectionPattern === 'clustered' ? '#B64C00' : '#2C812C';
+  const rejLabel = m.rejectionPattern === 'clustered' ? 'Tuning needed' : 'Normal variance';
+  const rejNoteHtml = (m.rejectionPattern === 'clustered' && m.rejectionNote)
+    ? `<div class="agent-rejection-note">${esc(m.rejectionNote)}</div>` : '';
+
+  // Warning banner: approvalRate < 80 AND clustered
+  const showBanner = m.approvalRate < 80 && m.rejectionPattern === 'clustered';
+  const bannerHtml = showBanner
+    ? `<div class="agent-card__banner">⚠ Approval rate below threshold — rejection pattern requires review</div>` : '';
+
+  // Autonomy note
+  const autonomyNote = m.autonomy >= 70
+    ? `<div class="agent-metric__note">Stage 3 territory</div>` : '';
+
+  // Slider
+  const base = a.slider.projectedApprovalsPerShift;
+  const sliderVal = a.slider.value;
+
+  function computeProj(v, b) {
+    if (v <= 33) return Math.round(b * 0.6);
+    if (v <= 66) return b;
+    return Math.round(b * 1.6);
+  }
+
+  const sliderHtml = isPaused
+    ? `<div class="agent-slider-wrap">
+        <div class="agent-slider-labels"><span>Cautious</span><span>Bold</span></div>
+        <input type="range" class="ap-slider disabled" min="0" max="100" value="${sliderVal}" disabled>
+        <div class="agent-paused-note">Agent paused — resume to adjust behaviour</div>
+      </div>`
+    : `<div class="agent-slider-wrap">
+        <div class="agent-slider-labels"><span>Cautious</span><span>Bold</span></div>
+        <input type="range" class="ap-slider" min="0" max="100" value="${sliderVal}"
+          data-base="${base}" oninput="updateProj(this)">
+        <div class="agent-slider-proj">
+          <span class="agent-slider-proj__lbl">Projected approvals / shift</span>
+          <span class="agent-slider-proj__val" id="proj-${esc(a.id)}">${computeProj(sliderVal, base)}</span>
+        </div>
+      </div>`;
+
+  return `
+    <div class="agent-card">
+      ${bannerHtml}
+      <div class="agent-card__body">
+        <div class="agent-card__hd">
+          <div class="agent-avatar" style="background:${esc(a.color)}">${esc(a.initials)}</div>
+          <div class="agent-card__info">
+            <div class="agent-card__name">${esc(a.name)}</div>
+            <div class="agent-card__desc">${esc(a.descriptor)}</div>
+          </div>
+          <span class="agent-status-pill ${a.status}">${a.status === 'running'
+            ? '<svg width="6" height="6" viewBox="0 0 6 6" style="margin-right:4px"><circle cx="3" cy="3" r="3" fill="#2C812C"/></svg>RUNNING'
+            : '<svg width="6" height="6" viewBox="0 0 6 6" style="margin-right:4px"><circle cx="3" cy="3" r="3" fill="#58636E"/></svg>PAUSED'}</span>
+        </div>
+        <div class="agent-metrics-row">
+          <div class="agent-metric-col">
+            <div class="agent-metric__val" style="color:#171F29">${m.actions24h}</div>
+            <div class="agent-metric__lbl">Actions 24H</div>
+          </div>
+          <div class="agent-metric-col">
+            <div class="agent-metric__val" style="color:${apr.color}">${m.approvalRate}%</div>
+            <div class="agent-metric__lbl">Approval rate</div>
+            <span class="agent-metric__pill ${apr.pillCls}">${apr.pillLabel}</span>
+          </div>
+          <div class="agent-metric-col">
+            <div class="agent-metric__val" style="color:#171F29">${m.autonomy}%</div>
+            <div class="agent-metric__lbl">Autonomy</div>
+            ${autonomyNote}
+          </div>
+        </div>
+        <div class="agent-rate-row">
+          <span class="agent-rate-lbl">Escalation rate</span>
+          <span class="agent-rate-val" style="color:${escColor(m.escalationRate)}">${m.escalationRate}%</span>
+        </div>
+        <div class="agent-rate-row">
+          <span class="agent-rate-lbl">Rejection pattern</span>
+          <span class="agent-rate-val" style="color:${rejColor};font-weight:${m.rejectionPattern === 'clustered' ? '700' : '600'}">${rejLabel}</span>
+        </div>
+        ${rejNoteHtml}
+        ${sliderHtml}
+      </div>
+    </div>`;
+}
+
+function updateProj(slider) {
+  const base = parseInt(slider.dataset.base, 10);
+  const v    = parseInt(slider.value, 10);
+  const id   = slider.closest('.agent-card').querySelector('[id^="proj-"]');
+  if (!id) return;
+  let proj;
+  if (v <= 33) proj = Math.round(base * 0.6);
+  else if (v <= 66) proj = base;
+  else proj = Math.round(base * 1.6);
+  id.textContent = proj;
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (!document.getElementById('shift-modal').hidden) { closeShiftModal(); return; }
+    if (activeDrawer === 'navigator') { closeNavigator(); return; }
+    if (modePopOpen) { modePopOpen = false; const p = document.getElementById('mode-popover'); if (p) p.classList.remove('open'); }
+  }
+});
+
+/* ═══════════════════════════════
+   UTIL
+═══════════════════════════════ */
+function esc(str) {
+  if (str == null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+function nowTime() {
+  return new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+
+/* ═══════════════════════════════
+   INIT
+═══════════════════════════════ */
+renderAll();
+</script>
+</body>
+</html>

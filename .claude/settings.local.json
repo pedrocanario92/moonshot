@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__plugin_figma_figma__get_design_context",
+      "mcp__plugin_figma_figma__get_screenshot",
+      "mcp__Claude_Preview__preview_start",
+      "mcp__e8486d6b-1ace-4b1b-9856-75236dead1d6__get_design_context",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3456/wms-unified.html)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__e8486d6b-1ace-4b1b-9856-75236dead1d6__get_screenshot"
+    ]
+  }
+}

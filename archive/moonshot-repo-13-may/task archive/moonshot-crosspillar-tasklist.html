@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Moonshot — Cross-Pillar Task List</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:#0F1117;
+  --bg-card:#1A1D27;
+  --bg-card-hover:#1E2230;
+  --bg-surface:#252836;
+  --border:#2A2D3A;
+  --border-active:#3D4155;
+  --text:#E8E9ED;
+  --text-secondary:#9499AD;
+  --text-tertiary:#6B7089;
+  --accent:#CADF35;
+  --accent-glow:rgba(202,223,53,0.15);
+  --accent-deep:#9DAE2E;
+  --brand-yellow:#D0FF25;
+  --done:#2C812C;
+  --done-bg:rgba(44,129,44,0.12);
+  --active:#2B7AB1;
+  --active-bg:rgba(43,122,177,0.12);
+  --pending:#58636E;
+  --warn:#B64C00;
+  --warn-bg:rgba(182,76,0,0.10);
+  --error:#D0413A;
+  --font:'Noto Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --radius:8px;
+  --radius-lg:12px;
+  --shadow:0 2px 12px rgba(0,0,0,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-family:var(--font);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased;line-height:1.5}
+body{min-height:100vh;padding:0}
+::selection{background:rgba(202,223,53,0.3);color:var(--text)}
+
+.header{
+  position:sticky;top:0;z-index:50;
+  background:rgba(15,17,23,0.85);
+  backdrop-filter:saturate(180%) blur(16px);
+  border-bottom:1px solid var(--border);
+  padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.header-left{display:flex;align-items:center;gap:14px}
+.header-mark{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:12px;color:#111;
+}
+.header-title{font-size:16px;font-weight:700;letter-spacing:-0.01em}
+.header-sub{font-size:12px;color:var(--text-secondary);font-weight:500}
+.header-right{display:flex;align-items:center;gap:16px}
+.progress-bar-outer{
+  width:240px;height:6px;border-radius:3px;
+  background:var(--bg-surface);overflow:hidden;
+}
+.progress-bar-inner{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--brand-yellow));
+  transition:width 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+.progress-label{font-size:12px;font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.time-est{font-size:11px;color:var(--text-tertiary);font-weight:500}
+
+.layout{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 65px)}
+
+.sidebar{
+  border-right:1px solid var(--border);
+  padding:24px 20px;
+  position:sticky;top:65px;height:calc(100vh - 65px);
+  overflow-y:auto;
+  display:flex;flex-direction:column;gap:20px;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-track{background:transparent}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.why-block{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:16px;
+}
+.why-label{
+  font-size:10px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:8px;
+}
+.why-text{font-size:13px;color:var(--text-secondary);line-height:1.6}
+.why-text strong{color:var(--text);font-weight:600}
+
+.phase-jump{display:flex;flex-direction:column;gap:4px;margin-top:8px}
+.phase-jump a{
+  display:flex;align-items:center;justify-content:space-between;
+  text-decoration:none;color:var(--text-secondary);
+  font-size:12px;padding:6px 10px;border-radius:6px;
+  background:var(--bg-surface);
+  border-left:2px solid var(--border);
+  transition:all 0.15s;
+}
+.phase-jump a:hover{color:var(--text);border-left-color:var(--accent);background:var(--bg-card-hover)}
+.phase-jump a .count{font-size:10px;color:var(--text-tertiary);font-variant-numeric:tabular-nums}
+
+.main{padding:32px 40px 80px;overflow-y:auto;max-width:1100px}
+.main-header{margin-bottom:32px}
+.main-title{font-size:32px;font-weight:800;letter-spacing:-0.025em;margin-bottom:6px}
+.main-title span{color:var(--accent)}
+.main-desc{font-size:14px;color:var(--text-secondary);max-width:720px;line-height:1.6}
+
+.phase-section{margin-bottom:48px;scroll-margin-top:80px}
+.phase-section__header{
+  display:flex;align-items:baseline;gap:14px;
+  padding:18px 0 14px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:20px;
+}
+.phase-section__num{
+  font-size:11px;font-weight:700;letter-spacing:0.10em;
+  text-transform:uppercase;color:var(--accent);
+  padding:4px 10px;border-radius:5px;
+  background:rgba(202,223,53,0.10);
+  border:1px solid rgba(202,223,53,0.25);
+}
+.phase-section__title{font-size:20px;font-weight:700;letter-spacing:-0.015em}
+.phase-section__date{font-size:12px;color:var(--text-tertiary);font-weight:500;margin-left:auto}
+.phase-section__lead{
+  font-size:13px;color:var(--text-secondary);
+  line-height:1.6;margin-bottom:20px;
+  max-width:780px;
+}
+.phase-section__lead strong{color:var(--text);font-weight:600}
+
+.task-list{display:flex;flex-direction:column;gap:14px}
+
+.task{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:var(--radius-lg);overflow:hidden;
+  transition:border-color 0.2s;
+}
+.task:hover{border-color:var(--border-active)}
+.task.status-done{border-color:var(--done);background:var(--done-bg)}
+.task.status-done .task-status-dot{background:var(--done)}
+.task.status-done .task-status-text{color:var(--done)}
+.task.status-pending .task-status-dot{background:var(--warn)}
+.task.status-pending .task-status-text{color:var(--warn)}
+.task.status-ready .task-status-dot{background:var(--accent)}
+.task.status-ready .task-status-text{color:var(--accent)}
+
+.task-head{
+  padding:14px 18px;display:flex;align-items:center;gap:14px;
+  cursor:pointer;user-select:none;
+}
+.task-num{
+  width:36px;height:36px;border-radius:8px;
+  background:var(--bg-surface);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--text-secondary);
+  flex-shrink:0;
+  font-family:var(--mono);
+}
+.task.status-done .task-num{background:var(--done);color:#fff}
+
+.task-meta{flex:1;min-width:0}
+.task-title{font-size:15px;font-weight:700;letter-spacing:-0.01em;margin-bottom:3px}
+.task-subtitle{font-size:12px;color:var(--text-tertiary);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.task-time{
+  display:inline-flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--text-tertiary);font-weight:500;
+  background:var(--bg-surface);padding:2px 8px;border-radius:4px;
+}
+
+.task-status{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.task-status-dot{width:8px;height:8px;border-radius:50%;background:var(--pending)}
+.task-status-text{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:var(--pending)}
+
+.task-chevron{
+  width:20px;height:20px;color:var(--text-tertiary);
+  transition:transform 0.2s;flex-shrink:0;
+}
+.task.is-open .task-chevron{transform:rotate(180deg)}
+
+.task-body{
+  max-height:0;overflow:hidden;
+  transition:max-height 0.35s cubic-bezier(0.16,1,0.3,1);
+}
+.task.is-open .task-body{max-height:8000px}
+
+.task-content{
+  padding:0 18px 18px;
+  border-top:1px solid var(--border);
+}
+
+.task-section{margin-top:16px}
+.task-section-label{
+  font-size:10px;font-weight:700;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--accent);margin-bottom:8px;
+}
+.task-why{font-size:13px;color:var(--text-secondary);line-height:1.6;margin-bottom:0}
+.task-why strong{color:var(--text);font-weight:600}
+.task-why code{font-family:var(--mono);font-size:12px;background:var(--bg-surface);padding:1px 5px;border-radius:3px;color:var(--accent)}
+
+.task-delivers{
+  display:flex;flex-wrap:wrap;gap:6px;
+}
+.task-deliver-chip{
+  font-size:11px;font-weight:600;
+  padding:4px 10px;border-radius:5px;
+  background:var(--bg-surface);color:var(--text-secondary);
+  border:1px solid var(--border);
+}
+
+.prompt-box{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+}
+.prompt-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px;
+  background:var(--bg-surface);
+  border-bottom:1px solid var(--border);
+}
+.prompt-label{font-size:11px;font-weight:600;color:var(--text-tertiary);font-family:var(--mono)}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--accent);color:#111;border:none;
+  font-family:var(--font);font-size:12px;font-weight:700;
+  padding:6px 14px;border-radius:6px;cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+}
+.copy-btn:hover{background:var(--brand-yellow)}
+.copy-btn:active{transform:scale(0.97)}
+.copy-btn.is-copied{background:var(--done);color:#fff}
+.copy-btn:disabled{background:var(--bg-surface);color:var(--text-tertiary);cursor:not-allowed}
+.copy-btn:disabled:hover{background:var(--bg-surface)}
+.copy-btn svg{width:14px;height:14px}
+
+.prompt-code{
+  padding:14px 16px;
+  font-family:var(--mono);font-size:11.5px;line-height:1.65;
+  color:var(--text-secondary);
+  max-height:380px;overflow-y:auto;
+  white-space:pre-wrap;word-break:break-word;
+}
+.prompt-code::-webkit-scrollbar{width:6px}
+.prompt-code::-webkit-scrollbar-track{background:transparent}
+.prompt-code::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+.expand-all{
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  color:var(--text-secondary);
+  font-family:var(--font);font-size:12px;font-weight:600;
+  padding:6px 12px;border-radius:6px;cursor:pointer;
+  transition:all 0.15s;
+}
+.expand-all:hover{border-color:var(--accent);color:var(--accent)}
+
+@media(max-width:1000px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:static;height:auto;border-right:none;border-bottom:1px solid var(--border)}
+  .header{padding:12px 16px}
+  .main{padding:24px 18px 48px}
+  .progress-bar-outer{width:140px}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-left">
+    <div class="header-mark">XP</div>
+    <div>
+      <div class="header-title">Moonshot · Cross-Pillar Task List</div>
+      <div class="header-sub">Consolidated record · May 12 → Phase II planning</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="expand-all" onclick="toggleAll()">Expand all</button>
+    <span class="time-est" id="time-est"></span>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar" style="width:0%"></div></div>
+    <span class="progress-label" id="progress-label">0 / 0</span>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar">
+    <div class="why-block">
+      <div class="why-label">What this is</div>
+      <div class="why-text">A single consolidated task list across five build phases — May 12 (morning + afternoon), May 13 (morning + afternoon), and the Phase II forward plan. Each card carries the prompt used, what it delivered, and why it sat in the sequence it did.</div>
+    </div>
+
+    <div class="why-block">
+      <div class="why-label">Jump to phase</div>
+      <div class="phase-jump" id="phase-jump"></div>
+    </div>
+
+    <div class="why-block">
+      <div class="why-label">Reading guide</div>
+      <div class="why-text">Each task card collapses by default. Click any card to expand. The <strong>Why this step</strong> block explains sequencing. The <strong>Delivers</strong> chips summarise output. The <strong>prompt</strong> block is what was pasted into Claude Code — copy button at the top right of each prompt box.</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="main-header">
+      <h1 class="main-title">Cross-Pillar <span>Task List.</span></h1>
+      <p class="main-desc">Thirty-three task entries across five phases. Phase 1 cleaned the prototype and built the "How the agents work" page. Phase 2 introduced a design-token skill and restructured the agent cards. Phase 3 was the cross-pillar container — WA / TM / OM navigation, product switcher, cross-pillar dashboard. Phase 4 backfilled the missing agent specs and fixed two UX inconsistencies. Phase 5 is the forward plan — rename, Archer unification, sim engine expansion, audits, content refresh.</p>
+    </div>
+
+    <div id="phases"></div>
+
+  </main>
+
+</div>
+
+<script>
+const PHASES = [
+  {
+    id: "phase-1",
+    num: "Phase 1",
+    title: "Prototype cleanup + \"How the agents work\" page",
+    date: "May 12 · morning · 5-hour session",
+    lead: "A 5-hour window with a clear sequence: clean the prototype, swap the embedded version in the presentation deck, add six new agent cards to the Agents page, then build the marquee page that visualises what each agent does between \"prompt arrives\" and \"prototype delivered.\" Verification last. The 30-second comprehension test on the marquee page was the bar.",
+    tasks: [
+      {
+        num: "1.1",
+        title: "Dead-code cleanup of the prototype",
+        subtitle: "Conservative pass · Foundation",
+        time: "30 min",
+        status: "done",
+        why: "Cleanup first so the prototype that gets swapped into the presentation folder is the cleaner version. <strong>In scope:</strong> remove unreferenced CSS classes, debug <code>console.log</code> calls, commented-out blocks longer than two lines, and <code>DATA.*</code> properties superseded by <code>WAREHOUSE.*</code>. <strong>Out of scope:</strong> renaming, restructuring, consolidating styles into new tokens, splitting the file.",
+        delivers: ["Removed unused CSS classes", "Removed debug logs", "Removed orphan DATA.* props", "Same render before/after"],
+        prompt: `Open moonshot prototype/moonshot-prototype.html and perform a conservative dead-code cleanup pass.
+
+In scope:
+- Remove CSS rules whose class selectors are not referenced anywhere in the HTML or JS. Likely candidates: Phase 3 single-focus stage classes superseded by the dashboard pivot, the .l-alcove family superseded by renderKpiStrip, original CLI-only layout classes superseded by the full-bleed CLI.
+- Remove debug console.log calls and render-count instrumentation left over from Session 5 flicker hunts.
+- Remove commented-out HTML / CSS / JS blocks longer than two lines.
+- Remove any DATA.* properties that have been fully replaced by WAREHOUSE.* equivalents and are not read anywhere.
+
+Out of scope (flag for a separate session if you find candidates):
+- Renaming functions or files
+- Restructuring view code
+- Consolidating styles into new tokens
+- Splitting the file into sections with comment dividers
+
+Verification: open moonshot prototype/moonshot-prototype.html in the browser preview before and after. The prototype must render and behave identically — same views, same KPI sparklines, same modal, same banner, same sim timeline. Run through the 3-minute demo. Re-run the Heuristics + Accessibility Guardian audits — verdict should remain SHIP.`
+      },
+      {
+        num: "1.2",
+        title: "Replace embedded prototype in the presentation folder",
+        subtitle: "Swap · Promote working copy",
+        time: "15 min",
+        status: "done",
+        why: "Swap second so the moonshot.html iframe is already pointing at the current prototype before we add agent cards or a new page around it. <code>wms-unified-figma-sidebar.html</code> in <code>moonshot presentation/</code> was the file loaded by the iframe and had drifted several months stale.",
+        delivers: ["Embedded prototype matches working copy", "Iframe src resolves", "No console errors in deck"],
+        prompt: `Inside moonshot presentation/, the file wms-unified-figma-sidebar.html is what loads in moonshot.html's Prototype tab via an iframe src. That file is now several months stale relative to moonshot prototype/moonshot-prototype.html.
+
+Copy the working prototype into the presentation folder so the iframe picks it up. Simplest path: overwrite moonshot presentation/wms-unified-figma-sidebar.html with the contents of moonshot prototype/moonshot-prototype.html. Confirm before clobbering — that file is the previously-shipped artifact; offer a quick git diff view or a copy to archive/.
+
+After copying, verify: open moonshot presentation/moonshot.html in a browser, click the Prototype tab. The new manager dashboard, Warehouse dashboard, dark terminal, KPI sparklines, and floating banner should all render inside the iframe with no console errors and no broken paths.
+
+Confirm the iframe src in moonshot presentation/moonshot.html still resolves. If the filename needs to change (e.g., rename to moonshot-prototype.html and update the iframe src), that's a valid alternative — discuss first.`
+      },
+      {
+        num: "1.3",
+        title: "Add 6 new agent cards to the Agents page",
+        subtitle: "Domain + Meta + Guardian cards",
+        time: "60 min",
+        status: "done",
+        why: "Agent cards before the marquee because they're shorter, lower-risk edits — a warmup that lets us pattern-match the existing card/pill conventions before the bigger build. Six new agents: three Domain (Slotting, Equipment, Quality), one Meta (Warehouse Life Agent), two Guardian (Heuristics, Accessibility). The Exception agent's scope also got rescoped to transactional errors only — Quality now owns damage / holds / cycle counts.",
+        delivers: ["3 new Domain cards", "1 Meta card", "2 Guardian cards", "Exception card rescoped"],
+        prompt: `moonshot presentation/moonshot.html's Agents page currently shows the original WMS topology (Lead, Shift Intelligence, Pick Path, Labor, Order Priority, Carrier, Exception, plus BI/Innovation/Opportunity). Six new agents need cards on the presentation Agents page. They fall into two groups.
+
+Group A — Three Domain agents adapted from an external demo lineage:
+- Slotting Agent — replenishment scheduling, bin assignment, fast-mover re-slotting (agents/slotting-agent.md)
+- Equipment Agent — forklifts, AMRs, conveyors, charge cycles, equipment faults (agents/equipment-agent.md) — NEW domain
+- Quality Agent — damage, quality holds, cycle counts (agents/quality-agent.md) — carved out of the old Exception agent's scope
+
+Add three cards to the Domain experts section using the existing .card + .pill--domain pattern. Match the existing tone and length — one-line description, key responsibilities, same visual layout as Pick Path / Labor / Order Priority. Source language from the agent spec markdown files; don't invent copy.
+
+Also confirm the Exception Agent card has been rescoped to "transactional errors only" — Quality now owns damage / holds / cycle counts. Update the existing Exception card description if it still mentions damage or holds.
+
+Group B — Three new agents original to this project. No external credit needed.
+
+Meta agent:
+- Warehouse Life Agent — scripted-causal simulation engine; not in the WMS topology; drives the events the WMS agents react to (agents/meta/warehouse-life-agent.md).
+
+Gets its own card. Check moonshot.html for an existing non-domain pill class (something like .pill--meta). If none exists, propose a new pill style that's visually distinct from .pill--domain and confirm before adding.
+
+Guardian agents:
+- Heuristics Agent — Nielsen Norman + Hick + Miller + cognitive-load audit (agents/guardian/heuristics-agent.md).
+- Accessibility Agent — WCAG 2.2 (AA load-bearing, AAA advisory) (agents/guardian/accessibility-agent.md).
+
+These already appear in moonshot.html's Stage 3 Guardian section. Give each its own card on the Agents page too, in addition to whatever Stage 3 treatment exists. Use whatever pill convention moonshot.html already uses for Guardian/process-gate agents; if none, propose one and confirm.`
+      },
+      {
+        num: "1.4",
+        title: "\"How the agents work\" page — the marquee",
+        subtitle: "Conveyor diagram · 30-second comprehension test",
+        time: "2h 35m",
+        status: "done",
+        why: "The marquee task. Audience: a senior UX executive presenting upward. <strong>30-second comprehension or it fails.</strong> Must feel like a B2C product-launch landing page but stay inside the existing visual language (brand-yellow <code>#CADF35</code>, soft-dark terminal <code>#1E2530</code>, 8px tile radius, Noto Sans). Differentiating claim: a UX-owned, agent-driven build produces structurally better interfaces than prompting blind. The page dramatises that through a conveyor metaphor — top track \"prompting blind\" with red flags, bottom track \"UX-owned agent system\" with 8 gold stamps.",
+        delivers: ["Top nav tab: How the agents work", "Headline + kicker", "Conveyor SVG (2 tracks, 8 stations)", "Sequential reveal animation", "Hover-cards on each station", "Receipts stat strip (6 tiles)", "Closing pull-quote"],
+        prompt: `New page in moonshot presentation/moonshot.html titled "How the agents work." Top-level navigation entry alongside Home, The Agents, The Prototype.
+
+Headline (draft): "AI without UX is slop. We built the UX layer."
+Kicker (draft): "From prompt to prototype, here's what eleven agents and two audits did that prompting blind can't."
+Both subject to confirmation before building.
+
+Conveyor diagram (main piece):
+A horizontal, full-width SVG composition. Time flows left → right. Two stacked tracks share a starting point (a prompt document icon entering left) and finish line (a prototype document icon exiting right).
+
+Top track — "Prompting blind." Sparse. Prompt slides straight to delivery with no intermediate stations. Prototype exits with red flags:
+- alert("Approved!") popups
+- Three parallel queues (cognitive load trap)
+- Single Cautious↔Bold autonomy slider
+- Low-contrast text
+- "Handled by agents" noise feed
+
+Bottom track — "UX-owned agent system." Full conveyor with eight stations. At each station the prototype document picks up a stamp/badge:
+1. UX authors the agent specs (gold accent — UX-led) → stamp: "Approval-first schema"
+2. Warehouse Life seeds the world (neutral) → stamp: "Scripted-causal events"
+3. Domain agents propose (mixed accent — gold on UX-influenced patterns) → stamp: "Per-action confidence"
+4. Lead Agent orchestrates (gold — UX-led) → stamp: "Single human-facing surface"
+5. Heuristics audit (gold — UX-led) → stamp: "Calm state · NN10"
+6. Accessibility audit (gold — UX-led) → stamp: "WCAG 2.2 AA"
+7. Human-in-the-loop gate (gold — UX-led structural property) → stamp: "No agent executes alone"
+8. Prototype delivered — final document with all gold stamps attached.
+
+Visual treatment:
+- Gold-vs-neutral accent system is the page's primary signal. UX-led stations get brand-yellow (#CADF35) border, station icon, and stamp fill. Neutral stations get muted gray.
+- Sequential reveal animation on first viewport entry. Blind track flashes through in ~200ms (the abruptness IS the message). UX track reveals station-by-station over ~1.5s.
+- Hover/focus micro-interaction on each station reveals a tooltip-card: agent name + one-line role + schema fragment (confidence + escalationReason + options[] where applicable) + one concrete pattern. Keyboard-accessible (Tab + focus-visible).
+- Subtle ongoing motion: gentle gradient shimmer along the conveyor belt (3s ease-in-out infinite, brand-yellow on UX track, muted gray on blind track). Wrap all motion in @media (prefers-reduced-motion: no-preference).
+- Labels and copy on stations: 3-5 words each. Stamps: 3-5 words. Long descriptions live in hover-cards.
+
+Receipts stat strip — six oversized stat tiles, brand-yellow accents, designed for skim:
+- 14 · agent specs authored before a single line of UI
+- 2 · Guardian audits — both SHIP
+- AA · WCAG 2.2 on every measured contrast pair
+- 0 · alert() placeholders — every Details / Why opens a real modal
+- 30:1 · sim compression — 3-minute live human-in-the-loop demo
+- 100% · approval-first — no agent executes alone
+
+Closing pull-quote (draft for confirmation before building):
+"The future of UX isn't designers prompting AI. It's UX practitioners owning the agents themselves — defining the guardrails, writing the schemas, auditing the output. That's what UX leadership looks like in 2026."
+
+30-second test:
+A stranger lands, scrolls once, and within 30 seconds can answer:
+1. What did this team's UX practice add that an LLM prompt alone couldn't?
+2. Which specific agents did the UX-relevant work?
+If they can't, the design isn't done.
+
+Constraints:
+- Single self-contained file — inline SVG, inline CSS, no external assets.
+- Diagram is pure SVG. No raster images. Base64-encode anything needed inline.
+- Motion respects prefers-reduced-motion. Sequential reveal completes in ≤2s total.
+- Must pass both Guardian audits — AA contrast on red/yellow accents; sequential reveal must not trap focus.
+- Must not break the existing moonshot.html aesthetic.
+
+If running over budget: conveyor diagram + stat strip + pull-quote are non-negotiable; sequential-reveal animation and hover-cards can ship as a follow-up.`
+      },
+      {
+        num: "1.5",
+        title: "Full verification pass",
+        subtitle: "Sweep across all four edits",
+        time: "25 min",
+        status: "done",
+        why: "Verification last as a sweep across everything. Re-open the prototype, click through Home / The Agents / The Prototype tabs. Confirm the 3 Domain cards, Warehouse Life Meta card, and 2 Guardian cards render with the right pills. Confirm the external-demo-lineage attribution appears on the adapted ones. Confirm the iframe loads the new working copy. Time a cold reader on the marquee page — target ≤30 seconds.",
+        delivers: ["Verified prototype renders identically", "Verified marquee page works", "30-second test timed", "No console errors anywhere"],
+        prompt: `After tasks 1.1–1.4 land:
+
+- Open moonshot prototype/moonshot-prototype.html in a browser preview. Confirm it renders and behaves identically to before the cleanup. Run the 3-minute demo. No console errors.
+- Click the new "How the agents work" tab in moonshot presentation/moonshot.html. Confirm the conveyor diagram renders, the sequential-reveal animation fires once on viewport entry, hover-cards on each station show agent name + schema + concrete pattern, and the receipts stat strip + closing pull-quote render cleanly. Confirm prefers-reduced-motion: reduce disables motion. Time a cold reader from first paint to "I understand what UX added and which agents did it" — target ≤ 30 seconds.
+- Open moonshot presentation/moonshot.html. Click through Home, The Agents, The Prototype.
+- Confirm the three new Domain agents (Slotting, Equipment, Quality) render with the same .card + .pill--domain pattern as the original ones.
+- Confirm the Warehouse Life Agent card renders on the Agents page (meta pill).
+- Confirm the Heuristics + Accessibility Agent cards render on the Agents page (Guardian pill).
+- Confirm the Prototype tab iframe loads the new working copy: manager dashboard renders, Warehouse sidebar button navigates to the warehouse dashboard, KPI sparklines visible, soft-dark terminal renders on right column.
+- No console errors. No broken paths.
+- The pair moonshot.html + wms-unified-figma-sidebar.html is still self-contained and zip-shippable.`
+      },
+      {
+        num: "1.6",
+        title: "One-shot agent-driven prototype experiment",
+        subtitle: "MVP test · Separate fresh chat",
+        time: "Independent",
+        status: "done",
+        why: "Independent of the 5-hour budget and runs in a separate fresh chat. Tests whether the agent specs in <code>/agents/</code> can drive a fresh Claude session to build the prototype in one shot. <strong>Form A</strong> — one mega-prompt with everything inlined (control). <strong>Form B</strong> — agents folder + focused build prompt (the real MVP). Form B's deliverable includes a post-mortem identifying gaps in the agent specs.",
+        delivers: ["Form A output (control)", "Form B output (agent-loaded)", "Form B post-mortem", "Guardian audits on each"],
+        prompt: `The folder prompt prototype/ at the repo root contains two paired prompts. The folder has its own README explaining the experiment, how to run each form, and how to save the outputs.
+
+Form A — prompt prototype/full prompt prototype/PROMPT.md — one mega-prompt with everything inlined. The control.
+Form B — prompt prototype/agent loaded prototype/PROMPT.md — agents folder + focused build prompt. The real MVP. Form B's deliverable includes a post-mortem identifying gaps in the agent specs; those gaps are the next round of work on /agents/.
+
+Neither form will produce byte-identical output to moonshot prototype/moonshot-prototype.html. The test is structural consistency — same agents, same dashboard shape, same approval semantics, same visual language.
+
+After running both:
+- Save outputs alongside each prompt as output.html (and postmortem.md for Form B).
+- Run the Heuristics + Accessibility Guardian audits against each output.
+- Report which form produced the more shippable artifact and what was missing from the other.
+- Use Form B's post-mortem to plan a follow-up edit pass on the agent specs in /agents/.`
+      }
+    ]
+  },
+  {
+    id: "phase-2",
+    num: "Phase 2",
+    title: "Design tokens + alignment + accordions + nav",
+    date: "May 12 · afternoon",
+    lead: "Tokens first because every downstream task touches CSS — fixing alignment, building accordions, updating the nav would all otherwise re-touch the same rules twice. Tokens captured as an <strong>auto-triggered skill</strong> (<code>.claude/skills/design-tokens.md</code>) so the same dance fires automatically next time a token spec lands. Then surgical alignment fix → larger accordion refactor → small nav update → verification.",
+    tasks: [
+      {
+        num: "2.1",
+        title: "Install the design-tokens skill + run for the token zip",
+        subtitle: "Skill install · May 12 token integration",
+        time: "60 min",
+        status: "done",
+        why: "Every future token delivery should auto-load the same workflow. Skill installed at <code>.claude/skills/design-tokens.md</code> (project-scoped). Body runs: locate delivery → extract to <code>archive/tokens-YYYY-MM-DD/</code> → transcribe every PNG/JSON into a TOKENS.md reference → reconcile with the existing <code>:root</code> block in both files → sweep for hardcoded values → verify in preview. Brand-yellow safety check: if the spec disagrees with <code>#CADF35</code>, the skill stops and flags before overwriting.",
+        delivers: [".claude/skills/design-tokens.md created", "archive/tokens-2026-05-12/TOKENS.md", "Both :root blocks reconciled and byte-identical", "Hardcoded values swept and replaced with var()"],
+        prompt: `Two-step task. First install the skill, then run it for the May 12 token delivery.
+
+Step 1: Create the design-tokens skill at .claude/skills/design-tokens.md (project-scoped).
+
+Frontmatter:
+---
+name: design-tokens
+description: Use this skill when the user delivers a design-token spec (zip of screenshots, Figma export, JSON file, or similar) OR asks to integrate/reconcile/sweep design tokens in this moonshot deck. The skill handles extracting the delivery, transcribing tokens into a versioned reference markdown, reconciling new tokens with the existing :root custom-property blocks in moonshot presentation/moonshot.html and moonshot prototype/moonshot-prototype.html, and sweeping both files for hardcoded values (hex colors, rgba stacks, raw box-shadows, hardcoded radii, magic-number spacing) that should reference tokens. Auto-trigger keywords include "design tokens", "token zip", "integrate tokens", "tokens.zip", "reconcile tokens", "sweep for hardcoded", "Figma tokens", and any path matching tokens-*.zip or *tokens*.md inside this project. The brand-yellow accent #CADF35 is load-bearing — if a new token spec proposes changing it, the skill stops and flags the discrepancy to the user instead of overwriting.
+---
+
+Body (the procedural workflow):
+1. Locate the delivery. Default: C:\\Users\\apcan\\Pictures\\Screenshots\\tokens.zip. If a different path or an unzipped folder is supplied, use that.
+2. Extract the zip to archive/tokens-<YYYY-MM-DD>/. Use Expand-Archive or tar -xf.
+3. Transcribe every PNG/image/JSON into a markdown reference at archive/tokens-<YYYY-MM-DD>/TOKENS.md. Capture every font family + weight + size scale, every spacing value, every named color + hex, every named shadow + full box-shadow value, every radius/easing/border token. Organize by category. Note source filename next to each transcribed group.
+4. Reconcile the new tokens with the existing :root block in moonshot presentation/moonshot.html. For each existing custom property: update value if direct equivalent; add new tokens with naming aligned to existing scheme (--surface-*, --text-*, --accent-*, --shadow-*, --radius-*, --font-*, --ease-*); if the spec drops a token still in use, keep the legacy one and flag in TOKENS.md under "Legacy tokens still referenced." Do not rename existing custom properties.
+5. Mirror the reconciled :root block into moonshot prototype/moonshot-prototype.html. Two :root blocks should be byte-identical after.
+6. Sweep both files for hardcoded values that should now reference tokens — hex colors, rgba() calls matching a token, raw box-shadow declarations, hardcoded font-family strings, fixed pixel radii matching --radius-*, spacing values that should use --space-*. Replace clean matches with var(--token-name). Don't force tokens where the original was intentional and off-grid — flag those under "Intentional off-grid values" instead.
+7. Verify via preview_start + preview_screenshot: Home, Agents (including Architecture toggle in both Timeline and System modes), and Prototype tab render visually identical to before. No console errors. Both Guardian audits still SHIP.
+8. Brand-yellow safety check. If any new token proposes a value different from --accent: #CADF35, stop and flag before changing.
+
+Step 2: Execute the workflow against C:\\Users\\apcan\\Pictures\\Screenshots\\tokens.zip following the skill body's steps in order.
+
+Outputs:
+- Extracted reference at archive/tokens-2026-05-12/TOKENS.md.
+- Updated :root in both moonshot.html and moonshot-prototype.html — byte-identical.
+- Hardcoded values swept and replaced with var() where clean matches existed.
+- Verification screenshots.
+- Summary of what changed.
+
+Constraints (both steps):
+- Single-file architecture stays. No external CSS, no build step.
+- Don't add tokens that aren't in the delivery. The delivery is authoritative.
+- Don't break existing class names.
+- Don't silently overwrite brand-yellow.`
+      },
+      {
+        num: "2.2",
+        title: "Fix Architecture-section horizontal alignment",
+        subtitle: "Surgical CSS fix",
+        time: "20 min",
+        status: "done",
+        why: "Best done after tokens are in place so the fix references spacing/radius/shadow tokens rather than raw values. The System tree's three lateral layer boxes (Analytical / Guardian / Meta) sat horizontally skewed left relative to the toggle and the layer cards below — most visible at narrower viewports. Root cause suspected: <code>.system-tree__domain-row</code> and <code>.system-tree__layers</code> had <code>max-width: 1040px</code> but no <code>margin: 0 auto</code>.",
+        delivers: ["Aligned System view at 1280px + 1100px", "DOM left-edge measurements match", "Timeline view unregressed"],
+        prompt: `moonshot presentation/moonshot.html — The Agents page Architecture section (view-agents → .arch).
+
+Bug: the Architecture section's content (especially the System tree's three lateral layer boxes for Analytical / Guardian / Meta) appears horizontally skewed left relative to the toggle above and the layer cards below. More evident at narrower widths (1280px, 1100px) than at 1440px+.
+
+Where to look in the CSS:
+- .arch, .arch__inner (max-width:1120px; margin:0 auto)
+- .layer, .layer__inner
+- .diagram-toggle-row, .diagram-toggle
+- .diagram, .diagram__view, .diagram__view--timeline, .diagram__view--system
+- .howagents-conveyor, .howagents-conveyor__inner (legacy wrapper)
+- .conveyor-grid (timeline view's grid)
+- .system-tree, .system-tree__domain-row (max-width:1040px), .system-tree__layers (also max-width:1040px)
+
+Likely root cause: .system-tree__domain-row and .system-tree__layers both set width:100% + max-width:1040px but may lack margin:0 auto — so when the parent flex/grid container is wider than 1040px, they stick to the left edge instead of centering. .system-tree itself uses display:flex; flex-direction:column; align-items:center which should center its direct children — confirm domain-row and layers are direct children.
+
+Steps:
+1. Start preview, navigate to Agents → System segment, screenshot at 1280×800 and 1100×800.
+2. Use preview_eval to log getBoundingClientRect().left for toggle, .system-tree__layers, and .layer__inner of Orchestration. Should match within 1px if aligned correctly.
+3. Fix: most likely add margin:0 auto to .system-tree__domain-row and .system-tree__layers. If not enough, check whether .system-tree needs a width constraint or whether .howagents-conveyor__inner is doing something unexpected.
+4. Re-verify at both widths.
+5. Confirm Timeline view didn't regress.
+
+Constraints:
+- Don't change anything outside .system-tree* selectors unless root cause is provably elsewhere. Timeline view is correctly aligned and shouldn't be touched.
+- Don't introduce a new wrapper element. Fix should be 1-2 CSS property additions, not a markup restructure.
+- Reduced-motion users must still see the system view render correctly.`
+      },
+      {
+        num: "2.3",
+        title: "Agent cards → row-synchronised accordions",
+        subtitle: "Largest visual change · 27 cards",
+        time: "60 min",
+        status: "done",
+        why: "The largest change. Touches every agent card on the Agents page. Better done with tokens in place so all the new accordion CSS uses tokens, not magic numbers. Better done after alignment is correct, so accordion behavior isn't masking pre-existing layout drift. Each card collapses to head + one-line summary by default; full body + Talks-to + Guardrail + attribution + pill appear on expand. <strong>Row sync:</strong> cards in the same row expand/collapse together (computed at click time via <code>getBoundingClientRect().top</code>).",
+        delivers: ["27 cards restructured", "New one-line summary per card", "Row-sync expand/collapse JS", "Reduced-motion respected", "Keyboard-accessible toggles"],
+        prompt: `moonshot presentation/moonshot.html — The Agents page (view-agents). 37 .card elements total across Orchestration, Radar, Domain (grid-5, 8 cards), Analytical (grid-3), Guardian (grid-3, 6 cards), Meta, Horizon (3 thematic categories, each grid-5, 10 total).
+
+Goal: Convert each card into a row-synchronised accordion.
+
+Collapsed (default): card shows only head (avatar + name + role) plus a one-line "what it is + what value it adds" summary. About half current height. Small chevron on right edge signals "click to expand."
+
+Expanded: card shows everything it currently shows (body, Talks-to, Guardrail, attribution, pill).
+
+Row sync: agent cards in each row of a grid expand and collapse together. Domain (8 cards in grid-5 → 5 + 3) toggles row-wise. Same for Analytical (3), Guardian (3+3), Horizon (each thematic category's rows treated independently). Full-width single cards (Lead, Shift Intelligence, Warehouse Life) accordion individually.
+
+Author one-line summaries per card — ~12-18 words, plain English, framed for C-level skim. Source from the spec file or existing card body, then trim. Example for Lead: "The only agent that talks to the user — and the single gate every approval passes through." Don't invent. Author 27.
+
+Implementation:
+1. Markup: add <div class="card__summary">[one-line]</div> after .card__head. Add <button class="card__toggle" aria-expanded="false" aria-controls="card-N-details">[chevron SVG]</button> inside .card__head right-aligned. Wrap existing detail blocks (.card__body, .card__field, .card__guardrail, .card__attribution, .card__pill-row) in <div class="card__details" id="card-N-details">.
+2. CSS: .card__details starts max-height:0; overflow:hidden; opacity:0. When parent <article> has class is-expanded, transitions to full height (max-height transition with generous value like 2000px + opacity + small padding-top). Chevron rotates 180° on aria-expanded="true". Animations wrapped in @media (prefers-reduced-motion: no-preference).
+3. Row sync JS: For grids with multiple rows, compute row membership at click time using getBoundingClientRect().top — cards on the same row will have the same top value (within a few pixels). When a card's toggle is clicked, find all sibling cards in the same row and toggle their is-expanded class + aria-expanded together.
+4. Keyboard accessibility: card__toggle is a real <button>. Enter/Space toggles. Visible :focus-visible outline using accent token.
+5. Default state: all cards start collapsed on page load.
+
+Use the design tokens from Task 2.1. --shadow-* for card elevation, --ease-* for expand/collapse curve, --radius-*, --text-*. Surface any missing tokens rather than invent.
+
+Affected sections (all on view-agents):
+- Orchestration (1 full-width — Lead)
+- Radar (1 full-width — Shift Intelligence)
+- Domain experts (grid-5, 8 cards)
+- Analytical (grid-3, 3 cards)
+- Guardian (grid-3, 6 cards)
+- Meta (1 — Warehouse Life)
+- Horizon (3 thematic categories, 10 total)
+
+The Architecture toggle's own info-cards (7 inside .conveyor-grid with .info-card class) are NOT layer cards — leave alone.
+
+Constraints:
+- Don't change pill classes (pill--domain, pill--guardian, pill--meta) — load-bearing.
+- Don't touch the architecture diagram's info-cards or .system-tree agent pills.
+- Don't change card order within any section.
+- Don't drop any existing content. Just move from "always visible" to "visible when expanded."
+
+Deliverables: 27 cards restructured, 27 summaries authored, CSS for collapsed/expanded + chevron, row-sync JS, verification screenshots.`
+      },
+      {
+        num: "2.4",
+        title: "Update sticky in-page navbar on The Agents page",
+        subtitle: "Add Architecture + Signals entries",
+        time: "20 min",
+        status: "done",
+        why: "Small structural fix. Done after the accordion work so the page structure is stable before the nav is updated to match it. Two missing entries: <strong>Architecture</strong> (first major content section after the hero, should be the first nav item) and <strong>Signals</strong> (the \"How the signals move\" topology block between Analytical and Guardian).",
+        delivers: ["id=section-architecture on .arch", "id=section-topology on .topo", "Two new nav entries", "JS sectionIds array updated"],
+        prompt: `moonshot presentation/moonshot.html — The Agents page sticky in-page nav (.agents-index). Currently: Lead · Radar · Domain · Analytical · Guardian · Meta · Horizon · The case.
+
+Missing from the current navbar:
+- Architecture — the Timeline · System toggle section. First major content section after the hero. Should be the FIRST nav item.
+- Communication / Signals — the "How the signals move" topology block. Sits between Analytical and Guardian.
+
+Steps:
+1. Inspect the page. Find <nav class="agents-index">. Read each <a class="agents-index__item">. Search for id="section-" to find existing IDs. Find the JS sectionIds array (search for var sectionIds).
+2. Add missing IDs in HTML: find <div class="arch"> and add id="section-architecture". Find <div class="topo"> and add id="section-topology". Don't rename or restructure either element.
+3. Add two new nav entries:
+   - First item (before Lead): <a class="agents-index__item" href="#section-architecture" data-section="section-architecture">Architecture</a>
+   - Between Analytical and Guardian: <a class="agents-index__item" href="#section-topology" data-section="section-topology">Signals</a>
+4. Update JS sectionIds array to include the two new IDs in correct positions (Architecture at the start, Topology between Analytical and Guardian).
+5. On page load, first nav item should highlight at top of Agents view. After edit it should be "Architecture".
+6. Confirm smooth-scroll works for both new items. The existing click handler should work without JS additions other than the array update.
+
+After: nav reads Architecture · Lead · Radar · Domain · Analytical · Signals · Guardian · Meta · Horizon · The case.
+
+Constraints:
+- Don't reorder existing nav items.
+- Don't change visual styling of .agents-index__item — just add entries that use existing styling.
+- Don't add an entry for "What comes next" — that's a thematic transition, not a destination.
+- Don't add an entry for the page hero.`
+      },
+      {
+        num: "2.5",
+        title: "Full verification across morning + afternoon work",
+        subtitle: "PASS / WARN / FAIL sweep",
+        time: "30 min",
+        status: "done",
+        why: "Closing sweep across both the morning's work (cleanup, swap, agent cards, toggle-merge) and the afternoon's work (tokens, alignment, accordion, navbar). Catches anything that drifted. Produces a structured PASS / WARN / FAIL report saved to <code>archive/verification-2026-05-12.md</code>.",
+        delivers: ["archive/verification-2026-05-12.md", "Screenshots of every visual check", "DOM measurements for alignment", "List of any FAILs as follow-ups"],
+        prompt: `Closing sweep — Tasks 2.1-2.4 plus the morning work (cleanup, swap, agent cards, toggle-merge). Verify end-to-end. Don't fix anything during this pass — report only.
+
+Approach: preview_start against moonshot presentation/, navigate each view, walk the checklist. For each item: verdict (PASS/WARN/FAIL), one-sentence rationale, screenshot or preview_eval measurement when relevant.
+
+Checklist:
+
+Working prototype (moonshot prototype/moonshot-prototype.html):
+- Opens in preview. Renders identically to pre-May-12 edits (4,425 lines after cleanup).
+- 3-minute simulated demo (08:00 → 09:30 sim time, ~5 wall-minutes). All scripted events fire — inbound late, pick-rate dip, equipment fault, quality hold. All dashboards render.
+- No console errors.
+- Heuristics + Accessibility audits both SHIP.
+
+Prototype tab inside the deck:
+- Loads moonshot presentation/moonshot-prototype.html. All dashboards render inside the iframe. No console errors; no broken paths.
+
+Agents page hero + sticky nav:
+- Hero kicker: "Six layers · Twenty agents · One human in the loop".
+- Hero lede enumerates six current layers.
+- Sticky nav: Architecture · Lead · Radar · Domain · Analytical · Signals · Guardian · Meta · Horizon · The case.
+- Each nav item smooth-scrolls. Active-state tracks scroll.
+
+Architecture section:
+- Header: "Architecture · The shape of the system."
+- Timeline · System segmented control. Default: Timeline.
+- Timeline: zigzag conveyor (PROMPT → 7 stations → PROTOTYPE), 8 info cards.
+- System: HUMAN · APPROVES → Lead → Shift Intelligence → 8 domain leaves → 3 lateral layer boxes.
+- Centered lede below each diagram (not above).
+- Tab into toggle, ArrowLeft/Right switches views.
+
+Layer cards (post-accordion):
+- All 27 cards collapsed by default, one-line summary visible, chevron on right.
+- Domain row 1 (5) and row 2 (3) sync independently.
+- Analytical (3) syncs.
+- Guardian row 1 (3) and row 2 (3) sync independently.
+- Horizon — each thematic category's rows independent.
+- Lead, Shift Intelligence, Warehouse Life — individual.
+
+Attribution lines (visible when expanded):
+- "Adapted from external demo lineage" on Slotting, Equipment, Quality.
+- "Authored by the UX Team" on Heuristics, Accessibility, Design System, Content, Interaction, Responsive, Warehouse Life.
+
+Home pull-quote: "The next step for UX is partnering with dev and product to design the agents themselves..." above the footer.
+
+Design tokens:
+- var(--token-name) references resolve in DevTools.
+- archive/tokens-2026-05-12/TOKENS.md exists.
+- Both :root blocks byte-identical.
+
+Alignment:
+- Architecture System tree + Timeline conveyor sit at same left edge as Orchestration layer below. preview_eval getBoundingClientRect().left matches within 1px.
+- Holds at 1280×800 and 1100×800.
+
+Reduced motion: emulate prefers-reduced-motion: reduce. Toggle works instantly. Accordion toggles instantly. Conveyor reveal does not animate. All interaction functions.
+
+Keyboard accessibility: Tab top nav, Tab in-page nav, Tab into segmented control + ArrowLeft/Right, Tab through accordion chevrons + Enter/Space. Visible :focus-visible everywhere.
+
+Console: no errors across views, toggle modes, accordion ops.
+
+Zip-shippability: moonshot presentation/ is self-contained. No external references.
+
+Output:
+- archive/verification-2026-05-12.md with each check + verdict.
+- Screenshots of every visual check.
+- DOM measurements for alignment.
+- Any FAILs as follow-up tasks at the end of the report.
+- If all pass: declare May 12 work officially done.`
+      },
+      {
+        num: "2.6",
+        title: "One-shot agent-driven prototype build (Form B)",
+        subtitle: "MVP test · Fresh chat",
+        time: "Independent",
+        status: "done",
+        why: "Same independent test as Task 1.6, recapped from the afternoon perspective. Must run in an uncontaminated session — cannot be done alongside the other afternoon prompts. Form B's post-mortem feeds the next round of <code>/agents/</code> spec work.",
+        delivers: ["Form B output.html", "postmortem.md", "Guardian audit on output"],
+        prompt: `Open a fresh Claude Code session. Read prompt prototype/agent loaded prototype/PROMPT.md (the README explains the experiment).
+
+Form B is the real MVP: agents folder + focused build prompt. The deliverable includes a post-mortem identifying gaps in the agent specs; those gaps are the next round of work on /agents/.
+
+The test is structural consistency — same agents, same dashboard shape, same approval semantics, same visual language. Not byte-identical output.
+
+After running:
+- Save output alongside the prompt as output.html and postmortem.md.
+- Run Heuristics + Accessibility Guardian audits against the output.
+- Report what was shippable and what was missing.
+- Use the post-mortem to plan a follow-up edit pass on /agents/.`
+      }
+    ]
+  },
+  {
+    id: "phase-3",
+    num: "Phase 3",
+    title: "Cross-pillar container — WA / TM / OM",
+    date: "May 13 · morning",
+    lead: "Seven prompts. Builds the cross-pillar architecture: pillar-specific demos (WMS, TMS, OMS) with common <strong>agnostic components</strong> (Agent Performance, Archer chat, Decision Queue, Activity Log) and <strong>domain-specific tiles</strong> (Floor Map for WMS, Network Map for TMS). The cross-pillar dashboard shows what it looks like when more than one product is running. Each prompt is self-contained and depends on the previous landing first.",
+    tasks: [
+      {
+        num: "3.1",
+        title: "Product-level state + product switcher UI",
+        subtitle: "Infrastructure · Plumbing",
+        time: "30-40 min",
+        status: "done",
+        why: "Everything else depends on <code>currentProduct</code> state existing. No new views — just the switching infrastructure. When this is done, you can toggle between WA/TM/OM in the header and the prototype doesn't break.",
+        delivers: ["currentProduct state", "Header product switcher (WA·TM·OM)", "setProduct() function", "Zero WA regressions"],
+        prompt: `Read README.md, AGENT-ARCHITECTURE.md, WAY-OF-WORKING.md, ITERATION-LOG.md. Then read moonshot-prototype.html (at repo root).
+
+Add multi-product state management and a product switcher to the prototype. Pillar-specific demos (WMS, TMS, OMS) with common agnostic components (Agent Performance, Archer chat, Decision Queue, Activity Log) and domain-specific tiles. The cross-pillar dashboard shows what it looks like when customers are running more than one product.
+
+Requirements:
+1. Add a currentProduct variable to state. Values: 'wa' (Warehouse Advantage — default), 'tm' (Transportation Management), 'om' (Order Management), 'cross' (cross-pillar dashboard). Initialize to 'wa' to preserve existing behavior.
+2. Add a product switcher to the header bar — three small buttons or chips next to the role switcher: WA · TM · OM. Active product gets is-active treatment. Use existing Infios design tokens. Sits between nav-toggle hamburger area and role switcher.
+3. Add a setProduct(p) function: sets currentProduct, calls renderAll(), updates the header. When switching to TM/OM, should still work — stub views in subsequent prompts.
+4. Existing prototype behavior IDENTICAL when currentProduct === 'wa'. No regressions. All views, sim engine, events, chat — work as before.
+5. DO NOT build new views yet. DO NOT restructure the sidebar yet. This prompt is infrastructure only.
+
+Verify: switch between WA/TM/OM in the header. WA shows all existing views. TM and OM can show a placeholder. No console errors. No visual regressions on WA.`
+      },
+      {
+        num: "3.2",
+        title: "Restructure sidebar — agnostic + domain tiers",
+        subtitle: "Container architecture · THE key move",
+        time: "30-40 min",
+        status: "done",
+        why: "The container play. Defines the slots that external work plugs into. Splits the sidebar into <strong>Cross-Pillar</strong> (Dashboard, Archer, Agent Performance — always visible) and <strong>Domain</strong> (changes per product). When the sidebar reads as Cross-Pillar / Domain with the Domain section swapping based on currentProduct, the framework is established.",
+        delivers: ["CROSS-PILLAR nav section", "DOMAIN nav section (product-specific)", "Section labels + dividers", "Stub placeholders for TM/OM views"],
+        prompt: `Read moonshot-prototype.html. Product switcher from Task 3.1 should be in place with currentProduct state.
+
+Restructure the sidebar nav into two tiers.
+
+Requirements:
+1. Split sidebar nav into two labeled sections with subtle dividers:
+
+Cross-Pillar section (always visible):
+- Dashboard (when currentProduct === 'wa' maps to existing home; TM/OM show a stub for now)
+- Archer (maps to existing CLI view)
+- Agent Performance (maps to existing perf view)
+
+Domain section (changes based on currentProduct):
+
+When currentProduct === 'wa':
+- Shift Log (existing log view)
+- Floor Map (existing map view)
+- Warehouse (existing warehouse view)
+
+When currentProduct === 'tm':
+- Activity Log (stub — built in Task 3.3)
+- Network Map (stub — built in Task 3.3)
+
+When currentProduct === 'om':
+- Order Log (stub — built in Task 3.4)
+- Order Dashboard (stub — built in Task 3.4)
+
+2. Add a small section label above each group. Uppercase, 11px, weight 700, --infios-color-text-tertiary, --infios-spacing-xs padding. "CROSS-PILLAR" and product-specific ("WAREHOUSE" / "TRANSPORTATION" / "ORDER MANAGEMENT").
+
+3. Existing sidebar session list, shift info, and collapse behavior preserved. Section restructure applies only to nav items.
+
+4. Stub views for TM and OM domain items: centered placeholder in main area with view name, brief description, product icon. --infios-color-text-tertiary text, --infios-color-bg-alt background.
+
+5. Badge counts: keep existing logic for WA items. TM and OM get no badges for now.
+
+Verify: WA — all six views work as before. Sidebar shows CROSS-PILLAR (Dashboard, Archer, Agent Performance) and WAREHOUSE (Shift Log, Floor Map, Warehouse). Switch to TM — domain section becomes TRANSPORTATION with Activity Log and Network Map stubs. Switch to OM — domain becomes ORDER MANAGEMENT with Order Log and Order Dashboard stubs. Cross-pillar items constant. No console errors.`
+      },
+      {
+        num: "3.3",
+        title: "TM stub views — transportation scenarios",
+        subtitle: "First pillar demo",
+        time: "45-60 min",
+        status: "done",
+        why: "Builds the transportation pillar's Dashboard, Activity Log, and Network Map. Two TM-specific scenarios: <strong>Carrier ETA Breach</strong> on MEM→CHI (truck running 2h behind) and <strong>Spot Quote Alert</strong> on MEM→DEN (spot rate $4,200 vs contracted $1,800 = 2.3x). Static demo data via a new <code>TM_DATA</code> object — no sim engine yet.",
+        delivers: ["TM Dashboard (lanes, decisions, Archer)", "TM Activity Log", "TM Network Map (SVG schematic)", "TM-specific demo data"],
+        prompt: `Read moonshot-prototype.html. Product switcher and restructured sidebar in place.
+
+Build TM (Transportation Management) domain stub views with real transportation scenarios: a truck-late scenario and a spot-quote-over-2x scenario.
+
+Requirements:
+
+1. TM Dashboard view (replaces stub for Dashboard when currentProduct === 'tm'):
+
+Same layout principles as WA home dashboard (zones strip left, stage center, terminal right, KPI strip bottom) but with TM content:
+
+- Left column — Lanes strip: 4-5 active shipping lanes with status indicators. Memphis→Atlanta (on-time), Memphis→Chicago (delayed), Memphis→Dallas (on-time), Memphis→Denver (at risk), Memphis→LA (spot quote alert). Same capacity-bar visual language adapted for lane health.
+- Center — Stage card: TM-specific decision. Two scenarios to rotate:
+  - Scenario A: "Carrier ETA Breach — Lane MEM→CHI" — Truck #4471 running 2h behind ETA. Carrier Agent confidence: 87%. Options: reroute to backup carrier, extend delivery window, split shipment.
+  - Scenario B: "Spot Quote Alert — Lane MEM→DEN" — Spot rate $4,200 vs contracted $1,800 (2.3x). Carrier Agent confidence: 91%. Options: accept spot rate, delay shipment 24h, consolidate with MEM→LA load.
+- Right column — Archer terminal: same dark terminal as WA but with TM-context conversation. Pre-seed 2-3 Lead Agent messages about carrier delays and rate alerts. Same visual treatment.
+- Bottom — KPI strip: 3 TM KPIs: Active Loads 847, On-Time Delivery 94%, Open Alerts 3.
+
+2. Activity Log view: same table structure as WA Shift Log but with TM entries. 6-8 entries mixing carrier delays detected, rate alerts triggered, route optimizations proposed (approved/pending), ETA updates. Actor names: Carrier Agent, Route Agent, Lead Agent.
+
+3. Network Map view: simple SVG network visualization. 5-6 nodes (origin + destinations) with connecting lines. Each node is a circle with city abbreviation. Lines carry colored status (green/amber/red). Click line → tooltip with lane details (carrier, ETA, load count). Not geographically accurate — schematic. Memphis at center, destinations fan outward.
+
+4. TM-specific state: TM_DATA object parallel to WAREHOUSE with static demo data for lanes, loads, alerts, log entries. No sim engine.
+
+5. Archer chat in TM context: when currentProduct === 'tm', pre-seed TM_DATA.chatThread with 3-4 messages.
+
+Verify: switch to TM. Dashboard loads with lanes, decision card, Archer, KPIs. Activity Log shows TM entries. Network Map renders. Switch back to WA — everything still works. No console errors.`
+      },
+      {
+        num: "3.4",
+        title: "OM stub views — order management scenarios",
+        subtitle: "Second pillar demo",
+        time: "40-50 min",
+        status: "done",
+        why: "Same pattern as TM but for the OM pillar. Scenarios: <strong>Stock-Out Risk</strong> on SKU #WH-4419 (12 units stock, 47 pending) and <strong>Cutoff Breach</strong> on Wholesale Batch WS-0512 (23 orders missed 14:00 cutoff, next window 18:00). After this all three pillars have content.",
+        delivers: ["OM Dashboard (channels, decisions, Archer)", "OM Order Log", "OM Order Pipeline visualization", "OM-specific demo data"],
+        prompt: `Read moonshot-prototype.html. Product switcher, restructured sidebar, TM views in place.
+
+Build OM (Order Management) domain stub views with real OM scenarios: stock-out scenarios and missed cutoffs.
+
+Requirements:
+
+1. OM Dashboard view (replaces stub for Dashboard when currentProduct === 'om'):
+
+Same layout principles as WA and TM dashboards:
+- Left column — Channels strip: 4-5 order channels with status indicators. E-Commerce (healthy), Wholesale (at risk), Marketplace (delayed), Direct/B2B (healthy), Drop-ship (alert). Capacity-bar visuals showing volume vs capacity.
+- Center — Stage card: two scenarios:
+  - Scenario A: "Stock-Out Risk — SKU #WH-4419" — Current stock 12 units, pending 47, replenishment ETA 3 days. Order Priority Agent confidence 78%. Options: allocate to highest-priority, backorder remaining, substitute with SKU #WH-4420.
+  - Scenario B: "Cutoff Breach — Wholesale Batch WS-0512" — 23 orders missed 14:00 carrier cutoff. Next window 18:00 (4h delay). Order Priority Agent confidence 85%. Options: push all 23 to next window, split — expedite top 8 via spot carrier + rest to next window, hold for customer notification.
+- Right column — Archer terminal: dark terminal with OM context. Pre-seed 2-3 Lead Agent messages about stock allocation and cutoff alerts.
+- Bottom — KPI strip: 3 OM KPIs: Active Orders 2,341, Fill Rate 96.2%, Pending Decisions 2.
+
+2. Order Log view: same table structure as WA Shift Log and TM Activity Log. 6-8 entries mixing stock-out alerts, cutoff breaches, order priority adjustments, allocation decisions. Actor names: Order Priority Agent, Allocation Agent, Lead Agent.
+
+3. Order Dashboard view: simplified order pipeline. 4 stages horizontal flow: Received → Processing → Allocated → Shipped. Each shows count + progress bar. Below pipeline, simple table of 5 most recent orders: Order ID, Channel, Items, Status, SLA countdown. Static data from OM_DATA.
+
+4. OM-specific state: OM_DATA object parallel to WAREHOUSE and TM_DATA.
+
+5. Archer chat in OM context: when currentProduct === 'om', pre-seed OM_DATA.chatThread with 3-4 messages.
+
+Verify: switch to OM. Dashboard loads with channels, decision card, Archer, KPIs. Order Log shows OM entries. Order Dashboard shows pipeline. Switch to TM — TM still works. WA still works. No console errors.`
+      },
+      {
+        num: "3.5",
+        title: "Cross-pillar dashboard",
+        subtitle: "The roll-up · \"running more than one\"",
+        time: "45-55 min",
+        status: "done",
+        why: "The view that appears when at the top level, before selecting a specific product. <strong>Not a clone of the pillar dashboards</strong> — a command-center overview. Three product health cards (top), unified decision queue across products (middle), cross-pillar Archer terminal (right column), aggregated KPIs (bottom). New \"All\" entry in product switcher routes here.",
+        delivers: ["Product health cards (WA/TM/OM)", "Unified cross-product decision queue", "Cross-product Archer terminal", "Aggregated KPI strip", "Navigation from cross-pillar → pillar"],
+        prompt: `Read moonshot-prototype.html. All three pillar-specific views (WA, TM, OM) in place.
+
+Build the cross-pillar dashboard — what it looks like when running more than one product. Bubble it up into the homepage.
+
+Requirements:
+
+1. Cross-pillar entry point: add a fourth option in the header product switcher before WA/TM/OM — an "All" or "Infios" button (or small grid/overview icon). When selected, currentProduct = 'cross'. Sidebar domain section shows all three products as clickable cards/items.
+
+2. Cross-pillar dashboard layout — NOT a clone of pillar dashboards. Command center overview:
+
+- Top row — Product health cards (3 across): each card represents one product (WA, TM, OM), shows product name + icon, 2-3 headline KPIs from that product (pulled from WAREHOUSE, TM_DATA, OM_DATA), status indicator (healthy/at-risk/critical). Click → navigate into that product. White elevated cards on --infios-color-bg-alt. Existing card shadow tokens.
+- Middle row — Unified decision queue: single list of ALL pending decisions across products, sorted by urgency. Each item: product badge (WA/TM/OM small colored chip), agent name, summary, confidence, time pending. Pull from WAREHOUSE.actionLog (pending), TM_DATA (static pending), OM_DATA (static pending).
+- Right column — Archer terminal (persistent): same dark terminal in cross-pillar context. Pre-seed 2-3 Lead Agent messages referencing cross-product patterns: "Carrier delay on MEM→CHI may impact 12 warehouse orders in the next wave." This is the "glass box" — agents explaining relationships across products.
+- Bottom row — Aggregated KPIs: 4-5 KPIs:
+  - Total Active Items: (WA orders + TM loads + OM orders)
+  - Decisions Pending: (sum of open items across all products)
+  - Cross-Product Alerts: (count of alerts referencing more than one product)
+  - System Health: (overall green/amber/red)
+
+3. Sidebar in cross-pillar mode: cross-pillar section stays as-is. Domain section changes: instead of product-specific items, show three product entry points (Warehouse Advantage, Transportation Management, Order Management) — each navigates into that product's pillar view.
+
+4. Navigation flow: cross-pillar dashboard → click WA card → currentProduct = 'wa', sidebar updates to WA domain, main loads WA dashboard. Return to cross-pillar via "All" in switcher.
+
+Verify: load prototype — default WA. Click "All". Cross-pillar dashboard shows three product cards, unified decision queue, cross-product Archer, aggregated KPIs. Click WA card → WA pillar. TM → TM pillar. OM → OM pillar. "All" → back. No console errors. No regressions.`
+      },
+      {
+        num: "3.6",
+        title: "Agent response schema + documentation updates",
+        subtitle: "Spec the format · 4 doc files",
+        time: "25-35 min",
+        status: "done",
+        why: "Formalises the three shared agent-response patterns (<code>confidence</code>, <code>escalationReason</code>, <code>options[]</code>) plus a new <code>product</code> discriminator (<code>wa</code> | <code>tm</code> | <code>om</code>) into a machine-readable JSON Schema. Pre-establishes the format. Documentation across README, AGENT-ARCHITECTURE, ITERATION-LOG updated to reflect the cross-pillar architecture.",
+        delivers: ["agent-response-schema.json at repo root", "AGENT-ARCHITECTURE.md cross-pillar section", "README.md update", "ITERATION-LOG.md session entry"],
+        prompt: `Read README.md, AGENT-ARCHITECTURE.md, WAY-OF-WORKING.md, ITERATION-LOG.md.
+
+Two parts: (A) create a formal agent response schema, (B) update project documentation.
+
+Part A — Agent Response Schema
+
+Create agent-response-schema.json at repo root. Formalizes the three shared patterns from AGENT-ARCHITECTURE.md section 6.2 into a machine-readable JSON Schema.
+
+AgentProposal required fields:
+- agentId (string) — which agent is proposing (e.g., "pick-path", "carrier", "order-priority")
+- proposalType (enum) — "recommendation" | "escalation" | "information"
+- confidence (integer 0–100) — per-action calibration
+- summary (string) — one-line human-readable
+- detail (string) — full reasoning
+- escalationReason (string, optional) — why a human is needed
+- options (array, optional) — alternatives when agent declines to recommend. Each: { id, label, description, tradeoff }
+- impacts (array, optional) — downstream effects. Each: { area, description, severity }
+- criticality (enum) — "urgent" | "standard"
+- tier (enum) — "tier-1-prohibited" | "tier-2-approval" | "tier-3-autonomous"
+- product (enum) — "wa" | "tm" | "om"
+- timestamp (ISO 8601 string)
+
+Add $comment at top: "Shared agent response schema for Infios agentic products. Defines the structured format all monitoring and domain agents use to surface proposals, escalations, and information to the Lead Agent and human operators. Authored by the UX team. See AGENT-ARCHITECTURE.md section 6.2 for design rationale."
+
+Part B — Documentation updates
+
+1. AGENT-ARCHITECTURE.md — add a new section after section 6 (or as 6.5): "Cross-Pillar Architecture." Document:
+   - Agnostic vs domain-specific component split (which is which)
+   - The product switcher model (currentProduct state)
+   - The cross-pillar dashboard as multi-product entry point
+   - How agent proposals include a product field for cross-product correlation
+   - The cross-pillar architecture directive as the design driver
+
+2. README.md — update "Where the project is right now" section. Update file map if agent-response-schema.json was added.
+
+3. ITERATION-LOG.md — new session entry for "Morning of May 13, 2026" documenting product switcher, nav restructure, TM stubs, OM stubs, cross-pillar dashboard, schema. Follow existing entry format (what, why, verified, what it leaves).
+
+Verify: all four files save. Schema is valid JSON. Cross-references consistent.`
+      },
+      {
+        num: "3.7",
+        title: "Archive snapshot + verify the shipped pair",
+        subtitle: "Ship discipline · Rollback safety",
+        time: "15-20 min",
+        status: "done",
+        why: "Only after everything is verified. Snapshot the prior <code>moonshot-prototype.html</code> into <code>archive/</code> as a rollback. Confirm the iframe in <code>moonshot-home.html</code> resolves cleanly. Then it's ready to share.",
+        delivers: ["archive/moonshot-prototype.PRE-MAY-13.html", "Verified iframe resolution", "Ship-ready pair"],
+        prompt: `Read WAY-OF-WORKING.md for ship discipline rules.
+
+Snapshot the prior version of the shipped prototype into archive and verify the deliverable pair still renders cleanly. The repo is flat — both moonshot-home.html and moonshot-prototype.html live at repo root; no separate shipped folder.
+
+Steps:
+1. Snapshot current moonshot-prototype.html to archive/moonshot-prototype.PRE-MAY-13.html so there's a rollback.
+2. Verify iframe in moonshot-home.html still resolves. It uses relative src="moonshot-prototype.html" — both files co-located at root, so it should work without changes.
+3. Open moonshot-home.html via preview and verify: Home tab loads, Agents tab loads, Prototype tab loads the updated prototype with product switcher visible, no console errors.
+4. DO NOT zip yet — just confirm snapshot and verification are clean.
+5. Report: what's in the shipped pair now, what changed from the prior snapshotted version, verification notes.`
+      }
+    ]
+  },
+  {
+    id: "phase-4",
+    num: "Phase 4",
+    title: "Spec backfill + UX fixes",
+    date: "May 13 · afternoon",
+    lead: "The morning sprint shipped the container, but the TM and OM views referenced agent names with no governance docs underneath them. Without specs, the demo collapses on inspection. Phase 4 backfills four new Domain specs (Spot Rate, Route, Allocation, Cutoff Manager) at the same eight-section quality bar as the existing eight, adds dual-context Cross-Pillar Notes to Carrier / Order Priority / Lead, surfaces twelve cards across three pillars on the Agents page, fixes two UX issues (WM modal → inline, cross-pillar terminal alignment), and updates docs.",
+    tasks: [
+      {
+        num: "4.1",
+        title: "Snapshot + four new agent specs",
+        subtitle: "Backfill · Governance docs",
+        time: "25-35 min",
+        status: "done",
+        why: "The prototype names agents that don't have specs yet — Spot Rate, Route, Allocation, Cutoff Manager. These four files match the existing 8-section format <strong>byte-for-byte</strong>, so the bar holds across all three pillars. Also snapshots both shipped artefacts so anything from here on is rollback-safe.",
+        delivers: ["4 new specs in /agents/", "Snapshot of home + prototype", "Eight-section format verified"],
+        prompt: `Cross-pillar context: morning seven-prompt sprint shipped. The prototype has TM and OM views with agent names baked into logs, stage cards, and Archer threads, but the specs that back those names don't exist. Backfill four missing specs at the same governance bar as the eight existing WMS Domain specs.
+
+Read: README.md, WAY-OF-WORKING.md, agents/carrier-agent.md (the 8-section template), agents/pick-path-agent.md (Route Agent is conceptually parallel).
+
+Two-part task: (A) snapshot, (B) create four specs.
+
+Part A — Snapshot
+- moonshot-home.html → archive/moonshot-home.PRE-MAY-13-PM.html
+- moonshot-prototype.html → archive/moonshot-prototype.PRE-MAY-13-PM.html
+
+Part B — Four new agent specs verbatim
+
+Create four files in /agents/. Each matches the 8-section structure of carrier-agent.md (Identity & Purpose, Responsibility Scope, Trigger Conditions, Actions, Inter-Agent Communication, Human Guardrails, Escalation Behaviour, Performance Metrics — with a Provenance preamble before section 1).
+
+File 1: agents/spot-rate-agent.md
+- TM Domain. Spot-quote evaluation against contracted lane rates. Surfaces alerts when spot pricing exceeds threshold (default 2.0x, hard ceiling 3.0x). Proposes accept, delay, or consolidate. Above hard ceiling: out-of-policy escalation with options[] and no recommendation.
+
+File 2: agents/route-agent.md
+- TM Domain. Lane selection, mode selection, multi-stop route optimization. Equivalent of Pick Path in WMS topology — each owns routing for its pillar's primary movement substrate. Proposes route changes when lane health drifts.
+
+File 3: agents/allocation-agent.md
+- OM Domain. Constrained-inventory allocation across competing orders. Distinct from prioritisation: Order Priority decides which order goes first when all can be filled; Allocation decides which orders get filled at all when stock < demand. Strategic-account involvement triggers options[] with no recommendation.
+
+File 4: agents/cutoff-manager-agent.md
+- OM Domain. Carrier-cutoff window tracking at the order layer. Operates upstream of the dock — owns batch composition, batch-to-cutoff assignment, at-risk-volume detection. Proposes push-to-next-window, split-the-batch, or hold-for-customer-notification.
+
+[Each spec body is delivered verbatim in the source prompt — too long to inline here. The specs include full Provenance preamble naming the UX team as authors, dated 2026-05-13, with the three shared fields (confidence, escalationReason, options[]) called out at the top of each.]
+
+Verify after saving:
+- Each file at expected path under /agents/
+- Each parses as markdown (no syntax errors)
+- Each has 8-section structure with Provenance preamble
+- /agents/ now has 12 Domain agent files (8 existing + 4 new), plus orchestration (lead-agent.md), radar (shift-intelligence-agent.md), analytical, meta/, guardian/
+
+Report which files were created, snapshot paths, structural mismatches found in the template that new specs needed to adapt around.`
+      },
+      {
+        num: "4.2",
+        title: "Cross-pillar addenda — Carrier, Order Priority, Lead",
+        subtitle: "Dual-context notes",
+        time: "10-15 min",
+        status: "done",
+        why: "Carrier Agent already works in TM context — it just needs <strong>explicit dual-context language</strong>. Same for Order Priority in OM. Lead Agent gets a cross-pillar scope note. Three short str_replace inserts, not rewrites. Closes the gap between the WMS-era spec language and the cross-pillar reality.",
+        delivers: ["Carrier dual-context note", "Order Priority dual-context note", "Lead cross-pillar scope note"],
+        prompt: `Read agents/carrier-agent.md, agents/order-priority-agent.md, agents/lead-agent.md. The four new specs from Task 4.1 should be in /agents/.
+
+Insert three Cross-Pillar Notes into existing specs. Use str_replace, NOT rewrite. Each addendum is a discrete paragraph between Provenance and section 1 (Identity & Purpose).
+
+1. agents/carrier-agent.md
+
+Anchor: "The Tier 2 actions in section 4 below reference these fields where applicable.\\n\\n---\\n\\n## 1. Identity & Purpose"
+
+Insert before ## 1:
+
+## Cross-Pillar Note
+
+Added 2026-05-13. The Carrier Agent operates in two product contexts. In WMS topology it monitors dock-window arrivals and departures at a specific facility — "active bays and outbound windows" are read as physical dock bays. In TM topology the same agent monitors lane-level carrier windows across a network — "active bays and outbound windows" are read as origin bays at any facility on the lane. The agent's Tier 2 / Tier 3 boundaries, prohibition list, and three shared fields (confidence, escalationReason, options[]) are identical across both contexts. Joint recommendations with TM Domain agents (Route, Spot Rate) follow the same Lead-Agent-routed pattern as joint recommendations with WMS Domain agents.
+
+2. agents/order-priority-agent.md
+
+View first to confirm exactly how its Provenance section ends. Adapt anchor. Insert before ## 1. Identity & Purpose:
+
+## Cross-Pillar Note
+
+Added 2026-05-13. The Order Priority Agent operates in two product contexts. In WMS topology it tracks SLA clocks on orders already released to the warehouse floor — at-risk-window detection runs against pick progress, wave status, outbound dispatch readiness. In OM topology the same agent tracks SLA clocks on orders upstream — at the moment of channel intake, allocation, and tender — before they ever reach a warehouse. Tier 1 cancellation prohibition, Tier 2 propose-not-execute obligation, and the three shared fields are identical across both contexts. Joint recommendations with OM Domain agents (Allocation, Cutoff Manager) follow the same Lead-Agent-routed pattern.
+
+3. agents/lead-agent.md
+
+View first. Insert before ## 1. Identity & Purpose:
+
+## Cross-Pillar Scope
+
+Added 2026-05-13. The Lead Agent is the single human-facing orchestrator across all three Infios products — Warehouse Advantage (WMS), Transportation Management (TMS), Order Management (OMS). When a customer runs more than one product, the Lead Agent presents a unified proposal queue, surfaces cross-product correlations in the Archer terminal (e.g., "Carrier delay on MEM→CHI may impact 12 warehouse orders in the next wave"), and routes user confirmations to the correct downstream Domain agent regardless of pillar.
+
+Cross-product joint recommendations are first-class. Example: a carrier reroute proposed by Carrier in TM context, paired with order reprioritisation from Order Priority in OM context, paired with labor redeployment from Labor in WMS context — assembled with each contributing agent's domain tagged and presented to the user as one consolidated decision with cross-pillar impact preview. The user approves once; the Lead Agent fans the approval out to each Domain agent within its pillar's audit log.
+
+The three shared fields carry an additional product discriminator (wa | tm | om) in cross-pillar context. Schema defined in agent-response-schema.json at repo root.
+
+Verification: re-view each file. Addendum sits cleanly between Provenance and section 1, no orphan separators. Report any anchors that didn't match on first attempt.`
+      },
+      {
+        num: "4.3",
+        title: "Agents page — 12-card Domain section + topology beat",
+        subtitle: "Where the agents are seen",
+        time: "25-35 min",
+        status: "done",
+        why: "Goes from <strong>8 cards (WMS only) to 12 cards across 3 pillars</strong>. New cross-pillar topology beat at the bottom. This is the visible argument that the agent system spans products, not just warehouse.",
+        delivers: ["12 Domain cards (8 + 4 new)", "Updated Domain section header", "Cross-pillar topology beat"],
+        prompt: `Read moonshot-home.html — focus on #section-domain and #section-topology blocks.
+
+Three edits.
+
+1. Update Domain section header
+
+str_replace:
+old: <p class="layer__desc">Eight agents, eight problem spaces. Each proposes. None executes alone.</p>
+new: <p class="layer__desc">Twelve agents across three pillars — Warehouse, Transportation, Order Management. Each owns one problem space. Each proposes. None executes alone. The same Tier 1 / 2 / 3 model, the same three shared fields (confidence, escalationReason, options[]), the same governance contract — across every pillar.</p>
+
+2. Add four new Domain cards
+
+After the Quality Agent card's closing </article> (the last existing Domain card), insert four new <article class="card"> elements before the closing </div></div></div> and the start of <div class="layer" id="section-analytical">.
+
+Each card has: head (avatar + name + role + toggle button), summary, details (body + Talks-to + guardrail + attribution + pill-row with Domain + pillar pill).
+
+Spot Rate Agent (SR):
+- Role: "TM — Spot quotes vs contracted lane rate."
+- Summary: "Surfaces an alert the moment a spot quote crosses the configured multiple of the contracted lane rate. Proposes accept, delay, or consolidate — never both rate and route silently."
+- Body: comparison against contracted rate, 2.0x default threshold, 3.0x hard ceiling triggers options[] with no recommendation.
+- Talks to: Lead Agent (proposals); Carrier Agent (capacity-exhausted requests); Route Agent (joint rate + route changes).
+- Guardrail: Will not accept a spot quote above hard ceiling, even with approval — requires explicit policy override. Will not cancel an existing carrier booking. Ever.
+- Attribution: Authored by the UX Team. Pills: Domain, TM.
+
+Route Agent (RT):
+- Role: "TM — Lane health, mode selection, multi-stop routing."
+- Summary: "Owns lane selection, mode selection, and multi-stop sequencing. Proposes route changes the moment lane health drifts off baseline."
+- Body: monitors transit-time variance, capacity availability, on-time history. Builds route changes, mode changes, stop resequences. TM equivalent of Pick Path.
+- Talks to: Lead Agent; Carrier (route-alternative-requested); Spot Rate (joint route + rate); Order Priority (faster route on ship-by risk).
+- Guardrail: Won't propose route change breaching contractual carrier obligation without flagging. Won't propose mode change breaching customer SLA without flagging. Won't cancel a shipment. Ever.
+- Attribution: Authored by the UX Team. Pills: Domain, TM.
+
+Allocation Agent (AL):
+- Role: "OM — Constrained-inventory allocation."
+- Summary: "When pending demand exceeds available stock, proposes which orders get filled, which get backordered, and which substitute. Every allocation is customer-facing — every allocation is Tier 2."
+- Body: distinct from prioritisation (Order Priority decides which goes first; Allocation decides which gets filled at all). Strategic-account involvement → options[] with no recommendation.
+- Talks to: Lead Agent (proposals + strategic-account escalations); Order Priority (joint allocation + reprioritisation); Cutoff Manager (batch composition shifts).
+- Guardrail: Won't allocate against committed stock. Won't substitute against no-substitute terms. Won't cancel — backorder is not cancellation. Won't rescue one order by putting another at risk.
+- Attribution: Authored by the UX Team. Pills: Domain, OM.
+
+Cutoff Manager Agent (CM):
+- Role: "OM — Carrier cutoff windows at the order layer."
+- Summary: "Tracks every batch against its assigned cutoff. When the at-risk volume crosses threshold, proposes push, split, or hold — before the window closes on the floor."
+- Body: operates at order layer upstream of dock. Owns batch composition, batch-to-cutoff assignment, at-risk-volume detection. Customer notifications never autonomous — agent proposes hold, human confirms notification.
+- Talks to: Lead Agent; Order Priority (batch-at-risk); Allocation (batch-composition shifts); Spot Rate (expedited capacity for split-the-batch).
+- Guardrail: Won't push an order breaching ship-by SLA without flagging. Won't trigger outbound customer notification — always human-confirmed. Won't cancel. Ever.
+- Attribution: Authored by the UX Team. Pills: Domain, OM.
+
+3. Add cross-pillar topology beat
+
+Locate #section-topology. Find existing numbered beats (<div class="topo__beat"> with topo__beat-num 01, 02 etc.). Insert new beat after the last, renumbered.
+
+Content:
+- Heading: "Agents correlate across pillars."
+- Subhead: "A signal in one product surfaces consequences in another — through the Lead Agent, never directly."
+- Chips:
+  - Carrier (TM) → Lead → Order Priority (OM) · Lane delay flagged upstream of allocation.
+  - Spot Rate (TM) ↔ Cutoff Manager (OM) · Split-the-batch on expedited spot capacity.
+  - Allocation (OM) ↔ Order Priority (OM) · Joint allocation + reprioritisation.
+  - Route (TM) ↔ Carrier (TM) · Joint route change + carrier reroute.
+
+Verify: preview_start, screenshot Agents page Domain section. 12 cards render in grid with no layout breakage. Click into each of the 4 new cards' toggles — disclosure works (aria-expanded toggles, details slide open). Topology section renders new beat without breaking layout.`
+      },
+      {
+        num: "4.4",
+        title: "Prototype UX fixes + name reconciliation",
+        subtitle: "Inline WM stage · Cross-pillar terminal · Names match",
+        time: "30-40 min",
+        status: "done",
+        why: "Three things in one prototype pass. (a) WM home <strong>modal becomes inline</strong> like TM/OM. (b) Cross-pillar terminal stops floating inside a grey wrapper and aligns with the product cards above. (c) Names in TM_DATA/OM_DATA reconciled to match the new spec filenames exactly. Riskiest task of the afternoon because it touches render logic — but the snapshot from Task 4.1 is the rollback.",
+        delivers: ["WM stage inline (no modal)", "Cross-pillar terminal flush + edge-aligned", "Names match specs"],
+        prompt: `Read moonshot-prototype.html. Find:
+(a) what agent names the morning prompts wrote into TM_DATA, OM_DATA, and the cross-pillar pre-seeded thread
+(b) the .home-modal / .home-modal-host / .home-modal-backdrop block wrapping the WM stage decision
+(c) the cross-pillar dashboard layout (currentProduct === 'cross')
+
+Three sub-tasks in one editing pass. Snapshot already done in Task 4.1.
+
+4a — Name reconciliation against specs
+
+Read TM_DATA, OM_DATA, cross-pillar thread, and any log entries / stage cards referencing agents. Confirm names match new spec filenames exactly:
+
+Expected:
+- "Spot Rate Agent" (not "Spot Quote Agent", not "Rate Agent")
+- "Route Agent" (not "Lane Agent", not "Routing Agent")
+- "Allocation Agent" (not "Inventory Allocation Agent", not "Allocator")
+- "Cutoff Manager Agent" (not "Cutoff Agent", not "Batch Manager")
+- "Carrier Agent" (unchanged — WMS + TM)
+- "Order Priority Agent" (unchanged — WMS + OM)
+- "Lead Agent" (unchanged — cross-pillar)
+
+If name drift found: reconcile the prototype to match the specs — change prototype data, NOT specs. Specs are governance contract.
+
+If you find a name in the prototype with no corresponding spec, flag it and stop. Don't invent specs.
+
+4b — WM home dashboard: convert center stage from modal to inline
+
+Current: when WM home has a pending decision, it renders as modal popup. Structure: .home-modal-host → .home-modal-backdrop → .home-modal wrapping .home-stage__card. Backdrop dims underlying dashboard. Decision floats on top.
+
+Desired: matches TM/OM dashboards. Card renders inline in .home-stage area of home grid, between zones strip (left) and Archer terminal (right). No backdrop, no modal, no overlay.
+
+Implementation:
+- Find render path for WM stage card when pending decision exists. Likely populates .home-modal-host with .home-modal-backdrop > .home-modal > .home-stage__card.
+- Reroute render so card content lands directly in .home-stage. Preserve card structure — agent avatar, agent name + zone context, confidence percentage badge, decision title, stats row, Approve / Reject / Details buttons.
+- Apply same visual treatment TM and OM use for inline stage cards: white background, border-radius, shadow, padding. Current .home-modal styling (background:#fff; border-radius:12px; box-shadow:0 4px 24px rgba(35,38,37,0.18); padding:28px 28px 24px) is the right starting point — apply directly to stage card in pending state, not as a modal wrapper.
+- Empty/calm state of stage (no pending decision) remains unchanged.
+- .home-modal-host, .home-modal-backdrop, .home-modal styles can stay in stylesheet (may still be used by other escalation states) but should not be invoked for routine pending-decision flow on WM home.
+- If prototype has logic triggering modal in response to sim-engine event (Pick Path replenishment), update to populate .home-stage inline.
+
+Verify in browser: load prototype, wait for WM Pick Path decision at 08:30. Decision sits inline in centre column, same vertical/horizontal position as TM Carrier card and OM Order Priority card. No dimmed backdrop. No modal frame.
+
+4c — Cross-pillar dashboard: terminal alignment + remove grey wrapper
+
+Current: on cross-pillar dashboard, Archer terminal rendered inside extra grey-background wrapper. Wrapper sits inside white tile. Terminal's right edge does not align with product cards row above — falls roughly 150px short.
+
+Desired: terminal sits directly on its containing white tile, no grey wrapper. Terminal occupies full width of parent tile. Right edge aligns with right edge of product cards row above.
+
+Implementation:
+- Find cross-pillar render path (called from renderAll() when currentProduct === 'cross'). Layout: top row (3 product cards), middle (unified decision queue), right column (Archer), bottom (aggregated KPIs).
+- Inspect terminal container. Identify element(s) responsible for grey background. Likely wrapping div with background: var(--infios-color-bg-alt) or padding/margin on terminal column exposing tile background through gaps.
+- Remove grey wrapper. Terminal's chrome (dark interior, "lead@infios-network · LIVE" header, OPEN FULL button, message list) is its own dark-themed component — sits directly on white tile.
+- Terminal container occupies 100% of parent tile content width. No internal max-width, no horizontal padding creating gap between terminal and tile edge.
+- Confirm alignment: right edge of terminal column == right edge of product cards row above. If shared parent grid → matter of grid column definitions. If separate containers → matching right margins and max-widths.
+- Do NOT change TM or OM dashboard terminals — they sit in centre stage area as rightmost of three columns (zones/lanes/channels · stage · terminal). Their layout is correct.
+
+Verify in browser: load prototype, click "All" in product switcher. Terminal occupies tile edge-to-edge with no grey frame. Top-right corner of terminal tile aligns with top-right corner of OM product card. Screenshot for confirmation.
+
+Verification after all three:
+- WM home: Pick Path decision inline, no modal, matches TM/OM.
+- Cross-pillar: terminal flush against tile, right edges aligned.
+- Agent names in TM_DATA / OM_DATA / cross-pillar thread match spec filenames.
+- No console errors. No regressions on TM or OM.
+
+Report reconciliation findings from 4a and any layout caveats from 4b/4c.`
+      },
+      {
+        num: "4.5",
+        title: "Documentation — README, AGENT-ARCHITECTURE, ITERATION-LOG",
+        subtitle: "Update the maps · Close the session",
+        time: "15-20 min",
+        status: "done",
+        why: "Roster goes from 8 to 12. AGENT-ARCHITECTURE gets a new Cross-Pillar Domain Agents section. ITERATION-LOG gets the afternoon entry. Anyone reading these files after today sees the cross-pillar architecture as <strong>state-of-the-system</strong>, not future work.",
+        delivers: ["README agent roster updated", "AGENT-ARCHITECTURE new section", "ITERATION-LOG May 13 PM entry"],
+        prompt: `Read README.md, AGENT-ARCHITECTURE.md, ITERATION-LOG.md. Tasks 4.1-4.4 are committed.
+
+Three documentation updates.
+
+1. README.md — Agent roster table
+
+Current shows 8 Domain agents. Update to 12 with pillar attribution:
+
+| Layer | Agent | Pillar(s) | Role |
+|---|---|---|---|
+| Orchestration | Lead Agent | All | Sole human-facing agent. Single point of contact across WMS / TMS / OMS. |
+| Radar | Shift Intelligence Agent | WMS | Continuous monitor across all zones. Signal-only — never proposes. |
+| Domain | Pick Path | WMS | Throughput. Aisle routing. Congestion. |
+| Domain | Labor | WMS | Workforce flex. Primary fix lever. |
+| Domain | Order Priority | WMS + OMS | SLA clock. Ship-by window. Reprioritisation across both pillars. |
+| Domain | Carrier | WMS + TMS | Carrier ETA visibility and window management across both pillars. |
+| Domain | Exception | WMS | Mispicks, short-picks, scan errors. |
+| Domain | Slotting | WMS | Replen, bin assignment, fast-mover re-slotting. |
+| Domain | Equipment | WMS | Forklifts, AMRs, conveyors, charge cycles. |
+| Domain | Quality | WMS | Damage, quality holds, cycle counts, audit risk. |
+| Domain | Spot Rate | TMS | Spot quotes vs contracted lane rate. |
+| Domain | Route | TMS | Lane health, mode selection, multi-stop routing. |
+| Domain | Allocation | OMS | Constrained-inventory allocation. |
+| Domain | Cutoff Manager | OMS | Carrier cutoff windows at the order layer. |
+| Analytical | BI · Innovation · Opportunity | All | Read-only analysis modes. |
+
+Update "Where the project is right now" section:
+- 12 Domain agents across 3 pillars now specced in /agents/.
+- Prototype's WM home center stage migrated from modal-overlay to inline (matching TM and OM).
+- Cross-pillar dashboard's Archer terminal brought flush to its containing tile, aligned with product cards row above.
+
+2. AGENT-ARCHITECTURE.md — new section "Cross-Pillar Domain Agents"
+
+Cover:
+- One-line summary of each new agent (Spot Rate, Route, Allocation, Cutoff Manager).
+- Dual-context pattern: Carrier operates in WMS dock-window context AND TM lane-window context. Order Priority in WMS floor-released SLA context AND OMS upstream channel-intake context. Identical Tier 1/2/3 boundaries across contexts; only operational substrate changes.
+- Product discriminator on agent response schema: proposals carry a product field (wa | tm | om) so Lead Agent correlates proposals when running more than one.
+- The cross-pillar architecture directive as design driver.
+- Reference forward to agent-response-schema.json.
+
+3. ITERATION-LOG.md — new session entry
+
+Title: "May 13 afternoon — cross-pillar agent backfill + UX fixes."
+
+What was built:
+- 4 new agent specs in /agents/: spot-rate-agent.md, route-agent.md, allocation-agent.md, cutoff-manager-agent.md.
+- 3 cross-pillar addenda inserted into carrier-agent.md, order-priority-agent.md, lead-agent.md.
+- Agents page in moonshot-home.html: Domain section header reframed for 12 agents / 3 pillars, 4 new cards, new cross-pillar topology beat.
+- moonshot-prototype.html: WM home center stage migrated from modal-overlay to inline (matching TM/OM); cross-pillar dashboard Archer terminal flush to tile and aligned with product cards row; agent names in TM_DATA / OM_DATA reconciled to match new spec filenames.
+
+Why:
+- Morning sprint shipped the cross-pillar container but TM and OM views referenced agent names with no governance docs underneath. Without specs, demo collapses on inspection. Afternoon backfill closes the gap so all three pillars read at the same quality bar.
+- Two UX issues on review: WM home rendered decision as modal overlay while TM/OM rendered inline (inconsistent), and cross-pillar Archer sat inside grey wrapper offset from product cards (visually broken). Both fixed in one prototype pass.
+
+Verified:
+- All 12 Domain cards render on Agents page with no layout breakage.
+- Toggle disclosures work on all 4 new cards.
+- Cross-pillar topology beat renders alongside existing beats.
+- WM home Pick Path decision renders inline at 08:30 sim time.
+- Cross-pillar dashboard terminal full tile width, right edge aligned with OM product card.
+
+What it leaves:
+- Agents page reflects 12 Domain agents across 3 pillars.
+- Prototype's three pillar dashboards behave consistently (inline stage cards, no modal overlays for routine pending decisions).
+- Cross-pillar dashboard layout no longer surfaces modal/wrapper inconsistencies.
+
+Verify: all three files save. README table renders correctly. AGENT-ARCHITECTURE section consistent with rest of document's voice. ITERATION-LOG follows established format.`
+      }
+    ]
+  },
+  {
+    id: "phase-5",
+    num: "Phase 5",
+    title: "Forward plan — rename, Archer, simulation, audit",
+    date: "Phase II · forward",
+    lead: "Nine more tasks across three sub-phases. <strong>Foundation</strong> (Archer bug fix, Sim Life Agent expansion, personas) — without these, nothing downstream works because Archer is broken in non-WA, TM/OM views are static stubs, and personas are WMS-only. <strong>Structure</strong> (page split, pillar timelines, system view update) — makes the cross-pillar argument visible. <strong>Polish</strong> (rename, WCAG audit, homepage audit) — what makes it shareable.",
+    tasks: [
+      {
+        num: "5.1",
+        title: "Lead Agent → Archer Chat Agent rename",
+        subtitle: "Brand alignment · Global rename",
+        time: "30-45 min",
+        status: "done",
+        why: "The user-facing chat surface is branded \"Archer\" (terminal label, sidebar item, conversation context). The agent driving it is named \"Lead Agent\" in spec — accurate but disconnected from the visible brand. Rename everywhere: spec filename, 16 cross-references in other specs, Architecture System tree, Domain card \"Talks to\" fields, Topology beats, prototype agent-ctx-bar, terminal hosts (<code>lead@...</code> → <code>archer@...</code>), README, AGENT-ARCHITECTURE. Mechanical but touchy because lowercase \"lead\" appears legitimately in \"lead time,\" \"leading\" etc.",
+        delivers: ["Renamed spec file", "Global rename in all specs", "Prototype labels updated", "Terminal hosts updated", "Docs updated", "ITERATION-LOG entry"],
+        prompt: `Read the repo structure. Global rename: "Lead Agent" → "Archer Chat Agent" everywhere. Full scope:
+1. Spec filename: agents/lead-agent.md → agents/archer-chat-agent.md
+2. Spec internal language (own spec + every other spec that cross-references it)
+3. Display labels in prototype: terminal host lead@... → archer@... (four hosts: dc-14-memphis, hub-mem-tm, oms-na, infios-network), agent-ctx-avatar initials LA → AC.
+
+Be careful NOT to change unrelated text containing "lead" (e.g., "lead time", "leads to", "leading"). Use exact-phrase matching: "Lead Agent" with capital L and A. Lowercase "lead" appears in terminal hosts only — those four host strings are the only lowercase "lead" references to rename.
+
+Mechanical but touchy. Snapshot first.
+
+Part 0 — Snapshot
+- cp moonshot-home.html → archive/moonshot-home.PRE-ARCHER-RENAME.html
+- cp moonshot-prototype.html → archive/moonshot-prototype.PRE-ARCHER-RENAME.html
+- cp agents/lead-agent.md → archive/lead-agent.PRE-RENAME.md
+
+Part 1 — Rename spec file and update content
+1a. mv agents/lead-agent.md agents/archer-chat-agent.md
+1b. Open agents/archer-chat-agent.md. Update title and all internal "Lead Agent" → "Archer Chat Agent". Cross-Pillar Scope section from Task 4.2 also gets the rename internally.
+
+Part 2 — Sweep other agent specs
+
+Find "Lead Agent" (capital) in:
+- agents/shift-intelligence-agent.md
+- agents/pick-path-agent.md
+- agents/labor-agent.md
+- agents/order-priority-agent.md
+- agents/carrier-agent.md
+- agents/exception-agent.md
+- agents/slotting-agent.md
+- agents/equipment-agent.md
+- agents/quality-agent.md
+- agents/analytical-agents.md
+- agents/meta/warehouse-life-agent.md
+- agents/guardian/heuristics-agent.md
+- agents/guardian/accessibility-agent.md
+- agents/spot-rate-agent.md
+- agents/route-agent.md
+- agents/allocation-agent.md
+- agents/cutoff-manager-agent.md
+
+Use grep -l "Lead Agent" agents/*.md agents/*/*.md to confirm list, then sed -i 's/Lead Agent/Archer Chat Agent/g' on each. Verify each diff. After sweep, grep -rn "Lead Agent" agents/ should return zero (unless a historical Provenance note legitimately mentions the old name).
+
+Part 3 — Update moonshot-home.html
+
+3a. Architecture System view — find "Lead Agent" node, rename title to "Archer Chat Agent". CSS class stays.
+3b. Lead section (#section-lead) card — .card__name "Lead Agent" → "Archer Chat Agent".
+3c. Domain cards' "Talks to" fields — sweep all 12 Domain cards. "Lead Agent" → "Archer Chat Agent" in every card__field-value.
+3d. Topology section beats (#section-topology) — any beat description or chip note referencing "Lead Agent" → "Archer Chat Agent".
+3e. agents-index navigation — "Lead" label stays as section label (layer name, not full agent name). Verify href and data-section still point to #section-lead.
+3f. grep -n "Lead Agent" moonshot-home.html should hit zero after the above.
+
+Part 4 — Update moonshot-prototype.html
+
+Most surgical. Multiple display contexts.
+
+4a. Terminal host strings — four. Rename:
+- lead@dc-14-memphis → archer@dc-14-memphis
+- lead@hub-mem-tm → archer@hub-mem-tm
+- lead@oms-na → archer@oms-na
+- lead@infios-network → archer@infios-network
+
+Appear in template literals around agent-ctx-bar rendering. Likely conditional logic like currentProduct === 'tm' ? 'lead@hub-mem-tm' : 'lead@dc-14-memphis'.
+
+4b. agent-ctx-name display — anywhere "Lead Agent" appears as literal string in JS template literals or HTML rendering agent identity. Rename to "Archer Chat Agent".
+
+4c. buildAgentMsg default initials — defaults "LA". Update to "AC". Callers passing "LA" with "Lead Agent" → "AC" with "Archer Chat Agent". Defaults in buildOpThread (m.initials || 'LA', m.agent || 'Lead Agent') also update.
+
+4d. Pre-seeded chatThread messages — WAREHOUSE.chatThread, TM_DATA.chatThread, OM_DATA.chatThread, cross-pillar thread. Any message with agent:'Lead Agent' and/or initials:'LA' updates to agent:'Archer Chat Agent', initials:'AC'.
+
+4e. grep -n "Lead Agent\\|lead@\\|'LA'" moonshot-prototype.html. Investigate any leftover. (Aware: 'LA' as city code for Los Angeles in MEM→LA lane should NOT be renamed.)
+
+Part 5 — agent-response-schema.json
+If schema has example for agentId referencing "lead", update to "archer-chat" or similar.
+
+Part 6 — Documentation
+6a. README.md: agent roster table, "What to read next", anywhere "Lead Agent" or "Lead (orchestration)" appears.
+6b. AGENT-ARCHITECTURE.md: internal references, diagram labels, section headers.
+6c. WAY-OF-WORKING.md: check for mentions.
+grep -rn "Lead Agent" *.md after — zero hits.
+
+Part 7 — ITERATION-LOG entry
+
+Title: "Lead Agent renamed to Archer Chat Agent — brand alignment."
+
+What was built: spec file renamed, 17 spec files updated (renamed agent + 16 cross-references), Architecture System tree node renamed, Domain "Talks to" fields updated, Topology beats updated, 4 terminal hosts renamed, buildAgentMsg defaults updated, pre-seeded chatThreads updated, schema example updated, README + AGENT-ARCHITECTURE + WAY-OF-WORKING swept.
+
+Why: aligns spec name with visible brand. Archer is the AI brand at Infios — the orchestrator's name should match the chat surface label users actually see.
+
+Verified: grep -rn "Lead Agent" agents/ *.md returns zero. grep -n "lead@\\|'LA'" moonshot-prototype.html returns zero except for legit city codes. Prototype loads without console errors. Terminal header shows archer@... in all four product contexts. agent-ctx-avatar shows AC initials. Architecture System tree shows "Archer Chat Agent". Lead Agent card reads "Archer Chat Agent". All Domain cards' "Talks to" fields reference Archer Chat Agent.
+
+What it leaves: orchestrator's brand identity matches visible chat surface. Spec governance contract unchanged — Tier 1/2/3 boundaries, escalation patterns, communication rules all hold. Only the name has changed.
+
+Report: files touched, total count of "Lead Agent" → "Archer Chat Agent" replacements, judgment calls on ambiguous "lead" occurrences.`
+      },
+      {
+        num: "5.2",
+        title: "Archer unified across products",
+        subtitle: "Bug fix · Foundation",
+        time: "45-60 min",
+        status: "done",
+        why: "Archer (CLI view) is currently <strong>gated to WA only</strong> — clicking it in TM, OM, or cross-pillar shows a placeholder. Worse, the four chatThreads (WA, TM, OM, cross) are siloed. This task ungates Archer everywhere and unifies the thread with <strong>(product, source) transition dividers</strong> — so typing in WA Home then opening OM Archer shows the history with proper source attribution. Critical bug; demo collapses without it.",
+        delivers: ["Archer renders in all 4 products", "Unified thread with dividers", "Per-product agent-ctx-bar", "ITERATION-LOG entry"],
+        prompt: `Read moonshot-prototype.html. Focus on:
+
+1. renderMain() ~line 3398-3424 — dispatch that routes view+product combinations. Note explicit fallthroughs sending 'cli' to renderProductPlaceholder() when currentProduct is TM or OM.
+2. The chatThread arrays — WAREHOUSE.chatThread (~line 2220), TM_DATA.chatThread (~line 2329), OM_DATA.chatThread (similar block after morning OM build), cross-pillar thread (from morning prompts).
+3. buildOpThread() ~line 4449 — current source-divider logic handling 'cli' vs 'home' transitions.
+4. CLI view header rendering ~line 4300 — switches host name between lead@dc-14-memphis (WA) and lead@hub-mem-tm (TM) but doesn't account for OM or cross.
+5. User-input append paths ~lines 5035-5073 — where typed messages get pushed into chatThread.
+
+Archer is the cross-pillar conversation log. Currently only works in WA. Each product's HOME terminal stays product-scoped — only shows messages from that product's context. The ARCHER view is the unified roll-up: same content across all products, with agent-ctx-bar showing "you are here".
+
+Four parts. Snapshot first.
+
+Part 0 — Snapshot
+cp moonshot-prototype.html → archive/moonshot-prototype.PRE-ARCHER-UNIFY.html
+
+Part 1 — Ungate Archer in renderMain()
+
+Change dispatch so:
+- view === 'cli' always routes to renderCLI() regardless of currentProduct.
+- TM and OM keep existing home/log/map dispatches.
+- 'perf' stays on placeholder for now if not being unified.
+
+Part 2 — Add product to every existing message + define unified-thread helper
+
+Each existing message in the four chatThreads gets a product field so merge can tag source correctly.
+
+Sweep:
+- WAREHOUSE.chatThread → product:'wa'
+- TM_DATA.chatThread → product:'tm'
+- OM_DATA.chatThread → product:'om'
+- Cross-pillar thread (find variable name) → product:'cross'
+
+If a message already has product, leave alone. If missing source field, default it: operational messages from Lead Agent meant for home terminal → source:'home'; CLI-context → source:'cli'.
+
+Add helper near buildOpThread():
+
+function getUnifiedThread() {
+  const all = [];
+  const push = (arr, fallbackProduct) => {
+    if (!arr) return;
+    for (const m of arr) {
+      all.push({ ...m, product: m.product || fallbackProduct, source: m.source || 'home' });
+    }
+  };
+  push(WAREHOUSE.chatThread, 'wa');
+  push(TM_DATA && TM_DATA.chatThread, 'tm');
+  push(OM_DATA && OM_DATA.chatThread, 'om');
+  push(CROSS_DATA && CROSS_DATA.chatThread, 'cross');
+  return all.sort((a, b) => a.sec - b.sec);
+}
+
+Adjust variable references to match actual names. Defensive — if thread doesn't exist, skip cleanly.
+
+Part 3 — Rewrite buildOpThread() to use unified thread and emit (product, source) dividers
+
+Replace with version that:
+- Pulls from getUnifiedThread() instead of WAREHOUSE.chatThread directly.
+- Tracks previous (product, source) tuple, not just previous source.
+- Emits divider whenever EITHER product or source changes between consecutive messages.
+
+Divider text format:
+- Any → WA home: ↳ Continued in WA Home terminal
+- Any → WA Archer: ↳ Continued in WA Archer
+- Any → TM home: ↳ Continued in TM Home terminal
+- Any → TM Archer: ↳ Continued in TM Archer
+- Any → OM home: ↳ Continued in OM Home terminal
+- Any → OM Archer: ↳ Continued in OM Archer
+- Any → cross home: ↳ Cross-pillar context (lead@infios-network)
+- Any → cross Archer: ↳ Continued in cross-pillar Archer
+
+First message (prevTuple null): "Started in ..." instead of "Continued in ...".
+
+The existing isUser = m.source === 'cli' || m.source === 'home' was a bug (caught both, meaning "everything"). User/agent distinction lives on whether message has an agent field. Either (a) infer from presence of m.agent/m.initials, or (b) add explicit role:'user'|'agent' during Part 2 sweep. Pick whichever's cleaner.
+
+Part 4 — Archer header per product, user-input routing, home-terminal scoping
+
+4a. Archer header per product — agent-ctx-bar host switches by currentProduct:
+- wa: lead@dc-14-memphis · WAREHOUSE
+- tm: lead@hub-mem-tm · TRANSPORTATION
+- om: lead@oms-na · ORDER MANAGEMENT
+- cross: lead@infios-network · CROSS-PILLAR
+
+Thread below header is same unified thread regardless of currentProduct. Only header changes — tells user where next typed message will be tagged.
+
+4b. User-input routing — when user types in Archer input and submits, message gets appended to correct chatThread:
+
+function appendUserCLIMessage(text, sec) {
+  const msg = { sec, text, source: 'cli', product: currentProduct, role: 'user' };
+  if (currentProduct === 'tm') TM_DATA.chatThread.push(msg);
+  else if (currentProduct === 'om') OM_DATA.chatThread.push(msg);
+  else if (currentProduct === 'cross') CROSS_DATA.chatThread.push(msg);
+  else WAREHOUSE.chatThread.push(msg);
+}
+
+Same pattern for agent-response generation following user input.
+
+4c. Home-terminal scoping stays — WA home renders only WA-tagged messages. TM home only TM. OM home only OM. Cross home renders cross. If any home reads from WAREHOUSE.chatThread without filtering, change to read from its product's thread (or filter unified by product).
+
+Part 5 — ITERATION-LOG entry
+
+Title: "Archer unified as cross-pillar conversation log."
+
+What was built: Archer ungated for TM, OM, cross-pillar. Every pre-seeded message carries product field. New getUnifiedThread() helper. buildOpThread() rewritten with (product, source) transition dividers. agent-ctx-bar host switches per currentProduct. User-input routes per-product. Home terminals remain product-scoped.
+
+Why: morning's cross-pillar architecture promised Archer as cross-pillar component but implementation only routed 'cli' to renderCLI() for currentProduct === 'wa'. TM and OM clicked Archer and got placeholder. Unified-thread + (product, source) attribution makes the Lead Agent's Cross-Pillar Scope addendum demonstrable in prototype, not just spec'd.
+
+Verified: Archer renders in WA, TM, OM, cross — same unified content, different agent-ctx-bar header per product. Type in WA Home → appears in WA home terminal AND in unified Archer thread tagged WA Home. Type in OM Archer → appears in Archer with "Continued in OM Archer" divider above, does NOT appear in WA Home or TM Home. Reload returns to pre-seeded state.
+
+Verification in browser (preview):
+1. Default WA home. Terminal panel shows WA messages.
+2. Click Archer. agent-ctx-bar shows lead@dc-14-memphis · WAREHOUSE. Thread shows unified history sorted by time with dividers where (product, source) changes.
+3. Type in Archer. Tagged WA Archer.
+4. Switch to OM via switcher. Click Archer. agent-ctx-bar updates to lead@oms-na · ORDER MANAGEMENT. Thread is SAME unified including your WA Archer message. Divider above your WA message still says "Continued in WA Archer".
+5. Type in OM Archer. New divider appears: "Continued in OM Archer". Tagged product:'om' source:'cli'.
+6. Switch back to WA home. Right-rail terminal shows only WA messages — your OM message does NOT appear. Switch to OM home — OM appears, WA does not.
+7. Click Archer in cross-pillar. agent-ctx-bar shows lead@infios-network · CROSS-PILLAR. Same unified history.
+8. Reload — pre-seeded returns; user-typed lost.
+
+No console errors. No regressions.
+
+Report: which thread variable holds cross-pillar messages, whether (a) inference or (b) explicit role field used in Part 3, judgment calls on backfilling source fields in Part 2.`
+      },
+      {
+        num: "5.3",
+        title: "Architecture diagrams cross-pillar",
+        subtitle: "System tree + Timeline info card · Narrative softening",
+        time: "25-35 min",
+        status: "done",
+        why: "Phase 4 Task 4.3 updated the Agents page Domain section to 12 cards but the Architecture section at the TOP of the page still tells a WMS-only story. First diagram says \"eight domain agents\" while the cards below say twelve. The page argues with itself. Also: softens Station 1 framing from \"UX authors the agent specs\" (a power claim) to \"Agents are authored\" (descriptive, no territorial flag). Per-card attributions stay — UX ownership remains discoverable but is not the page headline.",
+        delivers: ["3 pillar rows in System view", "Dual-context subtitles on Carrier + Order Priority", "Timeline info card #3 updated", "Lede paragraph reframed", "Station 1 softened", "ITERATION-LOG entry"],
+        prompt: `Read moonshot-home.html. Focus on:
+1. #section-architecture (~line 2354) — Architecture section with Timeline · System toggle.
+2. Timeline view info card for station 3 (~line 2480) — currently "Eight specialist agents — Pick Path, Labor, Quality, and five more".
+3. System view tree (~line 2523-2581) — one .system-tree__domain-row containing 8 .system-tree__leaf (Pick Path, Labor, Order Priority, Carrier, Exception, Slotting, Equipment, Quality).
+4. Closing lede below tree (~line 2578) — "eight domain agents... outside the WMS topology."
+5. CSS for .system-tree__domain-row (line 1236) — grid-template-columns:repeat(8, 1fr); responsive at line 1347 (repeat(4, 1fr) under 1080px).
+
+Six parts. Snapshot first.
+
+Part 0 — Snapshot
+cp moonshot-home.html → archive/moonshot-home.PRE-ARCH-CROSS-PILLAR.html
+
+Part 1 — System view: replace single domain row with three pillar rows
+
+Replace single .system-tree__domain-row containing 8 leaves with three labelled pillar rows. Dual-context agents (Carrier, Order Priority) appear in both pillars' rows.
+
+str_replace the 8-leaf block with:
+
+<div class="system-tree__pillar-group" data-pillar="wms">
+  <div class="system-tree__pillar-label">Warehouse · WMS</div>
+  <div class="system-tree__domain-row system-tree__domain-row--wms">
+    <div class="system-tree__leaf">Pick Path</div>
+    <div class="system-tree__leaf">Labor</div>
+    <div class="system-tree__leaf system-tree__leaf--dual">Order Priority<span class="leaf__dual-note">+ OMS</span></div>
+    <div class="system-tree__leaf system-tree__leaf--dual">Carrier<span class="leaf__dual-note">+ TMS</span></div>
+    <div class="system-tree__leaf">Exception</div>
+    <div class="system-tree__leaf">Slotting</div>
+    <div class="system-tree__leaf">Equipment</div>
+    <div class="system-tree__leaf">Quality</div>
+  </div>
+</div>
+
+<div class="system-tree__pillar-group" data-pillar="tms">
+  <div class="system-tree__pillar-label">Transportation · TMS</div>
+  <div class="system-tree__domain-row system-tree__domain-row--tms">
+    <div class="system-tree__leaf system-tree__leaf--dual">Carrier<span class="leaf__dual-note">+ WMS</span></div>
+    <div class="system-tree__leaf">Spot Rate</div>
+    <div class="system-tree__leaf">Route</div>
+  </div>
+</div>
+
+<div class="system-tree__pillar-group" data-pillar="oms">
+  <div class="system-tree__pillar-label">Order Management · OMS</div>
+  <div class="system-tree__domain-row system-tree__domain-row--oms">
+    <div class="system-tree__leaf system-tree__leaf--dual">Order Priority<span class="leaf__dual-note">+ WMS</span></div>
+    <div class="system-tree__leaf">Allocation</div>
+    <div class="system-tree__leaf">Cutoff Manager</div>
+  </div>
+</div>
+
+Part 2 — Add CSS for pillar-group layout
+
+Existing .system-tree__domain-row uses grid-template-columns:repeat(8, 1fr). New TMS and OMS rows have 3 agents each — shouldn't stretch each leaf to 1/3 width. Keep WMS at 8 cols, cap TMS/OMS so leaves stay roughly same visual size.
+
+After existing .system-tree__domain-row block:
+
+.system-tree__pillar-group {
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  width:100%;
+  max-width:1120px;
+  margin:0 auto;
+}
+.system-tree__pillar-group + .system-tree__pillar-group { margin-top:24px; }
+.system-tree__pillar-label {
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.10em;
+  text-transform:uppercase;
+  color:var(--text-tertiary);
+  text-align:left;
+  padding-left:4px;
+}
+.system-tree__domain-row--wms { grid-template-columns:repeat(8, 1fr); }
+.system-tree__domain-row--tms,
+.system-tree__domain-row--oms { grid-template-columns:repeat(8, 1fr); }
+.system-tree__domain-row--tms .system-tree__leaf,
+.system-tree__domain-row--oms .system-tree__leaf { grid-column:span 2; }
+.system-tree__domain-row--tms .system-tree__leaf:nth-child(1),
+.system-tree__domain-row--oms .system-tree__leaf:nth-child(1) { grid-column:2 / span 2; }
+.system-tree__domain-row--tms .system-tree__leaf:nth-child(2),
+.system-tree__domain-row--oms .system-tree__leaf:nth-child(2) { grid-column:4 / span 2; }
+.system-tree__domain-row--tms .system-tree__leaf:nth-child(3),
+.system-tree__domain-row--oms .system-tree__leaf:nth-child(3) { grid-column:6 / span 2; }
+
+.system-tree__leaf--dual .leaf__dual-note {
+  display:block;
+  font-size:9.5px;
+  font-weight:500;
+  color:var(--text-tertiary);
+  letter-spacing:0.02em;
+  margin-top:2px;
+  font-variant-numeric:tabular-nums;
+}
+
+@media (max-width: 1080px) {
+  .system-tree__domain-row--wms { grid-template-columns:repeat(4, 1fr); }
+  .system-tree__domain-row--tms,
+  .system-tree__domain-row--oms { grid-template-columns:repeat(3, 1fr); }
+  .system-tree__domain-row--tms .system-tree__leaf,
+  .system-tree__domain-row--oms .system-tree__leaf { grid-column:auto; }
+}
+
+Part 3 — Update System view lede text
+
+Current: "The wiring underneath. The operational spine carries human approval down through Lead, Shift Intelligence, and eight domain agents. The lateral layers — Analytical, Guardian, and Meta — run alongside but outside the WMS topology."
+
+New: "The wiring underneath. The operational spine carries human approval down through Lead, Shift Intelligence, and twelve domain agents across three pillars — Warehouse, Transportation, Order Management. Two agents (Carrier, Order Priority) operate in dual contexts where their problem space crosses pillar boundaries. The lateral layers — Analytical, Guardian, and Meta — run alongside, governing all three pillars under the same approval-first contract."
+
+Part 4 — Update Timeline view info card for station 3
+
+Current: "Eight specialist agents — Pick Path, Labor, Quality, and five more — each raise proposals in their lane. Every proposal carries a confidence score the user can read."
+
+New: "Twelve specialist agents across three pillars — Warehouse (Pick Path, Labor, Quality, and five more), Transportation (Spot Rate, Route, plus Carrier in dual context), and Order Management (Allocation, Cutoff Manager, plus Order Priority in dual context). Each raises proposals in its lane. Every proposal carries a confidence score the user can read, regardless of pillar."
+
+Part 5 — Soften Timeline narrative (Station 1 + info card)
+
+Current frames UX as explicit owner of agent system — a power claim. Strategic position: partner with product teams. Page should describe system without naming UX as the author. Subtle, descriptive, no territorial flag. Per-card attributions on individual agent cards stay — UX ownership discoverable per-card but not the page headline.
+
+5a. Station 1 label:
+- Old: <span>UX authors</span><span>the agent specs</span>
+- New: <span>Agents are</span><span>authored</span>
+
+5b. Station 1 info card:
+- Old: heading "UX authors the agent specs", body "UX writes the rules every agent follows — approvals, escalations, confidence levels. Behavior is designed in, not discovered after launch."
+- New: heading "Agents are authored", body "Each agent has a spec — its rules, its approvals, its escalations, its confidence calibration. Behaviour is designed in, not discovered after launch."
+
+Part 6 — Verify in browser
+
+preview_start. Agents page. Architecture section.
+
+Timeline (default):
+- Station 3 info card now reads "Twelve specialist agents..."
+- No layout breakage on zigzag conveyor.
+
+System view (click System segment):
+- Three labelled pillar rows render vertically: WMS, TMS, OMS.
+- WMS row 8 leaves (Pick Path, Labor, Order Priority + OMS, Carrier + TMS, Exception, Slotting, Equipment, Quality).
+- TMS row 3 leaves (Carrier + WMS, Spot Rate, Route) at roughly same physical size as WMS leaves — NOT stretched to 1/3 width.
+- OMS row 3 leaves (Order Priority + WMS, Allocation, Cutoff Manager) similarly sized.
+- Dual-context leaves show small "+ {other pillar}" subtitle.
+- Lede now "twelve domain agents across three pillars" text.
+- Connector line above each row (::before pseudo) renders cleanly.
+
+Below 1080px:
+- WMS collapses to 4 columns (4×2 grid).
+- TMS/OMS rows show 3 leaves in 3-column auto-width.
+- Pillar labels legible.
+- No horizontal scrollbar.
+
+Screenshots both views, desktop + mobile. No console errors.
+
+Part 7 — ITERATION-LOG entry
+
+Title: "Architecture diagrams updated for cross-pillar story + neutral narrative framing."
+
+What was built: System view's single 8-leaf domain row replaced with 3 labelled pillar groups. Dual-context agents in both pillars' rows. New CSS for .system-tree__pillar-group, .system-tree__pillar-label, .system-tree__leaf--dual. Pillar-specific row layouts. Responsive overrides <1080px. Station 1 softened from UX-as-owner framing to passive "Agents are authored". Timeline info card station 3 reframed for 12-across-3 pillars. Lede reframed.
+
+Why: Task 4.3 updated roster to 12 cards but Architecture section still WMS-only. First thing readers see is Architecture diagram. If diagram says WMS and cards below say cross-pillar, page argues with itself. Dual-context pattern needed visual expression — pillar rows with subtitles make it legible without requiring readers to find Cross-Pillar Notes in spec files.
+
+Verified: 3 pillar rows in both views. WMS 8-col preserved; TMS/OMS 3-leaf layouts size leaves consistently. Dual-context subtitles render. Timeline info card #3 reflects 12. Lede reframed. Responsive <1080px works. No layout breakage.
+
+What it leaves: Agents page tells single coherent cross-pillar story from top (Architecture diagrams) to bottom (Domain cards, topology beats). Dual-context pattern visible on System view, not just buried in spec markdown.
+
+Report: layout caveats at <1080px breakpoint, whether dual-context subtitles read clearly at desktop and mobile.`
+      },
+      {
+        num: "5.4",
+        title: "Split \"The Agents\" into Roster + The System",
+        subtitle: "Two pages from one · Nav restructure",
+        time: "40-50 min (est)",
+        status: "done",
+        why: "The current Agents tab tries to be both a roster (card list of every agent) AND a narrative (Architecture, Topology, the case). The Timeline/System toggle is the tell — when you have to hide half your content with a toggle, you have <strong>two pages pretending to be one</strong>. Split into \"The System\" (story, top-to-bottom) and \"The Agents\" (roster, scroll-and-skim). New top-level nav: Home · The System · The Agents · The Prototype.",
+        delivers: ["New tab: The System", "Roster page de-cluttered", "Architecture + Topology move to The System", "Section index updated", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Add a new top-level view 'The System' to moonshot-home.html. Move #section-architecture and #section-topology FROM the current view-agents INTO the new view-system. Update the top nav (currently 3 tabs) to 4 tabs: Home · The System · The Agents · The Prototype. Update the agents-index (sticky in-page nav) on both pages — The System gets Architecture / Pillar Timelines / System Tree / Topology; The Agents gets Lead / Radar / Domain / Analytical / Guardian / Meta / Horizon / The Case.
+
+When the prompt is ready, it will be inserted here and the task status will switch from 'Pending prompt' to 'Ready to run'. Don't paste this placeholder into Claude Code — it will accomplish nothing.`
+      },
+      {
+        num: "5.5",
+        title: "Author 4 pillar timelines",
+        subtitle: "WM · TM · OM · When they cross",
+        time: "50-70 min (est)",
+        status: "done",
+        why: "Adds four pillar timelines to The System page — compact horizontal flows, 5-7 steps each, telling concrete demo scenarios per pillar. <strong>Different visual treatment from the meta zigzag</strong> (which stays as the meta argument): smaller, denser, unidirectional. WM: Pick Path replenishment. TM: Spot rate breach on MEM→DEN. OM: Stock-out on SKU #WH-4419. Cross: Carrier delay cascade across 3 pillars. Pillar-tinted backgrounds (decoration only, text contrast preserved).",
+        delivers: ["WM timeline section", "TM timeline section", "OM timeline section", "Cross-pillar timeline section", "New compact-timeline CSS", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Insert a new section into The System page (between Architecture and Communication Topology). Section title: 'Decision lifecycles per pillar.' Four sub-sections, one per pillar (WM, TM, OM, Cross). Each is a compact horizontal flow with 5–7 step nodes. Visual: thin rail + circular nodes + labels above/below alternating, like the meta zigzag but tighter and unidirectional. Use Infios pillar tokens for subtle background tints. Stations show: time, actor (agent), action verb. Cross-pillar timeline gets visual callouts showing which agents from the 3 above-timelines are firing.
+
+When the prompt is ready, it will be inserted here.`
+      },
+      {
+        num: "5.6",
+        title: "Warehouse Life Agent → cross-pillar sim engine",
+        subtitle: "THE CORE · Simulation foundation",
+        time: "60-90 min (est)",
+        status: "done",
+        why: "Currently the Warehouse Life Agent only fires WMS events on the 08:00-09:30 timeline. The TM and OM views are static stubs with hardcoded data. For the cross-pillar demo to feel real, the sim engine needs to drive events in <strong>all three pillars</strong> plus generate cross-pillar correlations (carrier delay in TM → SLA impact in OM → labor redeploy in WA). Either expand Warehouse Life or rename to <strong>Sim Life Agent</strong> with per-pillar timelines. The core — everything else depends on it.",
+        delivers: ["Cross-pillar event timeline", "TM scenarios fire live", "OM scenarios fire live", "Cross-product correlations", "Renamed agent spec", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Expand the Warehouse Life Agent's scripted-causal sim engine to drive events across WA, TM, and OM timelines. Add cross-pillar correlation events. Likely rename the agent to 'Sim Life Agent' to reflect cross-pillar scope (or keep per-pillar Life Agents — TBD). Update the agent spec in agents/meta/. Wire the new event timelines into the prototype's sim loop so TM and OM dashboards see live decisions, not static placeholders.
+
+When the prompt is ready, it will be inserted here.`
+      },
+      {
+        num: "5.7",
+        title: "Personas + permission rules per pillar",
+        subtitle: "Roles · Permission orchestration",
+        time: "50-70 min (est)",
+        status: "done",
+        why: "Currently the prototype has two personas (Operator / Manager) baked for WMS only, toggled at the top of the header. With cross-pillar, this is wrong: TM has different roles (Dispatcher, Transportation Manager), OM has different roles (Order Manager, CS Rep). Add <strong>per-pillar persona sets</strong> and codify permission rules in a meta-layer agent so different personas see different proposals and decision queues. Change the toggle to a dropdown to accommodate more roles. Depends on Task 5.6 — personas filter what the Sim Life Agent surfaces.",
+        delivers: ["Per-pillar persona sets", "Permission rules in meta layer", "Role-aware filtering of proposals", "Dropdown role switcher", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Define persona sets per pillar (WA: Operator, Manager; TM: Dispatcher, Transportation Manager; OM: Order Manager, CS Rep; Cross: Director of Ops). Codify permission rules in a meta-layer agent (e.g., agents/meta/permissions-agent.md or extend warehouse-life-agent.md). Replace the role toggle in the header with a dropdown that's scoped to the current product's persona set. Wire role-based filtering into renderHome / renderTMHome / renderOMHome so different personas see different decision queues.
+
+When the prompt is ready, it will be inserted here.`
+      },
+      {
+        num: "5.8",
+        title: "WCAG + heuristics audit (Guardian agents)",
+        subtitle: "Accessibility + usability pass",
+        time: "40-60 min (est)",
+        status: "done",
+        why: "The presentation site uses Infios color tokens, but some color combos may not pass WCAG. The Guardian agents (Heuristics + Accessibility) exist on the Agents page as specs — time to actually <strong>run them</strong> on moonshot-home.html and moonshot-prototype.html. Screenshot key views, check contrast ratios (AA load-bearing, AAA advisory per the spec), check Nielsen Norman + Hick + Miller + cognitive load. Fix failures. The spec made real.",
+        delivers: ["WCAG 2.2 AA pass report", "Heuristics audit report", "Contrast fixes applied", "Heuristic failures remediated", "Guardian verdict files", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Run the Heuristics Agent's audit criteria (Nielsen Norman 10 + Hick + Miller + cognitive load + F-pattern + banner blindness + information scent) and the Accessibility Agent's audit criteria (WCAG 2.2 AA load-bearing, AAA advisory) against moonshot-home.html and moonshot-prototype.html. Use preview_start to screenshot key views. For each criterion: PASS / WARN / FAIL / N/A with rationale. Fix all load-bearing FAILs. Document the audit in agents/guardian/audit-report-YYYY-MM-DD.md. Update ITERATION-LOG.
+
+When the prompt is ready, it will be inserted here.`
+      },
+      {
+        num: "5.9",
+        title: "Homepage content audit + update",
+        subtitle: "Page outline copy-refresh",
+        time: "30-45 min (est)",
+        status: "done",
+        why: "The Home tab content outlining what each page contains is <strong>super outdated</strong> — predates the cross-pillar work, predates the page split, predates everything from Phase 4 onward. Full audit: read every section of view-home, compare against current state of view-system / view-agents / view-prototype, rewrite the copy that's wrong. The Home tab is the first thing readers land on — if it lies about what's on the other tabs, the whole site loses credibility.",
+        delivers: ["Home tab content audit doc", "Updated page-outline copy", "Updated what we did summary", "Updated CTA links", "ITERATION-LOG entry"],
+        prompt: `[PROMPT NOT YET DRAFTED — design brief stage]
+
+Audit moonshot-home.html's view-home (the Home tab). Read every section. For each, check whether the copy still describes the current state of the other tabs (The System, The Agents, The Prototype). Rewrite outdated copy. Update CTAs that point to renamed sections. Update any 'what's in here' summaries. The Home tab is the front door — it must be accurate. Update ITERATION-LOG.
+
+When the prompt is ready, it will be inserted here.`
+      }
+    ]
+  }
+];
+
+function flattenTasks() {
+  const out = [];
+  for (const p of PHASES) for (const t of p.tasks) out.push({ ...t, phaseId: p.id });
+  return out;
+}
+
+function render() {
+  const phasesEl = document.getElementById('phases');
+  const jumpEl = document.getElementById('phase-jump');
+
+  // Phase jump nav
+  jumpEl.innerHTML = PHASES.map(p =>
+    `<a href="#${p.id}"><span>${p.num} · ${truncate(p.title, 28)}</span><span class="count">${p.tasks.length}</span></a>`
+  ).join('');
+
+  // Phases
+  phasesEl.innerHTML = PHASES.map(p => `
+    <section class="phase-section" id="${p.id}">
+      <div class="phase-section__header">
+        <span class="phase-section__num">${p.num}</span>
+        <span class="phase-section__title">${p.title}</span>
+        <span class="phase-section__date">${p.date}</span>
+      </div>
+      <p class="phase-section__lead">${p.lead}</p>
+      <div class="task-list">
+        ${p.tasks.map(renderTask).join('')}
+      </div>
+    </section>
+  `).join('');
+
+  // Progress
+  const all = flattenTasks();
+  const done = all.filter(t => t.status === 'done').length;
+  document.getElementById('progress-bar').style.width = ((done / all.length) * 100) + '%';
+  document.getElementById('progress-label').textContent = done + ' / ' + all.length;
+
+  const ready = all.filter(t => t.status === 'ready').length;
+  const pending = all.filter(t => t.status === 'pending').length;
+  document.getElementById('time-est').textContent =
+    `${done} done · ${ready} ready · ${pending} pending`;
+}
+
+function renderTask(t) {
+  const statusText = t.status === 'done' ? 'Done' : t.status === 'ready' ? 'Ready' : 'Pending';
+  const promptLabel = t.status === 'pending' ? 'brief-' + t.num + '.md' : 'prompt-' + t.num + '.txt';
+  const promptSectionLabel = t.status === 'pending' ? 'Design brief' : 'Prompt used';
+  const copyDisabled = t.status === 'pending' ? 'disabled' : '';
+
+  return `<div class="task status-${t.status}" data-task="${t.num}">
+    <div class="task-head" onclick="toggleOpen('${t.num}')">
+      <div class="task-num">${t.num}</div>
+      <div class="task-meta">
+        <div class="task-title">${t.title}</div>
+        <div class="task-subtitle">
+          <span>${t.subtitle}</span>
+          <span class="task-time">⏱ ${t.time}</span>
+        </div>
+      </div>
+      <div class="task-status">
+        <span class="task-status-dot"></span>
+        <span class="task-status-text">${statusText}</span>
+      </div>
+      <svg class="task-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="task-body">
+      <div class="task-content">
+        <div class="task-section">
+          <div class="task-section-label">Why this step</div>
+          <div class="task-why">${t.why}</div>
+        </div>
+        <div class="task-section">
+          <div class="task-section-label">Delivers</div>
+          <div class="task-delivers">${t.delivers.map(d => `<span class="task-deliver-chip">${d}</span>`).join('')}</div>
+        </div>
+        <div class="task-section">
+          <div class="task-section-label">${promptSectionLabel}</div>
+          <div class="prompt-box">
+            <div class="prompt-header">
+              <span class="prompt-label">${promptLabel}</span>
+              <button class="copy-btn" data-copy="${t.num}" ${copyDisabled} onclick="event.stopPropagation();${t.status === 'pending' ? '' : `copyPrompt('${t.num}')`}">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                ${t.status === 'pending' ? 'Prompt not ready' : 'Copy prompt'}
+              </button>
+            </div>
+            <div class="prompt-code">${escHTML(t.prompt)}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleOpen(num) {
+  const el = document.querySelector(`[data-task="${num}"]`);
+  if (el) el.classList.toggle('is-open');
+}
+
+function copyPrompt(num) {
+  const t = flattenTasks().find(x => x.num === num);
+  if (!t || t.status === 'pending') return;
+  navigator.clipboard.writeText(t.prompt).then(() => {
+    const btn = document.querySelector(`[data-copy="${num}"]`);
+    if (btn) {
+      btn.classList.add('is-copied');
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="5 12 10 17 19 7"/></svg> Copied';
+      setTimeout(() => {
+        btn.classList.remove('is-copied');
+        btn.innerHTML = orig;
+      }, 2000);
+    }
+  });
+}
+
+let allExpanded = false;
+function toggleAll() {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.task').forEach(el => {
+    if (allExpanded) el.classList.add('is-open');
+    else el.classList.remove('is-open');
+  });
+  document.querySelector('.expand-all').textContent = allExpanded ? 'Collapse all' : 'Expand all';
+}
+
+function escHTML(s) {
+  if (!s) return '';
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function truncate(s, n) {
+  return s.length > n ? s.slice(0, n - 1) + '…' : s;
+}
+
+render();
+</script>
+
+</body>
+</html>
