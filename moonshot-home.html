@@ -2860,6 +2860,244 @@ body { min-height:100vh; }
   .swim-lane__connectors { left:96px; }
   .swim-lane__node-meta { width:120px; }
 }
+
+/* ═══════════════════════════════════════════════════════
+   UX PROCESS DIAGRAM  —  section-process
+   ═══════════════════════════════════════════════════════ */
+
+/* Two-column before / after comparison */
+.proc-compare {
+  display:grid;
+  grid-template-columns:1fr 1.6fr;
+  gap:2px;
+  background:var(--border-hairline);
+  border:1px solid var(--border-hairline);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.proc-track {
+  background:var(--surface-elevated);
+  padding:28px 24px;
+  display:flex;
+  flex-direction:column;
+}
+.proc-track--before { background:var(--surface-canvas); }
+
+.proc-track__eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase;
+  margin-bottom:3px; font-family:var(--font-text);
+  color:var(--text-quaternary);
+}
+.proc-track--after .proc-track__eyebrow { color:var(--success); }
+
+.proc-track__title {
+  font-size:15px; font-weight:700; letter-spacing:-.012em;
+  font-family:var(--font-display); color:var(--text-primary);
+  margin-bottom:18px;
+}
+.proc-track__note {
+  font-size:12px; color:var(--text-quaternary); line-height:1.5;
+  font-style:italic; margin-top:14px;
+}
+
+/* Vertical flow spine */
+.proc-flow {
+  display:flex;
+  flex-direction:column;
+  align-items:stretch;
+  flex:1;
+}
+
+/* Arrow between steps */
+.proc-arrow {
+  width:2px; height:14px; background:var(--border-subtle);
+  margin:0 auto; position:relative; flex-shrink:0;
+}
+.proc-arrow::after {
+  content:'';
+  position:absolute; bottom:-4px; left:50%; transform:translateX(-50%);
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:5px solid var(--border-subtle);
+}
+
+/* Step box */
+.proc-node {
+  border:1px solid var(--border-hairline);
+  border-radius:var(--radius-md);
+  padding:11px 13px;
+  background:var(--surface-base);
+  flex-shrink:0;
+}
+.proc-track--before .proc-node { background:var(--surface-tinted); }
+
+.proc-node--product { border-left:3px solid var(--text-primary); }
+.proc-node--build   { border-left:3px solid var(--link); }
+.proc-node--audit   { border-left:3px solid var(--success); background:rgba(44,129,44,.05); }
+.proc-node--pass    { border-left:3px solid var(--success); background:rgba(44,129,44,.06); }
+.proc-node--notify  { border-left:3px solid var(--warn); background:rgba(182,76,0,.05); }
+.proc-node--routes  { border-left:3px solid var(--warn); }
+
+.proc-node__badge {
+  display:inline-flex; align-items:center;
+  font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--success); background:rgba(44,129,44,.10);
+  padding:2px 7px; border-radius:var(--radius-pill);
+  margin-bottom:6px; font-family:var(--font-text);
+}
+.proc-node__label {
+  font-size:13px; font-weight:600; letter-spacing:-.01em;
+  color:var(--text-primary); line-height:1.3;
+  font-family:var(--font-display);
+}
+.proc-node__sub {
+  font-size:11px; color:var(--text-tertiary); line-height:1.4; margin-top:2px;
+}
+
+/* Fork split */
+.proc-fork-stem {
+  width:2px; height:14px; background:var(--border-subtle);
+  margin:0 auto; position:relative; flex-shrink:0;
+}
+.proc-fork-stem::after {
+  content:'';
+  position:absolute; bottom:-4px; left:50%; transform:translateX(-50%);
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:5px solid var(--border-subtle);
+}
+.proc-fork-branches {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  border:1px solid var(--border-hairline);
+  border-radius:var(--radius-md);
+  overflow:hidden;
+  flex-shrink:0;
+}
+.proc-branch {
+  padding:14px 12px;
+  display:flex;
+  flex-direction:column;
+}
+.proc-branch--pass { background:rgba(44,129,44,.03); }
+.proc-branch--fail { background:rgba(182,76,0,.03); border-left:1px solid var(--border-hairline); }
+
+.proc-branch__tag {
+  display:inline-flex; align-self:flex-start;
+  font-size:9px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  padding:3px 9px; border-radius:var(--radius-pill);
+  margin-bottom:8px; font-family:var(--font-text);
+}
+.proc-branch__tag--pass { background:rgba(44,129,44,.10); color:var(--success); }
+.proc-branch__tag--fail { background:rgba(182,76,0,.10); color:var(--warn); }
+
+/* Re-prompting / options pills inside fail branch */
+.proc-routes {
+  display:flex; flex-wrap:wrap; gap:4px; margin-top:8px;
+}
+.proc-route {
+  font-size:10px; font-weight:500;
+  padding:3px 8px; border-radius:var(--radius-pill);
+  background:var(--surface-canvas); color:var(--text-secondary);
+  border:1px solid var(--border-hairline);
+  font-family:var(--font-text);
+}
+
+/* Guardian banner */
+.proc-guardian-banner {
+  display:flex; align-items:center; gap:14px;
+  background:linear-gradient(135deg,rgba(44,129,44,.07) 0%,rgba(202,223,53,.12) 100%);
+  border:1px solid rgba(44,129,44,.18);
+  border-radius:var(--radius-md);
+  padding:16px 20px;
+  margin-bottom:24px;
+}
+.proc-guardian-banner__icon {
+  width:36px; height:36px; border-radius:10px;
+  background:rgba(44,129,44,.10); color:var(--success);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.proc-guardian-banner__icon svg { width:18px; height:18px; }
+.proc-guardian-banner__text {
+  font-size:14px; font-weight:500; color:var(--text-secondary); line-height:1.6;
+}
+.proc-guardian-banner__text strong { color:var(--text-primary); }
+
+/* Agent library: live now vs horizon */
+.proc-library {
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:2px;
+  background:var(--border-hairline);
+  border:1px solid var(--border-hairline);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  margin-bottom:20px;
+}
+.proc-lib-panel {
+  background:var(--surface-elevated);
+  padding:24px;
+}
+.proc-lib-panel--live   { }
+.proc-lib-panel--horizon { background:var(--surface-tinted); }
+
+.proc-lib-eyebrow {
+  font-size:10px; font-weight:700; letter-spacing:.10em; text-transform:uppercase;
+  margin-bottom:3px; font-family:var(--font-text);
+}
+.proc-lib-panel--live    .proc-lib-eyebrow { color:var(--success); }
+.proc-lib-panel--horizon .proc-lib-eyebrow { color:var(--accent-darker); }
+
+.proc-lib-title {
+  font-size:15px; font-weight:700; letter-spacing:-.012em;
+  font-family:var(--font-display); color:var(--text-primary);
+  margin-bottom:16px;
+}
+
+.proc-lib-group { margin-bottom:14px; }
+.proc-lib-group:last-child { margin-bottom:0; }
+
+.proc-lib-group__label {
+  font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase;
+  color:var(--text-quaternary); margin-bottom:6px;
+  font-family:var(--font-text);
+}
+.proc-lib-chips { display:flex; flex-wrap:wrap; gap:4px; }
+
+.proc-lib-chip {
+  display:inline-flex; align-items:center;
+  font-size:11px; font-weight:500;
+  padding:4px 10px; border-radius:var(--radius-pill);
+  font-family:var(--font-text); border:1px solid transparent;
+}
+.proc-lib-chip--orchestration { background:rgba(23,31,41,.06); color:var(--text-primary); border-color:var(--border-hairline); }
+.proc-lib-chip--radar { background:rgba(182,76,0,.08); color:var(--warn); border-color:rgba(182,76,0,.15); }
+.proc-lib-chip--analytical { background:rgba(84,54,204,.08); color:var(--link); border-color:rgba(84,54,204,.15); }
+.proc-lib-chip--guardian { background:rgba(44,129,44,.08); color:var(--success); border-color:rgba(44,129,44,.15); }
+.proc-lib-chip--horizon { background:var(--bg-accent); color:var(--accent-darker); border-color:rgba(202,223,53,.35); }
+
+/* Agentic designer callout */
+.proc-designer-callout {
+  border-left:4px solid var(--accent);
+  background:var(--bg-accent);
+  border-radius:0 var(--radius-md) var(--radius-md) 0;
+  padding:18px 22px;
+  font-size:14px; font-weight:500; color:var(--text-secondary); line-height:1.7;
+}
+.proc-designer-callout strong { color:var(--text-primary); }
+
+/* Responsive */
+@media (max-width:900px) {
+  .proc-compare { grid-template-columns:1fr; }
+  .proc-library  { grid-template-columns:1fr; }
+}
+@media (max-width:560px) {
+  .proc-fork-branches { grid-template-columns:1fr; }
+  .proc-branch--fail { border-left:none; border-top:1px solid var(--border-hairline); }
+}
 </style>
 </head>
 <body>
@@ -4114,7 +4352,8 @@ body { min-height:100vh; }
   </div>
 
   <nav class="agents-index" id="agents-index" aria-label="Section navigation">
-    <a class="agents-index__item is-active" href="#section-lead" data-section="section-lead">Lead</a>
+    <a class="agents-index__item is-active" href="#section-process" data-section="section-process">Process</a>
+    <a class="agents-index__item" href="#section-lead" data-section="section-lead">Lead</a>
     <a class="agents-index__item" href="#section-radar" data-section="section-radar">Radar</a>
     <a class="agents-index__item" href="#section-domain" data-section="section-domain">Domain</a>
     <a class="agents-index__item" href="#section-analytical" data-section="section-analytical">Analytical</a>
@@ -4123,6 +4362,214 @@ body { min-height:100vh; }
     <a class="agents-index__item" href="#section-horizon" data-section="section-horizon">Horizon</a>
     <a class="agents-index__item" href="#section-case" data-section="section-case">The case</a>
   </nav>
+
+  <!-- ═══════════ UX PROCESS DIAGRAM ═══════════ -->
+  <div class="layer" id="section-process">
+    <div class="layer__inner">
+
+      <div class="layer__head">
+        <div class="layer__title layer__title--guardian"><svg class="icon" aria-hidden="true"><use href="#icon-shield_person"/></svg>Process</div>
+        <p class="layer__desc">From linear to bifurcated. In both paths, the UX team is the guardian — through experts designing the work, or through the agents they authored.</p>
+      </div>
+
+      <!-- BEFORE / AFTER COMPARISON -->
+      <div class="proc-compare" aria-label="UX process comparison: before and now">
+
+        <!-- BEFORE: linear -->
+        <div class="proc-track proc-track--before">
+          <div class="proc-track__eyebrow">Before</div>
+          <div class="proc-track__title">Linear process</div>
+          <div class="proc-flow">
+            <div class="proc-node proc-node--product">
+              <div class="proc-node__label">Product request</div>
+              <div class="proc-node__sub">VP · Director · Manager</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node">
+              <div class="proc-node__label">UX Team</div>
+              <div class="proc-node__sub">Receives the request</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node">
+              <div class="proc-node__label">Discovery</div>
+              <div class="proc-node__sub">Understand &amp; refine the need</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node">
+              <div class="proc-node__label">Design</div>
+              <div class="proc-node__sub">Create the solution</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node">
+              <div class="proc-node__label">Development support</div>
+              <div class="proc-node__sub">Implement alongside engineering</div>
+            </div>
+          </div>
+          <p class="proc-track__note">Every request — regardless of complexity — routes through the full process. A table that fetches a database gets the same treatment as a new product surface.</p>
+        </div>
+
+        <!-- AFTER: bifurcated -->
+        <div class="proc-track proc-track--after">
+          <div class="proc-track__eyebrow">Now</div>
+          <div class="proc-track__title">Bifurcated process</div>
+          <div class="proc-flow">
+            <div class="proc-node proc-node--product">
+              <div class="proc-node__label">Product request</div>
+              <div class="proc-node__sub">VP · Director · Manager</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node proc-node--build">
+              <div class="proc-node__label">Build with Claude Code</div>
+              <div class="proc-node__sub">Product team authors the feature directly</div>
+            </div>
+            <div class="proc-arrow" aria-hidden="true"></div>
+            <div class="proc-node proc-node--audit">
+              <div class="proc-node__badge">Authored by UX Team</div>
+              <div class="proc-node__label">Guardian agents audit</div>
+              <div class="proc-node__sub">Accessibility · Heuristics · Design System · Content · Interaction · Responsive</div>
+            </div>
+            <div class="proc-fork-stem" aria-hidden="true"></div>
+            <!-- Fork -->
+            <div class="proc-fork-branches">
+              <div class="proc-branch proc-branch--pass">
+                <div class="proc-branch__tag proc-branch__tag--pass">Passes threshold</div>
+                <div class="proc-node proc-node--pass">
+                  <div class="proc-node__label">Ships</div>
+                  <div class="proc-node__sub">UX quality guaranteed by agents</div>
+                </div>
+              </div>
+              <div class="proc-branch proc-branch--fail">
+                <div class="proc-branch__tag proc-branch__tag--fail">Fails threshold</div>
+                <div class="proc-node proc-node--notify">
+                  <div class="proc-node__label">UX Team notified</div>
+                  <div class="proc-node__sub">Immediate contact triggered</div>
+                </div>
+                <div class="proc-arrow" aria-hidden="true"></div>
+                <div class="proc-node">
+                  <div class="proc-node__label">Teams meet</div>
+                  <div class="proc-node__sub">Assess the problem together</div>
+                </div>
+                <div class="proc-arrow" aria-hidden="true"></div>
+                <div class="proc-node proc-node--routes">
+                  <div class="proc-node__label">Choose the right path</div>
+                  <div class="proc-routes">
+                    <span class="proc-route">Re-prompting</span>
+                    <span class="proc-route">Semi-automated design</span>
+                    <span class="proc-route">Manual design</span>
+                    <span class="proc-route">New research</span>
+                    <span class="proc-route">Full discovery</span>
+                  </div>
+                </div>
+              </div>
+            </div><!-- /proc-fork-branches -->
+          </div><!-- /proc-flow -->
+        </div><!-- /proc-track--after -->
+
+      </div><!-- /proc-compare -->
+
+      <!-- GUARDIAN BANNER -->
+      <div class="proc-guardian-banner">
+        <div class="proc-guardian-banner__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <p class="proc-guardian-banner__text">In both paths, <strong>the UX team is the guardian</strong> — through experts designing the work where complexity demands it, or through agents the experts authored that guarantee quality at scale.</p>
+      </div>
+
+      <!-- AGENT LIBRARY: LIVE vs HORIZON -->
+      <div class="section-label" style="margin-bottom:10px;">The agent library</div>
+      <div class="proc-library" aria-label="Agent library: live agents and horizon agents">
+
+        <!-- LIVE NOW -->
+        <div class="proc-lib-panel proc-lib-panel--live">
+          <div class="proc-lib-eyebrow">Live now</div>
+          <div class="proc-lib-title">What's built and running</div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Orchestration</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--orchestration">Archer Chat Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Radar</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--radar">Shift Intelligence Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Analytical</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--analytical">BI Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--analytical">Innovation Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--analytical">Opportunity Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Guardian</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--guardian">Accessibility Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--guardian">Heuristics Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--guardian">Design System Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--guardian">Content Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--guardian">Interaction Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--guardian">Responsive Agent</span>
+            </div>
+          </div>
+        </div><!-- /proc-lib-panel--live -->
+
+        <!-- HORIZON -->
+        <div class="proc-lib-panel proc-lib-panel--horizon">
+          <div class="proc-lib-eyebrow">On the horizon</div>
+          <div class="proc-lib-title">What comes next</div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Before you build</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--horizon">Research Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">Company Context Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">Industry Trends Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">While you build</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--horizon">Design Review Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">Handoff Drift Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">After you ship</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--horizon">Client Feedback Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">UX Health Signal Agent</span>
+            </div>
+          </div>
+
+          <div class="proc-lib-group">
+            <div class="proc-lib-group__label">Infrastructure</div>
+            <div class="proc-lib-chips">
+              <span class="proc-lib-chip proc-lib-chip--horizon">DesignOps Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">Onboarding Agent</span>
+              <span class="proc-lib-chip proc-lib-chip--horizon">Agent Performance Monitor</span>
+            </div>
+          </div>
+        </div><!-- /proc-lib-panel--horizon -->
+
+      </div><!-- /proc-library -->
+
+      <!-- AGENTIC DESIGNER CALLOUT -->
+      <div class="proc-designer-callout">
+        <strong>This library requires agentic designers to maintain it.</strong> Each agent encodes years of UX expertise into auditable, executable standards. As the product surface grows and AI-generated UI becomes the norm, the designers who author, calibrate, and evolve this agent library are not replacing UX craft — they are scaling it. The practitioner who can write a guardian that never misses a WCAG contrast failure is doing UX work. It just runs at 3 a.m. without them.
+      </div>
+
+    </div>
+  </div>
+  <!-- ═══════════ / UX PROCESS DIAGRAM ═══════════ -->
 
   <div class="layer" id="section-lead">
     <div class="layer__inner">
@@ -5258,6 +5705,7 @@ body { min-height:100vh; }
     'section-system-tree','section-topology','section-deployment','section-case-system'
   ]);
   wireIndex('view-agents', 'agents-index', [
+    'section-process',
     'section-lead','section-radar','section-domain','section-analytical',
     'section-guardian','section-meta','section-horizon','section-case'
   ]);
