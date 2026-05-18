@@ -14,7 +14,7 @@ Operational reference. For project intent, the agent roster, and the file tree s
 | `AGENT-ARCHITECTURE.md` | Deep architecture document — source of truth for the agent system. Design principles, agent layer decisions, approval and escalation logic, product surfaces, key metrics, risks, design system tokens. |
 | `WAY-OF-WORKING.md` | This file. Operating rules and ship discipline. |
 | `ITERATION-LOG.md` | Session-by-session history. Append a new entry after each work block. |
-| `next tasks/tasks-*.md` | Current task list(s). Move to `task archive/` once verified complete. |
+| `archive/task archive/` | Completed task lists. No active `next tasks/` folder — task lists live here once done. |
 | `moonshot-home.html` | Primary deliverable. Strategy document + agent showcase + embedded prototype viewer. Open this to see everything. Lives at the repo root. |
 | `moonshot-prototype.html` | The WMS prototype. Loads inside moonshot-home.html's Prototype tab via relative iframe `src="moonshot-prototype.html"`. Must remain co-located with `moonshot-home.html` at the repo root for the iframe to resolve. Edit this file directly; snapshot to `archive/` before significant changes. |
 
@@ -27,17 +27,16 @@ Operational reference. For project intent, the agent roster, and the file tree s
 | `archive/legacy html/` | Earlier HTML iterations preserved for lineage. |
 | `archive/agents/` | Pre-May-12 agent spec snapshots, kept for diff against current `/agents/`. |
 | `archive/` (snapshots) | Previously-shipped artifacts (e.g., `moonshot-prototype.PRE-<YYYY-MM-DD>.html`). Preserved for rollback. Snapshot before significant edits. |
-| `task archive/` | Completed task lists (e.g., `MAY-12-PLAN.md`). Move tasks here when they're done. |
+| `archive/task archive/` | Completed task lists (e.g., `MAY-12-PLAN.md`). |
 
 ### Subdirectories
 
 | Directory / file | Contents |
 |---|---|
 | `moonshot-home.html` + `moonshot-prototype.html` *(repo root)* | The finished, ship-ready pair. Both must stay co-located at the repo root so the relative iframe `src="moonshot-prototype.html"` inside `moonshot-home.html` resolves. |
-| `agents/` | 14 markdown files — one per agent. Each defines what the agent does, what it never does, what it can do autonomously, and what requires human approval. Sub-folders: `agents/meta/` (Warehouse Life), `agents/guardian/` (Heuristics, Accessibility). |
-| `next tasks/` | Current task lists (e.g., `tasks-may-13-morning.md`) and progress trackers (`moonshot-cross-pillar-tracker.html`). |
-| `task archive/` | Completed task lists. |
-| `archive/` | Earlier HTML iterations, planning files, token deliveries, and rollback snapshots of the shipped pair. Not needed to run the demo. |
+| `agents/` | 21 markdown files — one per agent. Each defines what the agent does, what it never does, what it can do autonomously, and what requires human approval. Sub-folders: `agents/meta/` (Sim Life, Warehouse Life, Permissions), `agents/guardian/` (Heuristics, Accessibility, and `reports/`). |
+| `archive/task archive/` | Completed task lists. |
+| `archive/` | Earlier HTML iterations, planning files, token deliveries, rollback snapshots of the shipped pair, and completed task lists. Not needed to run the demo. |
 | `.claude/skills/` | Project-scoped Claude Code skills (e.g., `design-tokens.md` — auto-triggered token integration). |
 
 ### To share
@@ -59,13 +58,13 @@ Three tabs in the top nav: **Home · The Agents · The Prototype**.
 The Agents page has a sticky in-page section index that highlights the active section as you scroll. Sections in order:
 
 1. **Architecture** — Apple-style Timeline · System toggle. Timeline view renders a zigzag conveyor of seven UX stations from prompt to delivered prototype. System view renders a CSS Grid hierarchy tree of the operational chain plus lateral Analytical, Guardian, and Meta layers.
-2. **Lead** (Orchestration)
+2. **Archer Chat Agent** (Orchestration)
 3. **Radar** (Shift Intelligence)
 4. **Domain experts** (8 Domain agent cards)
 5. **Analytical** (3 Analytical cards)
 6. **Signals** (`How the signals move.` topology block)
 7. **Guardian** (6 Guardian cards)
-8. **Meta** (Warehouse Life)
+8. **Meta** (Sim Life · Warehouse Life · Permissions)
 9. **Horizon** (10 cards across 3 thematic categories)
 10. **The case** — "UX as infrastructure, not overhead" (closing value prop)
 
