@@ -1,16 +1,16 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Project Moonshot — cross-pillar orchestration for agentic supply chain</title>
+<title>Project Moonshot � cross-pillar orchestration for agentic supply chain</title>
 <meta name="description" content="Four functions: oversight across products, intervention at the right tier, guardrails authored before launch, cohesion across the portfolio."/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 :root {
-  /* === Legacy presentation tokens (preserved — see archive/tokens-2026-05-12/TOKENS.md) === */
+  /* === Legacy presentation tokens (preserved � see archive/tokens-2026-05-12/TOKENS.md) === */
   --surface-base:#FFFFFF;
   --surface-canvas:#F4F4F4;
   --surface-tinted:#FAFAFA;
@@ -82,7 +82,7 @@
   --infios-shadow-modal:0 4px 24px rgba(35,38,37,.18);
   --infios-shadow-tile:0 2px 30px 0 rgba(0,0,0,.15);
 
-  /* === 2026-05-12 delivery — Infios DS tokens === */
+  /* === 2026-05-12 delivery � Infios DS tokens === */
 
   /* Fonts */
   --infios-font-family-default:'Noto Sans Variable','Noto Sans',sans-serif;
@@ -130,7 +130,7 @@
   --infios-clickable-size-standard:24px;
   --infios-clickable-size-comfortable:48px;
 
-  /* Color — backgrounds */
+  /* Color � backgrounds */
   --infios-color-bg:#FFFFFF;
   --infios-color-bg-alt:#F4F4F4;
   --infios-color-bg-surface:#FFFFFF;
@@ -142,15 +142,15 @@
   --infios-color-bg-fill-hover:#4A8FFF;
   --infios-color-bg-fill-pressed:#00358C;
   --infios-color-bg-fill-secondary:#FFFFFF;
-  --infios-color-bg-fill-secondary-hover:#D5DCE2;  /* spec: #E6E6E6 — kept legacy */
+  --infios-color-bg-fill-secondary-hover:#D5DCE2;  /* spec: #E6E6E6 � kept legacy */
   --infios-color-bg-fill-secondary-pressed:#999999;
   --infios-color-bg-fill-tertiary:#F4F4F4;
   --infios-color-bg-fill-tertiary-hover:#F5F5F5;
   --infios-color-bg-fill-quaternary:#E6E6E6;
   --infios-color-bg-fill-disabled:#E6E6E6;
   --infios-color-bg-fill-disabled-on-bg-fill:#373737;
-  --infios-color-bg-fill-brand:#171F29;         /* spec: #232625 — kept legacy */
-  --infios-color-bg-fill-brand-hover:#58636E;   /* spec: #6F6F6F — kept legacy */
+  --infios-color-bg-fill-brand:#171F29;         /* spec: #232625 � kept legacy */
+  --infios-color-bg-fill-brand-hover:#58636E;   /* spec: #6F6F6F � kept legacy */
   --infios-color-bg-fill-brand-pressed:#373737;
   --infios-color-bg-fill-warning:#FFC177;
   --infios-color-bg-fill-warning-secondary:#FFCC73;
@@ -167,7 +167,7 @@
   --infios-color-bg-success-subtle:#C7E9C5;
   --infios-color-bg-info-subtle:#C5DAFF;
 
-  /* Color — data viz support palette */
+  /* Color � data viz support palette */
   --infios-color-bg-fill-support-1:#0E8385;
   --infios-color-bg-fill-support-2:#734B6D;
   --infios-color-bg-fill-support-3:#4E7599;
@@ -179,34 +179,34 @@
   --infios-color-bg-fill-support-9:#946F18;
   --infios-color-bg-fill-support-10:#AD603A;
 
-  /* Color — text. Tokens that conflict with existing prototype references keep the legacy value
+  /* Color � text. Tokens that conflict with existing prototype references keep the legacy value
      to preserve visual identity; spec proposed values are documented in TOKENS.md. */
-  --infios-color-text:#171F29;                  /* spec: #232625 — kept legacy */
+  --infios-color-text:#171F29;                  /* spec: #232625 � kept legacy */
   --infios-color-text-bg-fill:#FFFFFF;
   --infios-color-text-primary:#0060FF;
   --infios-color-text-primary-hover:#4A8FFF;
-  --infios-color-text-secondary:#324155;        /* spec: #373737 — kept legacy */
-  --infios-color-text-tertiary:#58636E;         /* spec: #6F6F6F — kept legacy */
-  --infios-color-text-disabled:#98A4B0;         /* spec: #999999 — kept legacy */
-  --infios-color-text-error:#D0413A;            /* spec: #CD3B00 — kept legacy */
+  --infios-color-text-secondary:#324155;        /* spec: #373737 � kept legacy */
+  --infios-color-text-tertiary:#58636E;         /* spec: #6F6F6F � kept legacy */
+  --infios-color-text-disabled:#98A4B0;         /* spec: #999999 � kept legacy */
+  --infios-color-text-error:#D0413A;            /* spec: #CD3B00 � kept legacy */
   --infios-color-text-error-hover:#BD5757;
   --infios-color-text-error-pressed:#801919;
-  --infios-color-text-link:#5436CC;             /* spec: #4A8FFF — kept legacy (Infios purple) */
+  --infios-color-text-link:#5436CC;             /* spec: #4A8FFF � kept legacy (Infios purple) */
   --infios-color-text-link-hover:#4A8FFF;
   --infios-color-text-link-pressed:#00358C;
-  --infios-color-text-success:#2C812C;          /* spec: #008049 — kept legacy */
+  --infios-color-text-success:#2C812C;          /* spec: #008049 � kept legacy */
   --infios-color-text-on-bg-fill:#FFFFFF;
-  --infios-color-text-brand:#D0FF25;            /* new — see brand-yellow flag in TOKENS.md */
+  --infios-color-text-brand:#D0FF25;            /* new � see brand-yellow flag in TOKENS.md */
 
-  /* Color — borders. Same legacy-preservation rule applies for conflicts. */
+  /* Color � borders. Same legacy-preservation rule applies for conflicts. */
   --infios-color-border:#E6E6E6;
   --infios-color-border-hover:#4A8FFF;
   --infios-color-border-disabled:#E6E6E6;
-  --infios-color-border-tertiary:#D5DCE2;       /* spec: #6F6F6F — kept legacy */
-  --infios-color-border-focus:#5436CC;          /* spec: #0060FF — kept legacy (Infios purple focus) */
-  --infios-color-border-error:#D0413A;          /* spec: #CD3B00 — kept legacy */
+  --infios-color-border-tertiary:#D5DCE2;       /* spec: #6F6F6F � kept legacy */
+  --infios-color-border-focus:#5436CC;          /* spec: #0060FF � kept legacy (Infios purple focus) */
+  --infios-color-border-error:#D0413A;          /* spec: #CD3B00 � kept legacy */
   --infios-color-border-error-hover:#BD5757;
-  --infios-color-border-success:#2C812C;        /* spec: #84B98B — kept legacy */
+  --infios-color-border-success:#2C812C;        /* spec: #84B98B � kept legacy */
   --infios-color-border-info:#2D78C1;
   --infios-color-border-warning:#FFD377;
   --infios-color-border-pressed:#00358C;
@@ -214,7 +214,7 @@
   --infios-color-border-primary:#232625;
   --infios-color-border-surface:#98A4B0;
 
-  /* Color — icons */
+  /* Color � icons */
   --infios-color-icon:#232625;
   --infios-color-icon-hover:#4A8FFF;
   --infios-color-icon-pressed:#00358C;
@@ -551,7 +551,7 @@ body { min-height:100vh; }
 .door:focus-visible { outline:2px solid var(--link); outline-offset:3px; }
 .door__num {
   font-size:12px; font-weight:600; letter-spacing:0.04em;
-  color:var(--text-tertiary); text-transform:uppercase; /* 2026-05-13 audit: was --text-quaternary (2.5:1) — token swap for AA contrast */
+  color:var(--text-tertiary); text-transform:uppercase; /* 2026-05-13 audit: was --text-quaternary (2.5:1) � token swap for AA contrast */
   margin-bottom:24px;
 }
 .door__title {
@@ -687,9 +687,9 @@ body { min-height:100vh; }
   padding:0 2px;
 }
 
-/* ═══════════ AGENTS PAGE — ARCHITECTURE TOGGLE BLOCK ═══════════ */
+/* ----------- AGENTS PAGE � ARCHITECTURE TOGGLE BLOCK ----------- */
 .howagents-conveyor {
-  /* No longer a page section — it lives inside the .arch toggle. Just a flow wrapper. */
+  /* No longer a page section � it lives inside the .arch toggle. Just a flow wrapper. */
   padding:0;
 }
 .howagents-conveyor__inner { width:100%; margin:0 auto; }
@@ -899,7 +899,7 @@ body { min-height:100vh; }
   white-space:nowrap;
 }
 
-/* Info cards — zigzag layout, wider tiles, C-level body copy */
+/* Info cards � zigzag layout, wider tiles, C-level body copy */
 .info-card {
   background:white;
   border:1px solid rgba(0,0,0,0.05);
@@ -1091,7 +1091,7 @@ body { min-height:100vh; }
   }
 }
 
-/* ═══════════ DIAGRAM TOGGLE (segmented control) ═══════════ */
+/* ----------- DIAGRAM TOGGLE (segmented control) ----------- */
 .diagram-toggle {
   display:inline-flex;
   position:relative;
@@ -1150,7 +1150,7 @@ body { min-height:100vh; }
   justify-content:center;
 }
 
-/* ═══════════ DIAGRAM (timeline + system stacked) ═══════════ */
+/* ----------- DIAGRAM (timeline + system stacked) ----------- */
 .diagram {
   display:grid;
   grid-template-areas:"stack";
@@ -1176,7 +1176,7 @@ body { min-height:100vh; }
   visibility:visible;
 }
 
-/* ═══════════ SYSTEM VIEW (hierarchy tree) ═══════════ */
+/* ----------- SYSTEM VIEW (hierarchy tree) ----------- */
 .system-tree {
   display:flex;
   flex-direction:column;
@@ -1235,7 +1235,7 @@ body { min-height:100vh; }
   border-radius:1px;
 }
 
-/* Pillar-grouped domain rows — base layout */
+/* Pillar-grouped domain rows � base layout */
 .system-tree__domain-row {
   display:grid;
   grid-template-columns:repeat(8, 1fr);
@@ -1246,7 +1246,7 @@ body { min-height:100vh; }
   padding-top:16px;
   margin:0 auto;
 }
-/* Pillar-grouped domain rows — cross-pillar architecture */
+/* Pillar-grouped domain rows � cross-pillar architecture */
 .system-tree__pillar-group {
   display:flex;
   flex-direction:column;
@@ -1271,7 +1271,7 @@ body { min-height:100vh; }
 .system-tree__domain-row--wms {
   grid-template-columns:repeat(8, 1fr);
 }
-/* TMS and OMS rows have 3 leaves — cap them so leaves stay roughly the same physical size as WMS leaves */
+/* TMS and OMS rows have 3 leaves � cap them so leaves stay roughly the same physical size as WMS leaves */
 .system-tree__domain-row--tms,
 .system-tree__domain-row--oms {
   grid-template-columns:repeat(8, 1fr);
@@ -1432,7 +1432,7 @@ body { min-height:100vh; }
   }
 }
 
-/* ═══════════ CLOSING PULL-QUOTE (home page) ═══════════ */
+/* ----------- CLOSING PULL-QUOTE (home page) ----------- */
 .closing-quote {
   padding:120px 56px 96px;
   background:var(--surface-canvas);
@@ -1472,12 +1472,12 @@ body { min-height:100vh; }
   width:300px; height:300px;
 }
 
-/* ═══════════ HOME PAGE — LANDING STRUCTURE ═══════════
+/* ----------- HOME PAGE � LANDING STRUCTURE -----------
    The Home tab is the front door. Four sections in order:
-     1. .home-hero          — single value-prop title + lede, sits inside .hero
-     2. .home-value-props   — 2x2 grid of the four functions (Oversight, Intervention, Guardrails, Cohesion)
-     3. .home-evidence      — 3 cards linking to The System / The Agents / The Prototype
-     4. .home-closing       — pull-quote, third place the case lands (also in view-system, view-agents)
+     1. .home-hero          � single value-prop title + lede, sits inside .hero
+     2. .home-value-props   � 2x2 grid of the four functions (Oversight, Intervention, Guardrails, Cohesion)
+     3. .home-evidence      � 3 cards linking to The System / The Agents / The Prototype
+     4. .home-closing       � pull-quote, third place the case lands (also in view-system, view-agents)
    No blue. Uses charcoal text, brand yellow + purple accents only. */
 
 .home-hero {
@@ -1505,7 +1505,7 @@ body { min-height:100vh; }
   max-width:64ch;
 }
 
-/* Four value props — 2x2 grid at desktop */
+/* Four value props � 2x2 grid at desktop */
 .home-value-props {
   background:var(--surface-base);
   padding:104px 24px;
@@ -1548,7 +1548,7 @@ body { min-height:100vh; }
   margin:0;
 }
 
-/* Evidence — three cards pointing into the other tabs */
+/* Evidence � three cards pointing into the other tabs */
 .home-evidence {
   background:var(--surface-canvas);
   padding:104px 24px;
@@ -1633,7 +1633,7 @@ body { min-height:100vh; }
   box-shadow:0 4px 14px var(--accent-glow);
 }
 
-/* Closing pull-quote (Home variant — shares language with view-system, view-agents cases) */
+/* Closing pull-quote (Home variant � shares language with view-system, view-agents cases) */
 .home-closing {
   padding:120px 56px 96px;
   background:var(--surface-canvas);
@@ -1664,7 +1664,7 @@ body { min-height:100vh; }
   max-width:80ch;
 }
 
-/* Home — responsive */
+/* Home � responsive */
 @media (max-width:960px) {
   .home-value-props__inner { grid-template-columns:1fr; gap:20px; }
   .home-evidence__cards { grid-template-columns:1fr; gap:16px; }
@@ -1677,7 +1677,7 @@ body { min-height:100vh; }
   .home-closing__quote { padding-left:24px; border-left-width:5px; }
 }
 
-/* ═══════════ STICKY SECTION INDEX ═══════════ */
+/* ----------- STICKY SECTION INDEX ----------- */
 .agents-index {
   position:sticky; top:52px; z-index:40;
   background:rgba(255,255,255,0.90);
@@ -1704,7 +1704,7 @@ body { min-height:100vh; }
 .agents-index__sep { width:1px; height:16px; background:var(--border-hairline); margin:0 4px; flex-shrink:0; }
 [id^="section-"] { scroll-margin-top:96px; }
 
-/* ═══════════ HORIZON CATEGORIES ═══════════ */
+/* ----------- HORIZON CATEGORIES ----------- */
 .horizon-categories { display:flex; flex-direction:column; gap:40px; }
 .horizon-cat { border-top:1px solid var(--border-hairline); padding-top:28px; }
 .horizon-cat__head { margin-bottom:20px; display:flex; flex-direction:column; gap:4px; }
@@ -1712,7 +1712,7 @@ body { min-height:100vh; }
 .horizon-cat__desc { font-size:16px; font-weight:500; line-height:1.45; color:var(--text-primary); }
 .horizon-cat__audience { font-size:11px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--text-tertiary); } /* 2026-05-13 audit: token swap from --text-quaternary */
 
-/* ═══════════ VALUE PROP TWO-COL ═══════════ */
+/* ----------- VALUE PROP TWO-COL ----------- */
 .value-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:start; }
 .value-prose p { font-size:17px; line-height:1.75; color:var(--text-secondary); margin-bottom:20px; }
 .value-prose p:last-child { margin-bottom:0; }
@@ -1735,7 +1735,7 @@ body { min-height:100vh; }
    timeline conveyor's natural min-content is ~1208px). Inner contents stay
    center-aligned on the page axis. */
 .arch__inner { max-width:1280px; margin:0 auto; position:relative; z-index:2; }
-/* Soft topo backdrop on narrative sections — atmosphere, not foreground */
+/* Soft topo backdrop on narrative sections � atmosphere, not foreground */
 .bg-topo--soft { animation-name:topo-breathe-soft; }
 @keyframes topo-breathe-soft {
   0%,100% { transform:scale(1);     opacity:.42; }
@@ -1892,7 +1892,7 @@ body { min-height:100vh; }
 }
 .card__pill-row { display:flex; justify-content:flex-end; }
 
-/* ═══════════ ACCORDION CARDS — summary / details / toggle ═══════════ */
+/* ----------- ACCORDION CARDS � summary / details / toggle ----------- */
 .card__toggle {
   margin-left:auto;
   background:transparent;
@@ -2102,7 +2102,7 @@ body { min-height:100vh; }
   .card { padding:20px; }
   .card--full { padding:24px; }
 }
-/* ═══════════ DEPLOYMENT OPTIONS (System page) ═══════════ */
+/* ----------- DEPLOYMENT OPTIONS (System page) ----------- */
 #section-deployment.section {
   padding:80px 24px;
   background:var(--surface-base);
@@ -2179,7 +2179,7 @@ body { min-height:100vh; }
   .deployment-option { padding:24px 22px 22px; }
 }
 
-/* ═══════════ AGENT CARD: cross-reference line ═══════════ */
+/* ----------- AGENT CARD: cross-reference line ----------- */
 .card__cross-ref-line {
   font-size:12px; line-height:1.5;
   color:var(--text-tertiary);
@@ -2198,7 +2198,7 @@ body { min-height:100vh; }
   text-decoration-color:var(--text-tertiary);
 }
 
-/* ═══════════ ICONS (inline SVG sprite) ═══════════ */
+/* ----------- ICONS (inline SVG sprite) ----------- */
 .icon {
   width:18px; height:18px;
   display:inline-block;
@@ -2213,7 +2213,7 @@ body { min-height:100vh; }
 .icon--solid { fill:currentColor; stroke:none; }
 #icon-sprite { position:absolute; width:0; height:0; overflow:hidden; }
 
-/* ═══════════ HERO GRADIENT ORBS ═══════════ */
+/* ----------- HERO GRADIENT ORBS ----------- */
 .hero__orb {
   position:absolute; pointer-events:none;
   border-radius:50%;
@@ -2258,7 +2258,7 @@ body { min-height:100vh; }
 }
 .hero__inner { z-index:2; }
 
-/* ═══════════ KICKER DOT — refined pulse ═══════════ */
+/* ----------- KICKER DOT � refined pulse ----------- */
 .kicker__dot {
   animation:dot-pulse 2.4s ease-in-out infinite;
 }
@@ -2267,7 +2267,7 @@ body { min-height:100vh; }
   50%     { box-shadow:0 0 0 8px rgba(202,223,53,0.10); }
 }
 
-/* ═══════════ ENTRY ANIMATIONS ═══════════ */
+/* ----------- ENTRY ANIMATIONS ----------- */
 @keyframes fade-up {
   from { opacity:0; transform:translateY(12px); }
   to   { opacity:1; transform:translateY(0); }
@@ -2296,7 +2296,7 @@ body { min-height:100vh; }
 .strip__inner .strip__item:nth-child(2) { animation-delay:.20s; }
 .strip__inner .strip__item:nth-child(3) { animation-delay:.30s; }
 
-/* ═══════════ DOOR ACCENT STRIPES + ICON COLOR ═══════════ */
+/* ----------- DOOR ACCENT STRIPES + ICON COLOR ----------- */
 .door {
   position:relative;
   overflow:hidden;
@@ -2348,7 +2348,7 @@ body { min-height:100vh; }
   transform:translateX(4px);
 }
 
-/* ═══════════ STRIP COLOR POPS ═══════════ */
+/* ----------- STRIP COLOR POPS ----------- */
 .strip__num {
   display:inline-flex; align-items:center; gap:10px;
   padding:6px 12px 6px 8px; border-radius:var(--radius-pill);
@@ -2365,7 +2365,7 @@ body { min-height:100vh; }
   background:linear-gradient(90deg, var(--accent) 0%, var(--accent-bright) 100%);
 }
 
-/* ═══════════ LAYER TITLE ICONS ═══════════ */
+/* ----------- LAYER TITLE ICONS ----------- */
 .layer__title {
   display:inline-flex; align-items:center; gap:8px;
 }
@@ -2392,7 +2392,7 @@ body { min-height:100vh; }
 .layer__title--horizon       { color:var(--accent-darker); }
 .layer__title--meta          { color:#48626E; }
 
-/* ═══════════ CLOSER ICONS + COLOR ═══════════ */
+/* ----------- CLOSER ICONS + COLOR ----------- */
 .closer__item h3 {
   display:inline-flex; align-items:center; gap:10px;
 }
@@ -2407,7 +2407,7 @@ body { min-height:100vh; }
 .closer__item--info   h3 { color:var(--info); }
 .closer__item--link   h3 { color:var(--link); }
 
-/* ═══════════ NAV ACCENT (active button gets a faint underline pop) ═══════════ */
+/* ----------- NAV ACCENT (active button gets a faint underline pop) ----------- */
 .bar__btn { position:relative; }
 .bar__btn[aria-current="page"]::after {
   content:""; position:absolute; left:14px; right:14px; bottom:4px;
@@ -2415,7 +2415,7 @@ body { min-height:100vh; }
   border-radius:2px;
 }
 
-/* ═══════════ AGENT CARD AVATAR HOVER GLOW ═══════════ */
+/* ----------- AGENT CARD AVATAR HOVER GLOW ----------- */
 .card { position:relative; }
 .card::after {
   content:""; position:absolute; inset:-1px; border-radius:inherit;
@@ -2424,14 +2424,14 @@ body { min-height:100vh; }
 }
 .card:hover::after { opacity:.18; filter:blur(8px); }
 
-/* ═══════════ KEEP REDUCED MOTION ═══════════ */
+/* ----------- KEEP REDUCED MOTION ----------- */
 @media (prefers-reduced-motion:reduce) {
   *, *::before, *::after { transition:none !important; animation:none !important; }
   .kicker, .display, .lede, .subnote, .door, .strip__item { opacity:1 !important; transform:none !important; }
   .hero__orb { display:none; }
 }
 
-/* ═══════════ PILLAR TIMELINES (Task 17 · cleaned Task 19) ═══════════ */
+/* ----------- PILLAR TIMELINES (Task 17 � cleaned Task 19) ----------- */
 .section-lede {
   max-width:880px; margin:0 0 28px;
   font-size:15px; line-height:1.55; color:var(--text-secondary);
@@ -2441,7 +2441,7 @@ body { min-height:100vh; }
   font-size:13px; color:var(--text-tertiary);
 }
 
-/* Master morning-shift time axis — chips above the rail, time ticks below */
+/* Master morning-shift time axis � chips above the rail, time ticks below */
 .timeline-axis {
   position:relative;
   margin:0 0 36px;
@@ -2708,7 +2708,7 @@ body { min-height:100vh; }
 .cross-decision__bridge-stem { stroke:rgba(38,37,35,0.45); stroke-width:1.2; fill:none; }
 .cross-decision__bridge-dot  { fill:var(--charcoal); }
 
-/* Swim-lane — 3 continuous lanes, no internal scrolling. Container expands to fit content. */
+/* Swim-lane � 3 continuous lanes, no internal scrolling. Container expands to fit content. */
 .swim-lane {
   position:relative;
   display:grid;
@@ -2764,7 +2764,7 @@ body { min-height:100vh; }
 .swim-lane__lane-label--om { grid-row:3; border-top:1px dashed var(--border-hairline); border-bottom:1px dashed var(--border-hairline); }
 .swim-lane__lane-label--wm { grid-row:4; }
 
-/* Lane tracks (column 2) — continuous, left-to-right */
+/* Lane tracks (column 2) � continuous, left-to-right */
 .swim-lane__lane-track {
   grid-column:2;
   position:relative;
@@ -2779,7 +2779,7 @@ body { min-height:100vh; }
   transform:translateY(-50%);
 }
 
-/* 08:47 vertical "Human gate" marker — a thin hairline running through every lane track */
+/* 08:47 vertical "Human gate" marker � a thin hairline running through every lane track */
 .swim-lane__decision-marker {
   position:absolute; top:0; bottom:0;
   transform:translateX(-50%);
@@ -2824,7 +2824,7 @@ body { min-height:100vh; }
   background:var(--accent); border-color:var(--charcoal);
 }
 
-/* Cross-lane connector arrows — clean diagonals overlaying the lane tracks */
+/* Cross-lane connector arrows � clean diagonals overlaying the lane tracks */
 .swim-lane__connectors {
   position:absolute;
   left:120px; right:0; top:32px; bottom:0;
@@ -2840,7 +2840,7 @@ body { min-height:100vh; }
   font-style:italic;
 }
 
-/* Responsive — under 1080px stack the compact flows vertically */
+/* Responsive � under 1080px stack the compact flows vertically */
 @media (max-width: 1080px) {
   .pillar-timeline__rail { display:none; }
   .pillar-timeline__nodes {
@@ -2861,9 +2861,9 @@ body { min-height:100vh; }
   .swim-lane__node-meta { width:120px; }
 }
 
-/* ═══════════════════════════════════════════════════════
-   UX PROCESS DIAGRAM  —  section-process
-   ═══════════════════════════════════════════════════════ */
+/* -------------------------------------------------------
+   UX PROCESS DIAGRAM  �  section-process
+   ------------------------------------------------------- */
 
 /* Two-column before / after comparison */
 .proc-compare {
@@ -3119,7 +3119,7 @@ body { min-height:100vh; }
 </svg>
 
 <header class="bar" role="banner">
-  <button type="button" class="bar__brand" data-go="home" aria-label="Project Moonshot — home">
+  <button type="button" class="bar__brand" data-go="home" aria-label="Project Moonshot � home">
     <span class="bar__mark" aria-hidden="true">PM</span>
     Project Moonshot
   </button>
@@ -3128,6 +3128,7 @@ body { min-height:100vh; }
     <button type="button" class="bar__btn" data-go="system">The System</button>
     <button type="button" class="bar__btn" data-go="agents">The Agents</button>
     <button type="button" class="bar__btn" data-go="prototype">The Prototype</button>
+    <button type="button" class="bar__btn" data-go="callcenter">Call Center Demo</button>
   </nav>
 </header>
 
@@ -3192,7 +3193,7 @@ body { min-height:100vh; }
       <span class="hero__spark hero__spark--5"></span>
     </div>
     <div class="hero__inner home-hero__inner">
-      <section class="home-hero" aria-label="Project Moonshot — value proposition">
+      <section class="home-hero" aria-label="Project Moonshot � value proposition">
         <h1 class="home-hero__title">A delay in one pillar. A decision in another.</h1>
         <p class="home-hero__lede">Three pillars. Twelve domain agents. One Watchtower. One approval contract. Built so the second one can happen.</p>
       </section>
@@ -3213,7 +3214,7 @@ body { min-height:100vh; }
 
       <article class="value-prop">
         <h2 class="value-prop__title">Guardrails, before launch.</h2>
-        <p class="value-prop__body">Each agent has a spec: rules, escalation thresholds, confidence calibration. Specs are authored before agents ship. Product managers prototype against them and ship faster because the boundary conditions are settled. Specs deploy as runtime agents or as design-time SDLC checks — the same governance, two paths into the stack.</p>
+        <p class="value-prop__body">Each agent has a spec: rules, escalation thresholds, confidence calibration. Specs are authored before agents ship. Product managers prototype against them and ship faster because the boundary conditions are settled. Specs deploy as runtime agents or as design-time SDLC checks � the same governance, two paths into the stack.</p>
       </article>
 
       <article class="value-prop">
@@ -3223,7 +3224,7 @@ body { min-height:100vh; }
     </div>
   </section>
 
-  <section class="home-evidence" aria-label="Evidence — how the four functions are built">
+  <section class="home-evidence" aria-label="Evidence � how the four functions are built">
     <div class="home-evidence__inner">
       <h2 class="home-evidence__title">See it for yourself.</h2>
       <div class="home-evidence__cards">
@@ -3255,7 +3256,7 @@ body { min-height:100vh; }
     </div>
   </section>
 
-  <footer class="foot">Project Moonshot — 2026</footer>
+  <footer class="foot">Project Moonshot � 2026</footer>
 
 </section>
 
@@ -3305,7 +3306,7 @@ body { min-height:100vh; }
       </g>
     </svg>
     <div class="agents-hero__inner">
-      <div class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Seven stations · Twelve agents · Three pillars</div>
+      <div class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Seven stations � Twelve agents � Three pillars</div>
       <h1>The System<span class="accent-dot">.</span></h1>
       <p class="agents-hero__lede">
         How agents get made, organised, and audited. A seven-station pipeline from
@@ -3406,7 +3407,7 @@ body { min-height:100vh; }
                 </div>
 
                 <div class="station station--gold" data-num="5">
-                  <div class="station__stamp">Calm state · NN10</div>
+                  <div class="station__stamp">Calm state � NN10</div>
                   <div class="station__node"><span class="station__num">5</span></div>
                   <div class="station__label"><span>Heuristics</span><span>audit</span></div>
                 </div>
@@ -3436,7 +3437,7 @@ body { min-height:100vh; }
                 <article class="info-card info-card--gold" data-num="1">
                   <div class="info-card__indicator"></div>
                   <h4 class="info-card__heading">Agents are authored</h4>
-                  <p class="info-card__body">Each agent has a spec — its rules, its approvals, its escalations, its confidence calibration. Behaviour is <strong>designed in</strong>, not discovered after launch.</p>
+                  <p class="info-card__body">Each agent has a spec � its rules, its approvals, its escalations, its confidence calibration. Behaviour is <strong>designed in</strong>, not discovered after launch.</p>
                 </article>
 
                 <article class="info-card info-card--neutral" data-num="2">
@@ -3448,7 +3449,7 @@ body { min-height:100vh; }
                 <article class="info-card info-card--mixed" data-num="3">
                   <div class="info-card__indicator"></div>
                   <h4 class="info-card__heading">Domain agents propose</h4>
-                  <p class="info-card__body">Twelve specialist agents across three pillars — Warehouse (Pick Path, Labor, Quality, and five more), Transportation (Spot Rate, Route, plus Carrier in dual context), and Order Management (Allocation, Cutoff Manager, plus Order Priority in dual context). Each raises proposals in its lane. Every proposal carries a <strong>confidence score</strong> the user can read, regardless of pillar.</p>
+                  <p class="info-card__body">Twelve specialist agents across three pillars � Warehouse (Pick Path, Labor, Quality, and five more), Transportation (Spot Rate, Route, plus Carrier in dual context), and Order Management (Allocation, Cutoff Manager, plus Order Priority in dual context). Each raises proposals in its lane. Every proposal carries a <strong>confidence score</strong> the user can read, regardless of pillar.</p>
                 </article>
 
                 <article class="info-card info-card--gold" data-num="4">
@@ -3460,7 +3461,7 @@ body { min-height:100vh; }
                 <article class="info-card info-card--gold" data-num="5">
                   <div class="info-card__indicator"></div>
                   <h4 class="info-card__heading">Heuristics audit</h4>
-                  <p class="info-card__body">A pre-deploy usability check against Nielsen Norman and cognitive-load principles. Failures block ship — design quality is <strong>gated, not assumed</strong>.</p>
+                  <p class="info-card__body">A pre-deploy usability check against Nielsen Norman and cognitive-load principles. Failures block ship � design quality is <strong>gated, not assumed</strong>.</p>
                 </article>
 
                 <article class="info-card info-card--gold" data-num="6">
@@ -3472,7 +3473,7 @@ body { min-height:100vh; }
                 <article class="info-card info-card--gold" data-num="7">
                   <div class="info-card__indicator"></div>
                   <h4 class="info-card__heading">Human-in-the-loop gate</h4>
-                  <p class="info-card__body">No agent acts without human confirmation. Every approval is logged — <strong>the design promise</strong> that makes the system safe to ship at scale.</p>
+                  <p class="info-card__body">No agent acts without human confirmation. Every approval is logged � <strong>the design promise</strong> that makes the system safe to ship at scale.</p>
                 </article>
               </div>
 
@@ -3482,7 +3483,7 @@ body { min-height:100vh; }
                 <div class="howagents-conveyor__legend-item"><span class="howagents-conveyor__legend-swatch howagents-conveyor__legend-swatch--neutral"></span> Backstage</div>
               </div>
 
-              <p class="howagents-conveyor__lede">Seven stations between a prompt and a shipped prototype. Gold nodes are horizontal action — spec authoring, orchestration, audits, and the human-in-the-loop gate cut across every pillar. The mixed node is pillar action — domain agents working inside their vertical. The neutral node is backstage simulation.</p>
+              <p class="howagents-conveyor__lede">Seven stations between a prompt and a shipped prototype. Gold nodes are horizontal action � spec authoring, orchestration, audits, and the human-in-the-loop gate cut across every pillar. The mixed node is pillar action � domain agents working inside their vertical. The neutral node is backstage simulation.</p>
             </div>
           </div>
         </div>
@@ -3965,23 +3966,23 @@ body { min-height:100vh; }
           <div class="howagents-conveyor">
             <div class="howagents-conveyor__inner">
               <div class="system-tree" role="img" aria-label="System architecture: human-to-domain operational chain plus lateral analytical, guardian, and meta layers">
-                <div class="system-tree__node system-tree__node--human">Human · approves</div>
+                <div class="system-tree__node system-tree__node--human">Human � approves</div>
                 <div class="system-tree__connector"></div>
 
                 <div class="system-tree__node system-tree__node--lead">
                   <div class="system-tree__node-title">Archer Chat Agent</div>
-                  <div class="system-tree__node-role">Orchestrator · routing · approval gate · audit log</div>
+                  <div class="system-tree__node-role">Orchestrator � routing � approval gate � audit log</div>
                 </div>
                 <div class="system-tree__connector"></div>
 
                 <div class="system-tree__node system-tree__node--radar">
                   <div class="system-tree__node-title">Shift Intelligence</div>
-                  <div class="system-tree__node-role">Radar · always on · pre-activates domain agents</div>
+                  <div class="system-tree__node-role">Radar � always on � pre-activates domain agents</div>
                 </div>
                 <div class="system-tree__connector"></div>
 
                 <div class="system-tree__pillar-group" data-pillar="wms">
-                  <div class="system-tree__pillar-label">Warehouse · WMS</div>
+                  <div class="system-tree__pillar-label">Warehouse � WMS</div>
                   <div class="system-tree__domain-row system-tree__domain-row--wms">
                     <div class="system-tree__leaf">Pick Path</div>
                     <div class="system-tree__leaf">Labor</div>
@@ -3995,7 +3996,7 @@ body { min-height:100vh; }
                 </div>
 
                 <div class="system-tree__pillar-group" data-pillar="tms">
-                  <div class="system-tree__pillar-label">Transportation · TMS</div>
+                  <div class="system-tree__pillar-label">Transportation � TMS</div>
                   <div class="system-tree__domain-row system-tree__domain-row--tms">
                     <div class="system-tree__leaf system-tree__leaf--dual">Carrier<span class="leaf__dual-note">+ WMS</span></div>
                     <div class="system-tree__leaf">Spot Rate</div>
@@ -4004,7 +4005,7 @@ body { min-height:100vh; }
                 </div>
 
                 <div class="system-tree__pillar-group" data-pillar="oms">
-                  <div class="system-tree__pillar-label">Order Management · OMS</div>
+                  <div class="system-tree__pillar-label">Order Management � OMS</div>
                   <div class="system-tree__domain-row system-tree__domain-row--oms">
                     <div class="system-tree__leaf system-tree__leaf--dual">Order Priority<span class="leaf__dual-note">+ WMS</span></div>
                     <div class="system-tree__leaf">Allocation</div>
@@ -4015,21 +4016,21 @@ body { min-height:100vh; }
                 <div class="system-tree__layers">
                   <div class="system-tree__layer system-tree__layer--analytical">
                     <div class="system-tree__layer-title">Analytical</div>
-                    <div class="system-tree__layer-subtitle">Read-only · analysis mode · routed via Archer Chat Agent</div>
+                    <div class="system-tree__layer-subtitle">Read-only � analysis mode � routed via Archer Chat Agent</div>
                     <div class="system-tree__layer-agents">
                       <span>BI</span><span>Innovation</span><span>Opportunity</span>
                     </div>
                   </div>
                   <div class="system-tree__layer system-tree__layer--guardian">
                     <div class="system-tree__layer-title">Guardian</div>
-                    <div class="system-tree__layer-subtitle">Pre-deploy gate · outside WMS topology · audits the artifact</div>
+                    <div class="system-tree__layer-subtitle">Pre-deploy gate � outside WMS topology � audits the artifact</div>
                     <div class="system-tree__layer-agents">
                       <span>Heuristics</span><span>Accessibility</span><span>Design System</span><span>Content</span><span>Interaction</span><span>Responsive</span>
                     </div>
                   </div>
                   <div class="system-tree__layer system-tree__layer--meta">
                     <div class="system-tree__layer-title">Meta</div>
-                    <div class="system-tree__layer-subtitle">Backstage · prototype only · never surfaces to user</div>
+                    <div class="system-tree__layer-subtitle">Backstage � prototype only � never surfaces to user</div>
                     <div class="system-tree__layer-agents">
                       <span>Warehouse Life</span>
                     </div>
@@ -4037,7 +4038,7 @@ body { min-height:100vh; }
                 </div>
               </div>
 
-              <p class="howagents-conveyor__lede">The wiring underneath. The operational spine carries human approval down through Archer Chat Agent, Shift Intelligence, and twelve domain agents across three pillars — Warehouse, Transportation, Order Management. Two agents (Carrier, Order Priority) operate in dual contexts where their problem space crosses pillar boundaries. The lateral layers — Analytical, Guardian, and Meta — run alongside, governing all three pillars under the same approval-first contract.</p>
+              <p class="howagents-conveyor__lede">The wiring underneath. The operational spine carries human approval down through Archer Chat Agent, Shift Intelligence, and twelve domain agents across three pillars � Warehouse, Transportation, Order Management. Two agents (Carrier, Order Priority) operate in dual contexts where their problem space crosses pillar boundaries. The lateral layers � Analytical, Guardian, and Meta � run alongside, governing all three pillars under the same approval-first contract.</p>
             </div>
           </div>
         </div>
@@ -4091,7 +4092,7 @@ body { min-height:100vh; }
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Shift Intel → Domain</span><span class="topo__chip-note">Pre-activation. No directives.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Shift Intel ? Domain</span><span class="topo__chip-note">Pre-activation. No directives.</span></span>
           </div>
         </div>
 
@@ -4104,14 +4105,14 @@ body { min-height:100vh; }
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Pick Path ↔ Labor</span><span class="topo__chip-note">Joint reroute + redeployment.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Slotting ↔ Equipment</span><span class="topo__chip-note">Joint replen + forklift.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Quality ↔ Labor</span><span class="topo__chip-note">Disposition + investigation labor.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Equipment ↔ Labor</span><span class="topo__chip-note">Operator reassignment on fault.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Order Priority ↔ Labor</span><span class="topo__chip-note">SLA recovery via redeployment.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Order Priority ↔ Carrier</span><span class="topo__chip-note">Window flex as alternative.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Exception → Pick Path</span><span class="topo__chip-note">Path impact signal only.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Exception ↔ Quality</span><span class="topo__chip-note">Transactional meets damage.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Pick Path ? Labor</span><span class="topo__chip-note">Joint reroute + redeployment.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Slotting ? Equipment</span><span class="topo__chip-note">Joint replen + forklift.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Quality ? Labor</span><span class="topo__chip-note">Disposition + investigation labor.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Equipment ? Labor</span><span class="topo__chip-note">Operator reassignment on fault.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Order Priority ? Labor</span><span class="topo__chip-note">SLA recovery via redeployment.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Order Priority ? Carrier</span><span class="topo__chip-note">Window flex as alternative.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Exception ? Pick Path</span><span class="topo__chip-note">Path impact signal only.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Exception ? Quality</span><span class="topo__chip-note">Transactional meets damage.</span></span>
           </div>
         </div>
 
@@ -4124,11 +4125,11 @@ body { min-height:100vh; }
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Carrier ✕ Pick Path</span><span class="topo__chip-note">No real dependency.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Analytical ✕ Domain</span><span class="topo__chip-note">Archer Chat Agent routes everything.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Guardian ✕ WMS</span><span class="topo__chip-note">No operational signal path.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Meta ✕ User</span><span class="topo__chip-note">Backstage by design.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Any agent ✕ Human</span><span class="topo__chip-note">Only Archer Chat Agent speaks to the user.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Carrier ? Pick Path</span><span class="topo__chip-note">No real dependency.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Analytical ? Domain</span><span class="topo__chip-note">Archer Chat Agent routes everything.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Guardian ? WMS</span><span class="topo__chip-note">No operational signal path.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Meta ? User</span><span class="topo__chip-note">Backstage by design.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Any agent ? Human</span><span class="topo__chip-note">Only Archer Chat Agent speaks to the user.</span></span>
           </div>
         </div>
 
@@ -4141,8 +4142,8 @@ body { min-height:100vh; }
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Heuristics ↔ Accessibility</span><span class="topo__chip-note">Joint Guardian audit. No negotiation.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Guardian → Human</span><span class="topo__chip-note">Verdict report. Ship or send back.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Heuristics ? Accessibility</span><span class="topo__chip-note">Joint Guardian audit. No negotiation.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Guardian ? Human</span><span class="topo__chip-note">Verdict report. Ship or send back.</span></span>
           </div>
         </div>
 
@@ -4155,7 +4156,7 @@ body { min-height:100vh; }
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Warehouse Life → State</span><span class="topo__chip-note">Scripted events. Agents react.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Warehouse Life ? State</span><span class="topo__chip-note">Scripted events. Agents react.</span></span>
           </div>
         </div>
 
@@ -4164,14 +4165,14 @@ body { min-height:100vh; }
             <span class="topo__beat-num">06</span>
             <div class="topo__beat-title">
               Agents correlate across pillars.
-              <small>A signal in one product surfaces consequences in another — through the Archer Chat Agent, never directly.</small>
+              <small>A signal in one product surfaces consequences in another � through the Archer Chat Agent, never directly.</small>
             </div>
           </div>
           <div class="topo__chips">
-            <span class="topo__chip"><span class="topo__chip-pair">Carrier (TM) → Archer Chat Agent → Order Priority (OM)</span><span class="topo__chip-note">Lane delay flagged upstream of allocation.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Spot Rate (TM) ↔ Cutoff Manager (OM)</span><span class="topo__chip-note">Split-the-batch on expedited spot capacity.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Allocation (OM) ↔ Order Priority (OM)</span><span class="topo__chip-note">Joint allocation + reprioritisation.</span></span>
-            <span class="topo__chip"><span class="topo__chip-pair">Route (TM) ↔ Carrier (TM)</span><span class="topo__chip-note">Joint route change + carrier reroute.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Carrier (TM) ? Archer Chat Agent ? Order Priority (OM)</span><span class="topo__chip-note">Lane delay flagged upstream of allocation.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Spot Rate (TM) ? Cutoff Manager (OM)</span><span class="topo__chip-note">Split-the-batch on expedited spot capacity.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Allocation (OM) ? Order Priority (OM)</span><span class="topo__chip-note">Joint allocation + reprioritisation.</span></span>
+            <span class="topo__chip"><span class="topo__chip-pair">Route (TM) ? Carrier (TM)</span><span class="topo__chip-note">Joint route change + carrier reroute.</span></span>
           </div>
         </div>
 
@@ -4188,11 +4189,11 @@ body { min-height:100vh; }
 
       <div class="deployment-options">
         <article class="deployment-option deployment-option--runtime">
-          <div class="deployment-option__label">Option A · Runtime agents</div>
+          <div class="deployment-option__label">Option A � Runtime agents</div>
           <h3 class="deployment-option__title">Guardian Agents in production</h3>
           <ul class="deployment-option__list">
             <li>Heuristics Agent and Accessibility Agent run alongside the rest of the agent system.</li>
-            <li>Audit outputs as the system operates — interfaces, decisions, escalations, generated content.</li>
+            <li>Audit outputs as the system operates � interfaces, decisions, escalations, generated content.</li>
             <li>Surface violations to humans through the same approval and escalation channels as domain agents.</li>
             <li>Log every check, feeding the trust calibration loop over time.</li>
             <li>Catches drift, regressions, and failure modes that only appear in operation.</li>
@@ -4200,14 +4201,14 @@ body { min-height:100vh; }
         </article>
 
         <article class="deployment-option deployment-option--skills">
-          <div class="deployment-option__label">Option B · Skills and SDLC checks</div>
+          <div class="deployment-option__label">Option B � Skills and SDLC checks</div>
           <h3 class="deployment-option__title">UX governance in the development pipeline</h3>
           <ul class="deployment-option__list">
             <li>Governance encoded as Claude skills (e.g., "use the UI kit," "WCAG 2.2 AA contrast required," "follow Nielsen Norman 10").</li>
-            <li>Skills invoked during agent prototyping — output constrained at generation time, not corrected after.</li>
+            <li>Skills invoked during agent prototyping � output constrained at generation time, not corrected after.</li>
             <li>Dev-time linters and CI checks block violations before merge.</li>
             <li>Lower runtime cost. Faster developer feedback loop.</li>
-            <li>Catches what's catchable early — before it ever reaches production.</li>
+            <li>Catches what's catchable early � before it ever reaches production.</li>
           </ul>
         </article>
       </div>
@@ -4265,29 +4266,29 @@ body { min-height:100vh; }
       <h2 class="section-title">Horizontal action as infrastructure, not overhead.</h2>
       <div class="value-grid">
         <div class="value-prose">
-          <p>Every product Infios ships now has an AI layer. What it tells the user, what it withholds, what it asks before it acts — that is horizontal work, cutting across every pillar. It is not a skin on top of the logic; it is the logic, made legible. A team that owns those decisions needs the same kind of tooling the engineering and data teams already have: agents running in the background, surfacing signal, closing loops that currently stay open.</p>
+          <p>Every product Infios ships now has an AI layer. What it tells the user, what it withholds, what it asks before it acts � that is horizontal work, cutting across every pillar. It is not a skin on top of the logic; it is the logic, made legible. A team that owns those decisions needs the same kind of tooling the engineering and data teams already have: agents running in the background, surfacing signal, closing loops that currently stay open.</p>
           <p>The WMS prototype proves one version of that. The Guardian and Horizon layers show the full picture: horizontal intelligence that runs on cadence, responds to workflow events, and feeds back into itself. The team does not just get faster. The system gets smarter every time it is used.</p>
-          <p>That is the shift. The horizontal layer stops being a department that reviews work at the end and becomes the seam that makes product, engineering, and commercial decisions safer from the start — because the knowledge is always current, the quality is always checked, and the client's voice is always in the room.</p>
+          <p>That is the shift. The horizontal layer stops being a department that reviews work at the end and becomes the seam that makes product, engineering, and commercial decisions safer from the start � because the knowledge is always current, the quality is always checked, and the client's voice is always in the room.</p>
         </div>
         <div class="value-cards">
           <div class="value-card">
             <div class="horizon-cat__label" style="margin-bottom:8px;">Product &amp; Engineering</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Quality, accessibility, and interaction consistency are validated before work reaches review. Teams move faster because the checks are built into the process — not added at the end.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Quality, accessibility, and interaction consistency are validated before work reaches review. Teams move faster because the checks are built into the process � not added at the end.</p>
           </div>
           <div class="value-card" style="margin-top:16px;">
             <div class="horizon-cat__label" style="margin-bottom:8px;">AI Experience Layer</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Horizontal thinking is present in the AI architecture from the start — not bolted on after engineering. What the system says, asks, and withholds is designed, not defaulted.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Horizontal thinking is present in the AI architecture from the start � not bolted on after engineering. What the system says, asks, and withholds is designed, not defaulted.</p>
           </div>
           <div class="value-card" style="margin-top:16px;">
             <div class="horizon-cat__label" style="margin-bottom:8px;">Scale Without Drift</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Every project adds to the shared context every agent reads from. The team accumulates institutional knowledge rather than losing it — and a new hire reaches full context in days, not months.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Every project adds to the shared context every agent reads from. The team accumulates institutional knowledge rather than losing it � and a new hire reaches full context in days, not months.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="foot">Project Moonshot — 2026</footer>
+  <footer class="foot">Project Moonshot � 2026</footer>
 
 </section>
 
@@ -4338,13 +4339,13 @@ body { min-height:100vh; }
       </g>
     </svg>
     <div class="agents-hero__inner">
-      <div class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Six layers · Twenty agents · One human in the loop</div>
+      <div class="kicker"><span class="kicker__dot" aria-hidden="true"></span>Six layers � Twenty agents � One human in the loop</div>
       <h1>The Agents<span class="accent-dot">.</span></h1>
       <p class="agents-hero__lede">
         One orchestrator that talks to the human. One radar that watches the floor.
         Eight domain experts that propose. Three analytical agents that reason.
         Six Guardian audits that gate every ship. One backstage sim engine that
-        exercises the whole thing. The interesting part is not the count — it is the
+        exercises the whole thing. The interesting part is not the count � it is the
         rule that holds the whole system together: <strong>every consequential action
         is proposed by an agent and confirmed by a human before execution.</strong>
       </p>
@@ -4363,13 +4364,13 @@ body { min-height:100vh; }
     <a class="agents-index__item" href="#section-case" data-section="section-case">The case</a>
   </nav>
 
-  <!-- ═══════════ UX PROCESS DIAGRAM ═══════════ -->
+  <!-- ----------- UX PROCESS DIAGRAM ----------- -->
   <div class="layer" id="section-process">
     <div class="layer__inner">
 
       <div class="layer__head">
         <div class="layer__title layer__title--guardian"><svg class="icon" aria-hidden="true"><use href="#icon-shield_person"/></svg>Process</div>
-        <p class="layer__desc">From linear to bifurcated. In both paths, the UX team is the guardian — through experts designing the work, or through the agents they authored.</p>
+        <p class="layer__desc">From linear to bifurcated. In both paths, the UX team is the guardian � through experts designing the work, or through the agents they authored.</p>
       </div>
 
       <!-- BEFORE / AFTER COMPARISON -->
@@ -4382,7 +4383,7 @@ body { min-height:100vh; }
           <div class="proc-flow">
             <div class="proc-node proc-node--product">
               <div class="proc-node__label">Product request</div>
-              <div class="proc-node__sub">VP · Director · Manager</div>
+              <div class="proc-node__sub">VP � Director � Manager</div>
             </div>
             <div class="proc-arrow" aria-hidden="true"></div>
             <div class="proc-node">
@@ -4405,7 +4406,7 @@ body { min-height:100vh; }
               <div class="proc-node__sub">Implement alongside engineering</div>
             </div>
           </div>
-          <p class="proc-track__note">Every request — regardless of complexity — routes through the full process. A table that fetches a database gets the same treatment as a new product surface.</p>
+          <p class="proc-track__note">Every request � regardless of complexity � routes through the full process. A table that fetches a database gets the same treatment as a new product surface.</p>
         </div>
 
         <!-- AFTER: bifurcated -->
@@ -4415,7 +4416,7 @@ body { min-height:100vh; }
           <div class="proc-flow">
             <div class="proc-node proc-node--product">
               <div class="proc-node__label">Product request</div>
-              <div class="proc-node__sub">VP · Director · Manager</div>
+              <div class="proc-node__sub">VP � Director � Manager</div>
             </div>
             <div class="proc-arrow" aria-hidden="true"></div>
             <div class="proc-node proc-node--build">
@@ -4426,7 +4427,7 @@ body { min-height:100vh; }
             <div class="proc-node proc-node--audit">
               <div class="proc-node__badge">Authored by UX Team</div>
               <div class="proc-node__label">Guardian agents audit</div>
-              <div class="proc-node__sub">Accessibility · Heuristics · Design System · Content · Interaction · Responsive</div>
+              <div class="proc-node__sub">Accessibility � Heuristics � Design System � Content � Interaction � Responsive</div>
             </div>
             <div class="proc-fork-stem" aria-hidden="true"></div>
             <!-- Fork -->
@@ -4472,7 +4473,7 @@ body { min-height:100vh; }
         <div class="proc-guardian-banner__icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         </div>
-        <p class="proc-guardian-banner__text">In both paths, <strong>the UX team is the guardian</strong> — through experts designing the work where complexity demands it, or through agents the experts authored that guarantee quality at scale.</p>
+        <p class="proc-guardian-banner__text">In both paths, <strong>the UX team is the guardian</strong> � through experts designing the work where complexity demands it, or through agents the experts authored that guarantee quality at scale.</p>
       </div>
 
       <!-- AGENT LIBRARY: LIVE vs HORIZON -->
@@ -4564,12 +4565,12 @@ body { min-height:100vh; }
 
       <!-- AGENTIC DESIGNER CALLOUT -->
       <div class="proc-designer-callout">
-        <strong>This library requires agentic designers to maintain it.</strong> Each agent encodes years of UX expertise into auditable, executable standards. As the product surface grows and AI-generated UI becomes the norm, the designers who author, calibrate, and evolve this agent library are not replacing UX craft — they are scaling it. The practitioner who can write a guardian that never misses a WCAG contrast failure is doing UX work. It just runs at 3 a.m. without them.
+        <strong>This library requires agentic designers to maintain it.</strong> Each agent encodes years of UX expertise into auditable, executable standards. As the product surface grows and AI-generated UI becomes the norm, the designers who author, calibrate, and evolve this agent library are not replacing UX craft � they are scaling it. The practitioner who can write a guardian that never misses a WCAG contrast failure is doing UX work. It just runs at 3 a.m. without them.
       </div>
 
     </div>
   </div>
-  <!-- ═══════════ / UX PROCESS DIAGRAM ═══════════ -->
+  <!-- ----------- / UX PROCESS DIAGRAM ----------- -->
 
   <div class="layer" id="section-lead">
     <div class="layer__inner">
@@ -4582,11 +4583,11 @@ body { min-height:100vh; }
           <div class="card__avatar" aria-hidden="true">AC</div>
           <div class="card__id">
             <div class="card__name">Archer Chat Agent</div>
-            <div class="card__role">Orchestrator. The only agent that addresses the human user — directly, and by design.</div>
+            <div class="card__role">Orchestrator. The only agent that addresses the human user � directly, and by design.</div>
           </div>
           <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-lead-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
         </div>
-        <div class="card__summary">The only agent that speaks to the user — every approval, escalation, and audit-log entry passes through here.</div>
+        <div class="card__summary">The only agent that speaks to the user � every approval, escalation, and audit-log entry passes through here.</div>
         <div class="card__details" id="card-lead-details">
           <div class="card__row">
             <div class="card__field">
@@ -4607,7 +4608,7 @@ body { min-height:100vh; }
               </div>
             </div>
             <div class="card__guardrail">
-              Single approval gate. No agent reaches the human except through this one — and no Tier 2 action
+              Single approval gate. No agent reaches the human except through this one � and no Tier 2 action
               executes without an approved record in the audit log first.
             </div>
           </div>
@@ -4641,7 +4642,7 @@ body { min-height:100vh; }
               <div class="card__field-value">
                 Reads pick rate, inventory position, labor allocation, quality flags, and dock status across all zones.
                 Compares live data to baselines loaded at session start. When a metric drifts past its envelope, it
-                emits an anomaly signal — zone, type, severity, recommended domain agent — to the Archer Chat Agent and
+                emits an anomaly signal � zone, type, severity, recommended domain agent � to the Archer Chat Agent and
                 pre-activates that domain agent so analysis is already underway before the human is asked anything.
               </div>
             </div>
@@ -4655,7 +4656,7 @@ body { min-height:100vh; }
             </div>
             <div class="card__guardrail">
               Read-only by design. Detection cannot become action without passing the orchestrator. If context
-              cannot be loaded, the agent stays inactive and surfaces an explicit health-check failure — not a
+              cannot be loaded, the agent stays inactive and surfaces an explicit health-check failure � not a
               partial-context guess.
             </div>
           </div>
@@ -4670,7 +4671,7 @@ body { min-height:100vh; }
     <div class="layer__inner">
       <div class="layer__head">
         <div class="layer__title layer__title--domain"><svg class="icon" aria-hidden="true"><use href="#icon-grid_view"/></svg>Domain experts</div>
-        <p class="layer__desc">Twelve agents across three pillars — Warehouse, Transportation, Order Management. Each owns one problem space. Each proposes. None executes alone. The same Tier&nbsp;1&nbsp;/&nbsp;2&nbsp;/&nbsp;3 model, the same three shared fields (<code>confidence</code>, <code>escalationReason</code>, <code>options[]</code>), the same governance contract — across every pillar.</p>
+        <p class="layer__desc">Twelve agents across three pillars � Warehouse, Transportation, Order Management. Each owns one problem space. Each proposes. None executes alone. The same Tier&nbsp;1&nbsp;/&nbsp;2&nbsp;/&nbsp;3 model, the same three shared fields (<code>confidence</code>, <code>escalationReason</code>, <code>options[]</code>), the same governance contract � across every pillar.</p>
       </div>
       <div class="grid-5">
 
@@ -4712,7 +4713,7 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-labor-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Models who is where, on what task, and at what cost to move — the primary fix lever when something breaks.</div>
+          <div class="card__summary">Models who is where, on what task, and at what cost to move � the primary fix lever when something breaks.</div>
           <div class="card__details" id="card-labor-details">
             <div class="card__body">
               Holds a live model of who is where, on what task, for how long, and at what cost to abandon. Investigates
@@ -4724,7 +4725,7 @@ body { min-height:100vh; }
               <div class="card__field-value">Archer Chat Agent (proposals); Pick Path, Order Priority, Exception (joint recommendations); Equipment (operator reassignment requests); Quality (investigation labor for damage / hold / variance).</div>
             </div>
             <div class="card__guardrail">
-              Will not leave any zone below minimum safe staffing — ever. Every redeployment carries the cost of
+              Will not leave any zone below minimum safe staffing � ever. Every redeployment carries the cost of
               the task being abandoned, in the proposal.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
@@ -4745,7 +4746,7 @@ body { min-height:100vh; }
           <div class="card__details" id="card-orderpriority-details">
             <div class="card__body">
               Tracks every active order against its ship-by clock. When an order enters the danger zone it emits
-              coordination signals — to Labor for redeployment, to Carrier for window flexibility — and surfaces
+              coordination signals � to Labor for redeployment, to Carrier for window flexibility � and surfaces
               a reprioritisation proposal before breach is inevitable.
             </div>
             <div class="card__field">
@@ -4774,7 +4775,7 @@ body { min-height:100vh; }
           <div class="card__details" id="card-carrier-details">
             <div class="card__body">
               Monitors inbound and outbound windows when active. Pauses cleanly when no windows need watching.
-              Surfaces reroutes, window extensions, and dock schedule adjustments — and flags any contractual
+              Surfaces reroutes, window extensions, and dock schedule adjustments � and flags any contractual
               SLA risk on the proposal itself, not in a footnote.
             </div>
             <div class="card__field">
@@ -4782,7 +4783,7 @@ body { min-height:100vh; }
               <div class="card__field-value">Archer Chat Agent (proposals); Order Priority (carrier alternatives). <em>Pick Path is a prohibited path.</em></div>
             </div>
             <div class="card__guardrail">
-              Will not cancel a carrier booking. Will not coordinate directly with Pick Path — that path is
+              Will not cancel a carrier booking. Will not coordinate directly with Pick Path � that path is
               prohibited by design, because the dependency is not real.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
@@ -4802,9 +4803,9 @@ body { min-height:100vh; }
           <div class="card__summary">Triages mispicks and short-picks; escalates the ~20% it cannot resolve confidently to a human.</div>
           <div class="card__details" id="card-exception-details">
             <div class="card__body">
-              Triages transactional pick errors — mispicks, short-picks, scan discrepancies — and assigns a
+              Triages transactional pick errors � mispicks, short-picks, scan discrepancies � and assigns a
               resolution path (substitute / re-pick / investigate / escalate). Roughly 20% are flagged to the
-              Archer Chat Agent — never resolved by guess. Damage, holds, and cycle-count variance moved to the
+              Archer Chat Agent � never resolved by guess. Damage, holds, and cycle-count variance moved to the
               Quality Agent.
             </div>
             <div class="card__field">
@@ -4829,7 +4830,7 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-slotting-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Replenishment, bin assignment, and fast-mover re-slotting — every move scored, every approval human.</div>
+          <div class="card__summary">Replenishment, bin assignment, and fast-mover re-slotting � every move scored, every approval human.</div>
           <div class="card__details" id="card-slotting-details">
             <div class="card__body">
               Owns SKU stock levels in pick zones. Proposes replenishment moves when stock crosses reorder
@@ -4863,9 +4864,9 @@ body { min-height:100vh; }
           <div class="card__summary">Monitors forklifts, AMRs, and conveyors; routes safety calls to a human when fault confidence drops below 50%.</div>
           <div class="card__details" id="card-equipment-details">
             <div class="card__body">
-              Monitors equipment telemetry — fault codes, battery state, position. Proposes operator
+              Monitors equipment telemetry � fault codes, battery state, position. Proposes operator
               reassignments, charge swaps, and equipment reroutes. When fault root-cause confidence drops
-              below 50%, emits an options[] escalation with no recommendation chosen — the canonical "safety
+              below 50%, emits an options[] escalation with no recommendation chosen � the canonical "safety
               review required" pattern.
             </div>
             <div class="card__field">
@@ -4873,7 +4874,7 @@ body { min-height:100vh; }
               <div class="card__field-value">Archer Chat Agent (proposals + safety escalations); Labor (operator reassignment); Slotting (forklift availability); Pick Path (aisle impact).</div>
             </div>
             <div class="card__guardrail">
-              Will not recommend a single intervention when root-cause confidence is below 50% — surfaces
+              Will not recommend a single intervention when root-cause confidence is below 50% � surfaces
               options[] every time. Will not leave a zone with zero operational forklifts during an active
               wave without flagging.
             </div>
@@ -4896,7 +4897,7 @@ body { min-height:100vh; }
             <div class="card__body">
               Triages damage events (carrier vs in-warehouse), proposes hold release / scrap / claim
               dispositions, and investigates cycle-count variances. When value-at-stake exceeds threshold or
-              audit risk is high, emits an options[] escalation with no recommendation chosen — the "$44.8k
+              audit risk is high, emits an options[] escalation with no recommendation chosen � the "$44.8k
               variance, no recommendation" pattern.
             </div>
             <div class="card__field">
@@ -4918,21 +4919,21 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">SR</div>
             <div class="card__id">
               <div class="card__name">Spot Rate Agent</div>
-              <div class="card__role">TM — Spot quotes vs contracted lane rate.</div>
+              <div class="card__role">TM � Spot quotes vs contracted lane rate.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-spotrate-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Surfaces an alert the moment a spot quote crosses the configured multiple of the contracted lane rate. Proposes accept, delay, or consolidate — never both rate and route silently.</div>
+          <div class="card__summary">Surfaces an alert the moment a spot quote crosses the configured multiple of the contracted lane rate. Proposes accept, delay, or consolidate � never both rate and route silently.</div>
           <div class="card__details" id="card-spotrate-details">
             <div class="card__body">
-              Compares every ingested spot quote against the contracted rate on the same lane. When the multiple breaches threshold (default 2.0x), surfaces options to accept the spot rate, delay shipment for contracted capacity, or consolidate with an adjacent lane. Above the hard ceiling (default 3.0x), the agent escalates with no recommendation — the trade-off becomes the supervisor's.
+              Compares every ingested spot quote against the contracted rate on the same lane. When the multiple breaches threshold (default 2.0x), surfaces options to accept the spot rate, delay shipment for contracted capacity, or consolidate with an adjacent lane. Above the hard ceiling (default 3.0x), the agent escalates with no recommendation � the trade-off becomes the supervisor's.
             </div>
             <div class="card__field">
               <div class="card__field-label">Talks to</div>
               <div class="card__field-value">Archer Chat Agent (proposals); Carrier Agent (capacity-exhausted requests); Route Agent (joint rate + route changes).</div>
             </div>
             <div class="card__guardrail">
-              Will not accept a spot quote above the hard ceiling, even with approval — that requires an explicit policy override. Will not cancel an existing carrier booking. Ever.
+              Will not accept a spot quote above the hard ceiling, even with approval � that requires an explicit policy override. Will not cancel an existing carrier booking. Ever.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
             <div class="card__pill-row"><span class="pill pill--domain">Domain</span><span class="pill pill--domain">TM</span></div>
@@ -4944,14 +4945,14 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">RT</div>
             <div class="card__id">
               <div class="card__name">Route Agent</div>
-              <div class="card__role">TM — Lane health, mode selection, multi-stop routing.</div>
+              <div class="card__role">TM � Lane health, mode selection, multi-stop routing.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-route-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
           <div class="card__summary">Owns lane selection, mode selection, and multi-stop sequencing. Proposes route changes the moment lane health drifts off baseline.</div>
           <div class="card__details" id="card-route-details">
             <div class="card__body">
-              Monitors transit-time variance, capacity availability, and on-time history per lane. When a lane degrades, builds candidate route changes, mode changes, and stop resequences — including in response to ETA breaches surfaced by Carrier or ship-by risk surfaced by Order Priority. The TM topology's equivalent of Pick Path: each owns the routing problem for their pillar's primary movement substrate.
+              Monitors transit-time variance, capacity availability, and on-time history per lane. When a lane degrades, builds candidate route changes, mode changes, and stop resequences � including in response to ETA breaches surfaced by Carrier or ship-by risk surfaced by Order Priority. The TM topology's equivalent of Pick Path: each owns the routing problem for their pillar's primary movement substrate.
             </div>
             <div class="card__field">
               <div class="card__field-label">Talks to</div>
@@ -4970,21 +4971,21 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">AL</div>
             <div class="card__id">
               <div class="card__name">Allocation Agent</div>
-              <div class="card__role">OM — Constrained-inventory allocation.</div>
+              <div class="card__role">OM � Constrained-inventory allocation.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-allocation-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">When pending demand exceeds available stock, proposes which orders get filled, which get backordered, and which substitute. Every allocation is customer-facing — every allocation is Tier 2.</div>
+          <div class="card__summary">When pending demand exceeds available stock, proposes which orders get filled, which get backordered, and which substitute. Every allocation is customer-facing � every allocation is Tier 2.</div>
           <div class="card__details" id="card-allocation-details">
             <div class="card__body">
-              Distinct from prioritisation. Order Priority decides which order goes <em>first</em> when all can be filled; Allocation decides which orders get filled <em>at all</em> when stock cannot cover demand. Builds allocation, backorder, and substitution options against pending-order data, stock data, stock-in-transit, and substitute-SKU compatibility. Strategic-account involvement triggers options[] with no recommendation — allocation against strategic accounts is a relationship decision, not an inventory decision.
+              Distinct from prioritisation. Order Priority decides which order goes <em>first</em> when all can be filled; Allocation decides which orders get filled <em>at all</em> when stock cannot cover demand. Builds allocation, backorder, and substitution options against pending-order data, stock data, stock-in-transit, and substitute-SKU compatibility. Strategic-account involvement triggers options[] with no recommendation � allocation against strategic accounts is a relationship decision, not an inventory decision.
             </div>
             <div class="card__field">
               <div class="card__field-label">Talks to</div>
               <div class="card__field-value">Archer Chat Agent (proposals + strategic-account escalations); Order Priority Agent (joint allocation + reprioritisation); Cutoff Manager Agent (batch composition shifts).</div>
             </div>
             <div class="card__guardrail">
-              Will not allocate against stock that is already committed elsewhere. Will not substitute against a customer's no-substitute terms. Will not cancel an order — backorder is not cancellation. Will not rescue one order by putting another at risk.
+              Will not allocate against stock that is already committed elsewhere. Will not substitute against a customer's no-substitute terms. Will not cancel an order � backorder is not cancellation. Will not rescue one order by putting another at risk.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
             <div class="card__pill-row"><span class="pill pill--domain">Domain</span><span class="pill pill--domain">OM</span></div>
@@ -4996,21 +4997,21 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">CM</div>
             <div class="card__id">
               <div class="card__name">Cutoff Manager Agent</div>
-              <div class="card__role">OM — Carrier cutoff windows at the order layer.</div>
+              <div class="card__role">OM � Carrier cutoff windows at the order layer.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-cutoff-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Tracks every batch against its assigned cutoff. When the at-risk volume crosses threshold, proposes push, split, or hold — before the window closes on the floor.</div>
+          <div class="card__summary">Tracks every batch against its assigned cutoff. When the at-risk volume crosses threshold, proposes push, split, or hold � before the window closes on the floor.</div>
           <div class="card__details" id="card-cutoff-details">
             <div class="card__body">
-              Operates at the order layer — upstream of the dock. Owns batch composition, batch-to-cutoff assignment, and at-risk-volume detection. Builds candidate push-to-next-window, split-the-batch (e.g., expedite top eight via spot capacity, push the remaining fifteen), and hold-for-customer-notification options. Customer notifications themselves are never autonomous — the agent proposes the hold, the human confirms the notification.
+              Operates at the order layer � upstream of the dock. Owns batch composition, batch-to-cutoff assignment, and at-risk-volume detection. Builds candidate push-to-next-window, split-the-batch (e.g., expedite top eight via spot capacity, push the remaining fifteen), and hold-for-customer-notification options. Customer notifications themselves are never autonomous � the agent proposes the hold, the human confirms the notification.
             </div>
             <div class="card__field">
               <div class="card__field-label">Talks to</div>
               <div class="card__field-value">Archer Chat Agent (proposals); Order Priority Agent (batch-at-risk on high-priority orders); Allocation Agent (batch-composition shifts); Spot Rate Agent (expedited-capacity for split-the-batch).</div>
             </div>
             <div class="card__guardrail">
-              Will not push an order in a way that breaches its ship-by SLA without flagging it. Will not trigger an outbound customer notification — that is always a human-confirmed action. Will not cancel. Ever.
+              Will not push an order in a way that breaches its ship-by SLA without flagging it. Will not trigger an outbound customer notification � that is always a human-confirmed action. Will not cancel. Ever.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
             <div class="card__pill-row"><span class="pill pill--domain">Domain</span><span class="pill pill--domain">OM</span></div>
@@ -5042,7 +5043,7 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-bi-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Says what happened and what the trend is — and refuses to claim cause when the data only shows pattern.</div>
+          <div class="card__summary">Says what happened and what the trend is � and refuses to claim cause when the data only shows pattern.</div>
           <div class="card__details" id="card-bi-details">
             <div class="card__body">
               Answers what happened, what the data shows, what the trend is. Surfaces patterns; refuses
@@ -5070,7 +5071,7 @@ body { min-height:100vh; }
           <div class="card__details" id="card-innovation-details">
             <div class="card__body">
               Asks <em>what if this is a symptom of something else</em>. Surfaces the assumptions baked into the
-              framing of a question. Will not propose operational actions — that belongs to a different layer.
+              framing of a question. Will not propose operational actions � that belongs to a different layer.
             </div>
             <div class="card__guardrail">
               Challenges framing only. Does not propose operational actions. Reframing a problem and changing the
@@ -5090,10 +5091,10 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-opportunity-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Finds non-obvious connections across time and zones — always labelled correlation, never causation.</div>
+          <div class="card__summary">Finds non-obvious connections across time and zones � always labelled correlation, never causation.</div>
           <div class="card__details" id="card-opportunity-details">
             <div class="card__body">
-              Looks for non-obvious connections across time windows or zones — recurring patterns that hint at
+              Looks for non-obvious connections across time windows or zones � recurring patterns that hint at
               structural causes. Every finding is qualified as correlation, not causation, in the finding itself.
             </div>
             <div class="card__guardrail">
@@ -5114,7 +5115,7 @@ body { min-height:100vh; }
     <div class="layer__inner">
       <div class="layer__head">
         <div class="layer__title layer__title--guardian"><svg class="icon" aria-hidden="true"><use href="#icon-shield_person"/></svg>Guardian Layer</div>
-        <p class="layer__desc">Six agents, one mandate. Quality checked before it reaches clients. Any score above 5 triggers human UX review — below 5 across all agents, pre-approved.</p>
+        <p class="layer__desc">Six agents, one mandate. Quality checked before it reaches clients. Any score above 5 triggers human UX review � below 5 across all agents, pre-approved.</p>
       </div>
       <div class="grid-3">
 
@@ -5123,16 +5124,16 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">AC</div>
             <div class="card__id">
               <div class="card__name">Accessibility Agent</div>
-              <div class="card__role">Pre-deploy WCAG 2.2 audit — AA load-bearing, AAA advisory.</div>
+              <div class="card__role">Pre-deploy WCAG 2.2 audit � AA load-bearing, AAA advisory.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-accessibility-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">WCAG 2.2 AA audit on every homepage build — load-bearing FAILs block ship, no silent downgrades.</div>
+          <div class="card__summary">WCAG 2.2 AA audit on every homepage build � load-bearing FAILs block ship, no silent downgrades.</div>
           <div class="card__details" id="card-accessibility-details">
             <div class="card__body">
               Audits the Warehouse homepage against WCAG 2.2 Level AA: contrast, keyboard, focus order, focus
               visibility, target size, three flashes, consistent identification. Level AAA is advisory.
-              Includes the sim-clock criterion unique to this prototype — approvals must not auto-resolve as
+              Includes the sim-clock criterion unique to this prototype � approvals must not auto-resolve as
               the clock advances.
             </div>
             <div class="card__field">
@@ -5140,11 +5141,11 @@ body { min-height:100vh; }
               <div class="card__field-value">Human reviewer (verdict report); Heuristics Agent (joint Guardian audit, no negotiation).</div>
             </div>
             <div class="card__cross-ref-line">
-              Deployable as a runtime agent or as a Claude skill at design time — see <a href="#system" data-go="system">The System → Deployment options</a>.
+              Deployable as a runtime agent or as a Claude skill at design time � see <a href="#system" data-go="system">The System ? Deployment options</a>.
             </div>
             <div class="card__guardrail">
               Never modifies the homepage. Never silently downgrades a Level AA FAIL to a WARN. Never approves
-              ship. Surfaces ambiguity instead of guessing — contrast in the WCAG noise band (4.4–4.6 against
+              ship. Surfaces ambiguity instead of guessing � contrast in the WCAG noise band (4.4�4.6 against
               the 4.5 threshold) gets WARN with the measured value, not a coin-flip verdict.
             </div>
             <div class="card__attribution">Authored by the UX Team</div>
@@ -5157,14 +5158,14 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">HE</div>
             <div class="card__id">
               <div class="card__name">Heuristics Agent</div>
-              <div class="card__role">Pre-deploy usability audit — Nielsen Norman + Hick + Miller + cognitive load.</div>
+              <div class="card__role">Pre-deploy usability audit � Nielsen Norman + Hick + Miller + cognitive load.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-heuristics-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Pre-deploy usability audit against Nielsen Norman, Hick, Miller, and cognitive load — a verdict per criterion.</div>
+          <div class="card__summary">Pre-deploy usability audit against Nielsen Norman, Hick, Miller, and cognitive load � a verdict per criterion.</div>
           <div class="card__details" id="card-heuristics-details">
             <div class="card__body">
-              Audits the Warehouse homepage against Nielsen Norman's 10 heuristics, Hick's Law, Miller's 7±2,
+              Audits the Warehouse homepage against Nielsen Norman's 10 heuristics, Hick's Law, Miller's 7�2,
               and Cognitive Load Theory. Produces a verdict per criterion (PASS / WARN / FAIL / N/A) with a
               one-sentence rationale. Load-bearing FAILs block ship; advisory FAILs surface for human judgement.
             </div>
@@ -5173,10 +5174,10 @@ body { min-height:100vh; }
               <div class="card__field-value">Human reviewer (verdict report); Accessibility Agent (joint Guardian audit, no negotiation). Does not run inside the WMS topology.</div>
             </div>
             <div class="card__cross-ref-line">
-              Deployable as a runtime agent or as a Claude skill at design time — see <a href="#system" data-go="system">The System → Deployment options</a>.
+              Deployable as a runtime agent or as a Claude skill at design time � see <a href="#system" data-go="system">The System ? Deployment options</a>.
             </div>
             <div class="card__guardrail">
-              Never modifies the homepage. Never silently downgrades a FAIL to a WARN. Never approves ship —
+              Never modifies the homepage. Never silently downgrades a FAIL to a WARN. Never approves ship �
               only the human can. If a criterion cannot be measured, the verdict is NOT-APPLICABLE with a
               rationale, not a guess.
             </div>
@@ -5194,7 +5195,7 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-designsystem-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Flags every unapproved deviation from the design system — component, token, and spacing rules.</div>
+          <div class="card__summary">Flags every unapproved deviation from the design system � component, token, and spacing rules.</div>
           <div class="card__details" id="card-designsystem-details">
             <div class="card__body">Component usage, token adherence, spacing rules. Any non-approved deviation from the DS is flagged regardless of severity.</div>
             <div class="card__attribution">Authored by the UX Team</div>
@@ -5211,7 +5212,7 @@ body { min-height:100vh; }
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-content-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">Audits UX writing — label clarity, error messages, empty states, microcopy consistency — before ship.</div>
+          <div class="card__summary">Audits UX writing � label clarity, error messages, empty states, microcopy consistency � before ship.</div>
           <div class="card__details" id="card-content-details">
             <div class="card__body">Label clarity, error message quality, empty states, microcopy consistency. Ambiguous or missing critical copy surfaces immediately.</div>
             <div class="card__attribution">Authored by the UX Team</div>
@@ -5255,7 +5256,7 @@ body { min-height:100vh; }
 
       </div>
       <div class="card__guardrail" style="margin-top:16px;">
-        Below 5 across all agents: pre-approved with an auto-comment logged to the ticket. Design judgment is allocated where the signal is real — not spread thin across volume.
+        Below 5 across all agents: pre-approved with an auto-comment logged to the ticket. Design judgment is allocated where the signal is real � not spread thin across volume.
       </div>
     </div>
   </div>
@@ -5265,7 +5266,7 @@ body { min-height:100vh; }
     <div class="layer__inner">
       <div class="layer__head">
         <div class="layer__title layer__title--meta"><svg class="icon" aria-hidden="true"><use href="#icon-graph_4"/></svg>Meta layer</div>
-        <p class="layer__desc">One agent, backstage. Not in the WMS topology — it <em>is</em> the simulated warehouse. Lives only in the prototype, never in the shipped product.</p>
+        <p class="layer__desc">One agent, backstage. Not in the WMS topology � it <em>is</em> the simulated warehouse. Lives only in the prototype, never in the shipped product.</p>
       </div>
       <div class="grid-3">
 
@@ -5274,15 +5275,15 @@ body { min-height:100vh; }
             <div class="card__avatar" aria-hidden="true">WL</div>
             <div class="card__id">
               <div class="card__name">Warehouse Life Agent</div>
-              <div class="card__role">Scripted-causal simulation engine — generates the events the WMS agents react to.</div>
+              <div class="card__role">Scripted-causal simulation engine � generates the events the WMS agents react to.</div>
             </div>
             <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-warehouselife-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
           </div>
-          <div class="card__summary">The scripted simulation engine that generates the events the WMS agents react to — never surfaces to the user.</div>
+          <div class="card__summary">The scripted simulation engine that generates the events the WMS agents react to � never surfaces to the user.</div>
           <div class="card__details" id="card-warehouselife-details">
             <div class="card__body">
-              Owns the simulated warehouse state — clock, zones, dock schedule, incidents — and emits root
-              events on a scripted 08:00–09:30 timeline plus derived events when state crosses thresholds.
+              Owns the simulated warehouse state � clock, zones, dock schedule, incidents � and emits root
+              events on a scripted 08:00�09:30 timeline plus derived events when state crosses thresholds.
               The WMS agents react to its events; it never proposes user-facing actions, never gates
               approvals, never modifies what agents say. Backstage by design.
             </div>
@@ -5303,12 +5304,12 @@ body { min-height:100vh; }
     </div>
   </div>
 
-  <!-- WHAT COMES NEXT — DIVIDER -->
+  <!-- WHAT COMES NEXT � DIVIDER -->
   <div class="layer" style="background:var(--surface-canvas);">
     <div class="layer__inner">
       <div class="section-label">What comes next</div>
       <h2 class="section-title">Building the practice around the capability.</h2>
-      <p style="font-size:16px;line-height:1.7;color:var(--text-secondary);max-width:70ch;">The system above is the operational layer in use today — orchestration, radar, eight domain experts, analytical reasoning, the Guardian audits that gate every ship, and the sim engine that exercises the whole thing. What comes next is the practice that builds around it: the agents below extend design intelligence into the parts of the product process that currently depend on manual effort, tribal knowledge, or simply never get done at all. This is the case for why UX practitioners need to be in the room where AI is configured, not watching from outside it.</p>
+      <p style="font-size:16px;line-height:1.7;color:var(--text-secondary);max-width:70ch;">The system above is the operational layer in use today � orchestration, radar, eight domain experts, analytical reasoning, the Guardian audits that gate every ship, and the sim engine that exercises the whole thing. What comes next is the practice that builds around it: the agents below extend design intelligence into the parts of the product process that currently depend on manual effort, tribal knowledge, or simply never get done at all. This is the case for why UX practitioners need to be in the room where AI is configured, not watching from outside it.</p>
     </div>
   </div>
 
@@ -5324,8 +5325,8 @@ body { min-height:100vh; }
         <!-- CATEGORY 1: BEFORE YOU BUILD -->
         <div class="horizon-cat">
           <div class="horizon-cat__label">Before you build</div>
-          <p class="horizon-cat__desc">Research, context, and competitive signal — structured and ready before the first frame.</p>
-          <p class="horizon-cat__audience">Product · Strategy · Product Marketing</p>
+          <p class="horizon-cat__desc">Research, context, and competitive signal � structured and ready before the first frame.</p>
+          <p class="horizon-cat__audience">Product � Strategy � Product Marketing</p>
           <div class="grid-5" style="margin-top:20px;">
 
             <article class="card card--horizon">
@@ -5339,7 +5340,7 @@ body { min-height:100vh; }
               </div>
               <div class="card__summary">Compresses days of competitive benchmarking and interview synthesis into structured input designers can act on immediately.</div>
               <div class="card__details" id="card-research-details">
-                <div class="card__body">Competitive benchmarking, user interview synthesis, and pattern scanning — triggered at the start of a new feature. Compresses days of desk research into structured input a designer can act on immediately.</div>
+                <div class="card__body">Competitive benchmarking, user interview synthesis, and pattern scanning � triggered at the start of a new feature. Compresses days of desk research into structured input a designer can act on immediately.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5356,7 +5357,7 @@ body { min-height:100vh; }
               </div>
               <div class="card__summary">Scans every Infios pillar for overlap and flags duplication before design begins, not after it ships.</div>
               <div class="card__details" id="card-companycontext-details">
-                <div class="card__body">Scans what is already being built across Infios pillars — WMS, TMS, OMS and others — and flags where similar features or patterns already exist. Prevents duplication before design begins, not after it ships.</div>
+                <div class="card__body">Scans what is already being built across Infios pillars � WMS, TMS, OMS and others � and flags where similar features or patterns already exist. Prevents duplication before design begins, not after it ships.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5371,9 +5372,9 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-industrytrends-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Cadenced design and tech trend reports, filtered through supply chain UX — signal, not just recency.</div>
+              <div class="card__summary">Cadenced design and tech trend reports, filtered through supply chain UX � signal, not just recency.</div>
               <div class="card__details" id="card-industrytrends-details">
-                <div class="card__body">Curated design and technology trend reports on a defined cadence. Filters industry signal through the lens of supply chain and complex system UX — so what reaches the team is relevant, not just recent.</div>
+                <div class="card__body">Curated design and technology trend reports on a defined cadence. Filters industry signal through the lens of supply chain and complex system UX � so what reaches the team is relevant, not just recent.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5385,8 +5386,8 @@ body { min-height:100vh; }
         <!-- CATEGORY 2: WHILE YOU BUILD -->
         <div class="horizon-cat">
           <div class="horizon-cat__label">While you build</div>
-          <p class="horizon-cat__desc">Quality gates and delivery accuracy — active during the build cycle, not after it.</p>
-          <p class="horizon-cat__audience">Engineering · Product Management</p>
+          <p class="horizon-cat__desc">Quality gates and delivery accuracy � active during the build cycle, not after it.</p>
+          <p class="horizon-cat__audience">Engineering � Product Management</p>
           <div class="grid-5" style="margin-top:20px;">
 
             <article class="card card--horizon">
@@ -5398,9 +5399,9 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-designreview-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Structured critique against UX principles and product context — before work reaches stakeholders.</div>
+              <div class="card__summary">Structured critique against UX principles and product context � before work reaches stakeholders.</div>
               <div class="card__details" id="card-designreview-details">
-                <div class="card__body">Structured critique against UX principles, interaction patterns, and product context — available to Design and Product before work reaches stakeholders. A shared quality baseline across functions, not just within design.</div>
+                <div class="card__body">Structured critique against UX principles, interaction patterns, and product context � available to Design and Product before work reaches stakeholders. A shared quality baseline across functions, not just within design.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5415,7 +5416,7 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-handoffdrift-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Monitors what Engineering ships against what was handed off — surfaces divergence before it becomes systemic debt.</div>
+              <div class="card__summary">Monitors what Engineering ships against what was handed off � surfaces divergence before it becomes systemic debt.</div>
               <div class="card__details" id="card-handoffdrift-details">
                 <div class="card__body">Monitors what Engineering actually ships against what was handed off. Surfaces divergence before it accumulates into systemic UX debt. Transforms handoff from a one-way event into a feedback loop that informs the next iteration.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
@@ -5429,8 +5430,8 @@ body { min-height:100vh; }
         <!-- CATEGORY 3: AFTER YOU SHIP -->
         <div class="horizon-cat">
           <div class="horizon-cat__label">After you ship</div>
-          <p class="horizon-cat__desc">Client signal and product health — turning post-launch data into the next brief.</p>
-          <p class="horizon-cat__audience">Customer Success · Sales · Product</p>
+          <p class="horizon-cat__desc">Client signal and product health � turning post-launch data into the next brief.</p>
+          <p class="horizon-cat__audience">Customer Success � Sales � Product</p>
           <div class="grid-5" style="margin-top:20px;">
 
             <article class="card card--horizon">
@@ -5442,9 +5443,9 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-clientfeedback-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Turns support tickets and CSM notes into UX patterns — surfaces signal currently trapped in Customer Success.</div>
+              <div class="card__summary">Turns support tickets and CSM notes into UX patterns � surfaces signal currently trapped in Customer Success.</div>
               <div class="card__details" id="card-clientfeedback-details">
-                <div class="card__body">Monitors support tickets, CSM notes, and implementation feedback from client deployments — synthesizes them into UX-relevant patterns. Signals currently trapped in Customer Success become structured input for the next design cycle.</div>
+                <div class="card__body">Monitors support tickets, CSM notes, and implementation feedback from client deployments � synthesizes them into UX-relevant patterns. Signals currently trapped in Customer Success become structured input for the next design cycle.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5461,7 +5462,7 @@ body { min-height:100vh; }
               </div>
               <div class="card__summary">Ingests product metrics every sprint and flags forming UX problems before they become escalations.</div>
               <div class="card__details" id="card-uxhealth-details">
-                <div class="card__body">Every sprint, ingests product performance metrics — feature adoption, error rates, task completion, operational KPIs — and flags where UX problems are forming before they become escalations. Design capacity allocation shifts from reactive to evidence-based.</div>
+                <div class="card__body">Every sprint, ingests product performance metrics � feature adoption, error rates, task completion, operational KPIs � and flags where UX problems are forming before they become escalations. Design capacity allocation shifts from reactive to evidence-based.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5473,8 +5474,8 @@ body { min-height:100vh; }
         <!-- CATEGORY 4: INFRASTRUCTURE -->
         <div class="horizon-cat">
           <div class="horizon-cat__label">Infrastructure</div>
-          <p class="horizon-cat__desc">The operational layer that keeps the team running — and makes what's been built compound over time.</p>
-          <p class="horizon-cat__audience">DesignOps · Leadership</p>
+          <p class="horizon-cat__desc">The operational layer that keeps the team running � and makes what's been built compound over time.</p>
+          <p class="horizon-cat__audience">DesignOps � Leadership</p>
           <div class="grid-5" style="margin-top:20px;">
 
             <article class="card card--horizon">
@@ -5486,7 +5487,7 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-designops-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Library governance, asset versioning, and onboarding briefs — keeps shared infrastructure healthy without burning designer hours.</div>
+              <div class="card__summary">Library governance, asset versioning, and onboarding briefs � keeps shared infrastructure healthy without burning designer hours.</div>
               <div class="card__details" id="card-designops-details">
                 <div class="card__body">Library governance, asset versioning, onboarding briefs, process documentation, and maintenance routines. Keeps shared infrastructure healthy without consuming designer capacity to do it.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
@@ -5520,9 +5521,9 @@ body { min-height:100vh; }
                 </div>
                 <button class="card__toggle" type="button" aria-expanded="false" aria-controls="card-agentperformance-details" aria-label="Toggle details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg></button>
               </div>
-              <div class="card__summary">Tracks every agent's reliability and value — false positives, drift, utilisation — so the team can improve or retire each one.</div>
+              <div class="card__summary">Tracks every agent's reliability and value � false positives, drift, utilisation � so the team can improve or retire each one.</div>
               <div class="card__details" id="card-agentperformance-details">
-                <div class="card__body">Tracks the reliability and value of every agent in the ecosystem — false positive rates, score drift, utilization, time from trigger to resolution. Ensures the infrastructure stays trustworthy and gives the team evidence to improve, retire, or justify each agent to leadership.</div>
+                <div class="card__body">Tracks the reliability and value of every agent in the ecosystem � false positive rates, score drift, utilization, time from trigger to resolution. Ensures the infrastructure stays trustworthy and gives the team evidence to improve, retire, or justify each agent to leadership.</div>
                 <div class="card__attribution">Authored by the UX Team</div>
                 <div class="card__pill-row"><span class="pill pill--horizon">Horizon</span></div>
               </div>
@@ -5585,22 +5586,22 @@ body { min-height:100vh; }
       <h2 class="section-title">UX as infrastructure, not overhead.</h2>
       <div class="value-grid">
         <div class="value-prose">
-          <p>Every product Infios ships now has an AI layer. What it tells the user, what it withholds, what it asks before it acts — that is UX work. It is not a skin on top of the logic; it is the logic, made legible. A team that owns those decisions needs the same kind of tooling the engineering and data teams already have: agents running in the background, surfacing signal, closing loops that currently stay open.</p>
+          <p>Every product Infios ships now has an AI layer. What it tells the user, what it withholds, what it asks before it acts � that is UX work. It is not a skin on top of the logic; it is the logic, made legible. A team that owns those decisions needs the same kind of tooling the engineering and data teams already have: agents running in the background, surfacing signal, closing loops that currently stay open.</p>
           <p>The WMS prototype proves one version of that. The Guardian and Horizon layers show the full picture: design intelligence that runs on cadence, responds to workflow events, and feeds back into itself. The team does not just get faster. The system gets smarter every time it is used.</p>
-          <p>That is the shift. UX stops being a department that reviews work at the end and becomes the layer that makes product, engineering, and commercial decisions safer from the start — because the knowledge is always current, the quality is always checked, and the client's voice is always in the room.</p>
+          <p>That is the shift. UX stops being a department that reviews work at the end and becomes the layer that makes product, engineering, and commercial decisions safer from the start � because the knowledge is always current, the quality is always checked, and the client's voice is always in the room.</p>
         </div>
         <div class="value-cards">
           <div class="value-card">
             <div class="horizon-cat__label" style="margin-bottom:8px;">Product &amp; Engineering</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Quality, accessibility, and interaction consistency are validated before work reaches review. Teams move faster because the checks are built into the process — not added at the end.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Quality, accessibility, and interaction consistency are validated before work reaches review. Teams move faster because the checks are built into the process � not added at the end.</p>
           </div>
           <div class="value-card" style="margin-top:16px;">
             <div class="horizon-cat__label" style="margin-bottom:8px;">AI Experience Layer</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">UX thinking is present in the AI architecture from the start — not bolted on after engineering. What the system says, asks, and withholds is designed, not defaulted.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">UX thinking is present in the AI architecture from the start � not bolted on after engineering. What the system says, asks, and withholds is designed, not defaulted.</p>
           </div>
           <div class="value-card" style="margin-top:16px;">
             <div class="horizon-cat__label" style="margin-bottom:8px;">Scale Without Drift</div>
-            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Every project adds to the shared context every agent reads from. The team accumulates institutional knowledge rather than losing it — and a new hire reaches full context in days, not months.</p>
+            <p style="font-size:15px;line-height:1.6;color:var(--text-secondary);margin:0;">Every project adds to the shared context every agent reads from. The team accumulates institutional knowledge rather than losing it � and a new hire reaches full context in days, not months.</p>
           </div>
         </div>
       </div>
@@ -5624,7 +5625,7 @@ body { min-height:100vh; }
     </div>
   </div>
 
-  <footer class="foot">Project Moonshot — 2026</footer>
+  <footer class="foot">Project Moonshot � 2026</footer>
 
 </section>
 
@@ -5632,10 +5633,20 @@ body { min-height:100vh; }
 <section class="view view--prototype" id="view-prototype" aria-label="The Prototype">
   <div class="proto-shell">
     <div class="proto-bar">
-      <span><strong>The Prototype</strong> — WMS Agent CLI · Stage 2 · Berlin DC</span>
-      <span>Live demo · vanilla HTML · Infios design tokens</span>
+      <span><strong>The Prototype</strong> � WMS Agent CLI � Stage 2 � Berlin DC</span>
+      <span>Live demo � vanilla HTML � Infios design tokens</span>
     </div>
-    <iframe class="proto-frame" id="proto-frame" title="WMS Agent CLI prototype" src="moonshot-prototype.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+    <iframe class="proto-frame" id="proto-frame" title="WMS Agent CLI prototype" src="demos/moonshot-prototype.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
+  </div>
+</section>
+
+<section class="view view--callcenter" id="view-callcenter" aria-label="Call Center Demo">
+  <div class="proto-shell">
+    <div class="proto-bar">
+      <span><strong>Call Center Demo</strong> � OMS Agent � Order Management</span>
+      <span>Live demo � vanilla HTML � Infios design tokens</span>
+    </div>
+    <iframe class="proto-frame" id="callcenter-frame" title="Call Center OMS Agent demo" src="demos/call-center-oms-agent.html" sandbox="allow-scripts allow-same-origin allow-popups allow-forms"></iframe>
   </div>
 </section>
 
@@ -5663,10 +5674,10 @@ body { min-height:100vh; }
     showView(trigger.dataset.go);
   });
   var initial = (window.location.hash || '').replace('#','');
-  if(initial === 'agents' || initial === 'prototype' || initial === 'system') showView(initial);
+  if(initial === 'agents' || initial === 'prototype' || initial === 'system' || initial === 'callcenter') showView(initial);
   window.addEventListener('hashchange', function(){
     var h = (window.location.hash || '').replace('#','');
-    if(h === 'home' || h === 'agents' || h === 'prototype' || h === 'system') showView(h);
+    if(h === 'home' || h === 'agents' || h === 'prototype' || h === 'system' || h === 'callcenter') showView(h);
   });
 
   // Sticky section index: each view has its own index, highlighted only when the view is active.
@@ -5767,7 +5778,7 @@ body { min-height:100vh; }
     });
   }
 
-  // ═══════════ Agent cards: row-synchronised accordions ═══════════
+  // ----------- Agent cards: row-synchronised accordions -----------
   // Each .card has a .card__toggle button. Clicking it expands every card on the
   // same visual row (within the same grid container). Full-width single cards
   // (no siblings in their grid) toggle individually.
