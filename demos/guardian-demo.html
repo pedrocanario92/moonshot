@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guardian Review Demo — Moonshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --surface-base:#FFFFFF;
+  --surface-canvas:#F4F4F4;
+  --surface-elevated:#FFFFFF;
+  --border-hairline:#E5E8EC;
+  --border-subtle:#D5DCE2;
+  --border-strong:#98A4B0;
+  --text-primary:#171F29;
+  --text-secondary:#324155;
+  --text-tertiary:#58636E;
+  --text-quaternary:#98A4B0;
+  --brand-fill:#171F29;
+  --charcoal:#262523;
+  --charcoal-soft:#3A3633;
+  --accent:#CADF35;
+  --accent-bright:#D8EE3F;
+  --accent-glow:rgba(202,223,53,0.35);
+  --accent-deep:#9DAE2E;
+  --link:#5436CC;
+  --warn:#B64C00;
+  --warn-soft:rgba(182,76,0,0.10);
+  --info:#2B7AB1;
+  --info-soft:rgba(43,122,177,0.10);
+  --success:#2C812C;
+  --success-soft:rgba(44,129,44,0.10);
+  --error:#D0413A;
+  --error-soft:rgba(208,65,58,0.10);
+  --bg-success:#E6FFE6;
+  --bg-warning:#FFFBE6;
+  --bg-info:#E6F7FF;
+  --bg-error:#FFF0F0;
+  --shadow-sm:0 2px 8px rgba(35,38,37,.08);
+  --shadow-md:0 6px 18px rgba(35,38,37,.10);
+  --shadow-lg:0 14px 40px rgba(35,38,37,.12);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-pill:9999px;
+  --font-sans:'Noto Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+  --ease-out:cubic-bezier(0.16,1,0.3,1);
+  --ease-spring:cubic-bezier(0.34,1.56,0.64,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--text-primary);
+  background: var(--surface-canvas);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top bar ── */
+.topbar {
+  background: var(--charcoal);
+  padding: 0 24px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.topbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.topbar-wordmark {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.2px;
+}
+.topbar-slash {
+  color: rgba(255,255,255,.25);
+  font-size: 16px;
+  font-weight: 300;
+}
+.topbar-page {
+  font-size: 14px;
+  color: rgba(255,255,255,.55);
+  font-weight: 500;
+}
+.topbar-spacer { flex: 1; }
+.topbar-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  background: rgba(202,223,53,.15);
+  color: var(--accent);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* ── Layout ── */
+.demo-shell {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  grid-template-rows: 1fr;
+  gap: 0;
+  overflow: hidden;
+  height: calc(100vh - 52px);
+}
+
+/* ── Left panel ── */
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-right: 1px solid var(--border-hairline);
+  background: var(--surface-canvas);
+}
+.left-header {
+  padding: 20px 24px 16px;
+  background: var(--surface-base);
+  border-bottom: 1px solid var(--border-hairline);
+  flex-shrink: 0;
+}
+.left-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+.left-header h1 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+.left-header p {
+  font-size: 13px;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+.design-options-toggle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 6px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  transition: background 0.15s, border-color 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.design-options-toggle:hover { background: var(--surface-canvas); border-color: var(--border-strong); }
+.design-options-toggle svg { opacity: .6; }
+
+.design-options-bar {
+  padding: 14px 24px;
+  background: var(--surface-canvas);
+  border-bottom: 1px solid var(--border-hairline);
+  flex-shrink: 0;
+  display: none;
+}
+.design-options-bar.open { display: block; }
+.options-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-quaternary);
+  margin-bottom: 10px;
+}
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.option-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-sm);
+  background: var(--surface-base);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.option-toggle:hover { border-color: var(--border-subtle); background: var(--surface-canvas); }
+.option-toggle.active {
+  border-color: var(--error);
+  background: var(--error-soft);
+}
+.option-toggle input { display: none; }
+.toggle-box {
+  width: 16px;
+  height: 16px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 4px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.option-toggle.active .toggle-box {
+  background: var(--error);
+  border-color: var(--error);
+}
+.toggle-check { display: none; }
+.option-toggle.active .toggle-check { display: block; }
+.option-text strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+.option-text span {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  line-height: 1.4;
+  margin-top: 2px;
+  display: block;
+}
+
+/* ── Design canvas ── */
+.design-canvas {
+  flex: 1;
+  overflow: auto;
+  padding: 24px;
+}
+
+/* Simulated app chrome */
+.sim-app {
+  background: var(--surface-base);
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  min-height: 480px;
+}
+.sim-app-header {
+  background: var(--charcoal);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.sim-app-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+}
+.sim-app-subtitle {
+  font-size: 12px;
+  color: rgba(255,255,255,.40);
+}
+.sim-app-spacer { flex: 1; }
+.sim-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.sim-pill-tms { background: rgba(202,223,53,.2); color: var(--accent); }
+
+/* Decorative noise — injected when toggle is on */
+.deco-bar {
+  display: none;
+  padding: 8px 20px;
+  background: var(--bg-info);
+  border-bottom: 1px solid var(--border-hairline);
+  font-size: 12px;
+  color: var(--info);
+  gap: 16px;
+  align-items: center;
+}
+.deco-bar.visible { display: flex; }
+.deco-ticker { font-family: var(--font-mono); font-size: 11px; }
+
+.sim-body {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  min-height: 400px;
+}
+.sim-body.no-details { grid-template-columns: 1fr; }
+
+/* Table section */
+.sim-table-wrap {
+  padding: 20px;
+  border-right: 1px solid var(--border-hairline);
+  overflow: auto;
+}
+.sim-table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.sim-table-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.sim-toolbar-actions {
+  display: flex;
+  gap: 8px;
+}
+.btn-sm {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: background 0.15s;
+  min-width: 24px;
+  min-height: 24px;
+}
+.btn-sm:hover { background: var(--surface-canvas); }
+.btn-sm.primary {
+  background: var(--brand-fill);
+  color: #fff;
+  border-color: var(--brand-fill);
+}
+.btn-sm.primary:hover { opacity: .85; }
+
+/* Extra actions — shown when toggle on */
+.extra-actions { display: none; }
+.extra-actions.visible { display: flex; gap: 8px; }
+
+table.sim-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+table.sim-table th {
+  text-align: left;
+  padding: 8px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-quaternary);
+  border-bottom: 2px solid var(--border-hairline);
+  white-space: nowrap;
+}
+table.sim-table td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--border-hairline);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+table.sim-table tr.selected td {
+  background: rgba(84,54,204,.06);
+}
+table.sim-table tr:not(.table-head):hover td {
+  background: var(--surface-canvas);
+  cursor: pointer;
+}
+.cell-id { font-family: var(--font-mono); font-size: 12px; color: var(--text-primary); font-weight: 500; }
+.cell-route { font-weight: 500; color: var(--text-primary); }
+.status-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+.status-transit { background: var(--bg-info); color: var(--info); }
+.status-delayed { background: var(--bg-warning); color: var(--warn); }
+.status-delivered { background: var(--bg-success); color: var(--success); }
+.status-pending { background: var(--surface-canvas); color: var(--text-tertiary); }
+
+/* Low contrast override */
+body.low-contrast table.sim-table td { color: #bbb; }
+body.low-contrast table.sim-table .cell-id { color: #bbb; }
+body.low-contrast table.sim-table .cell-route { color: #ccc; }
+body.low-contrast .sim-table-title { color: #aaa; }
+
+/* No focus rings */
+body.no-focus *:focus { outline: none !important; box-shadow: none !important; }
+
+/* Small targets */
+body.small-targets .btn-sm { min-width: 14px; min-height: 14px; padding: 2px 6px; font-size: 10px; }
+
+/* Details tile */
+.sim-details {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--surface-canvas);
+}
+.sim-details-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.sim-details-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.sim-details-id {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+  margin-top: 2px;
+}
+.details-close {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--text-quaternary);
+  border-radius: 4px;
+  transition: background 0.15s;
+}
+.details-close:hover { background: var(--border-hairline); color: var(--text-secondary); }
+
+.details-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.details-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-quaternary);
+}
+.details-field {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+.details-field-key { font-size: 12px; color: var(--text-tertiary); }
+.details-field-val { font-size: 12px; font-weight: 500; color: var(--text-primary); text-align: right; }
+.details-divider { height: 1px; background: var(--border-hairline); }
+
+.details-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: auto;
+}
+.btn-details {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: center;
+  transition: opacity 0.15s;
+  min-height: 36px;
+}
+.btn-details.primary {
+  background: var(--brand-fill);
+  color: #fff;
+}
+.btn-details.primary:hover { opacity: .85; }
+.btn-details.secondary {
+  background: var(--surface-base);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+.btn-details.secondary:hover { background: var(--surface-canvas); }
+
+.sim-details-empty {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  color: var(--text-quaternary);
+  font-size: 13px;
+  text-align: center;
+}
+.sim-details-empty svg { opacity: .35; }
+
+/* ── Right panel ── */
+.right-panel {
+  background: var(--surface-base);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-left: 1px solid var(--border-hairline);
+}
+.right-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border-hairline);
+  flex-shrink: 0;
+}
+.right-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.2px;
+}
+.right-header p {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  margin-top: 3px;
+  line-height: 1.5;
+}
+
+.agents-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-bottom: 1px solid var(--border-hairline);
+  flex-shrink: 0;
+}
+.agent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border-bottom: 1px solid var(--border-hairline);
+  transition: background 0.15s;
+}
+.agent-row:last-child { border-bottom: none; }
+.agent-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-canvas);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.agent-avatar.running::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(202,223,53,.5) 50%, transparent 100%);
+  animation: shimmer 1.2s infinite;
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+.agent-info { flex: 1; min-width: 0; }
+.agent-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.agent-desc { font-size: 11px; color: var(--text-tertiary); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.agent-status {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+.status-idle { background: var(--surface-canvas); color: var(--text-quaternary); }
+.status-running { background: rgba(202,223,53,.2); color: var(--accent-deep); }
+.status-pass { background: var(--bg-success); color: var(--success); }
+.status-warn { background: var(--bg-warning); color: var(--warn); }
+.status-fail { background: var(--bg-error); color: var(--error); }
+.status-done { background: var(--surface-canvas); color: var(--text-tertiary); }
+
+/* Run button area */
+.run-area {
+  padding: 16px 20px;
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--border-hairline);
+}
+.btn-run {
+  font-family: var(--font-sans);
+  width: 100%;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  border: none;
+  background: var(--brand-fill);
+  color: var(--accent);
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s var(--ease-spring);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: -0.1px;
+}
+.btn-run:hover { opacity: .87; }
+.btn-run:active { transform: scale(0.98); }
+.btn-run:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+
+/* Results scroll area */
+.results-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.results-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-quaternary);
+  font-size: 13px;
+  text-align: center;
+  padding: 40px 20px;
+}
+.results-empty svg { opacity: .3; }
+.results-empty strong { display: block; font-size: 13px; font-weight: 600; color: var(--text-tertiary); }
+
+/* Agent result card */
+.result-card {
+  border: 1px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+}
+.result-card.visible { opacity: 1; transform: translateY(0); }
+.result-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface-canvas);
+  border-bottom: 1px solid var(--border-hairline);
+  cursor: pointer;
+  user-select: none;
+}
+.result-card-header:hover { background: var(--border-hairline); }
+.result-agent-name { font-size: 13px; font-weight: 600; color: var(--text-primary); flex: 1; }
+.result-summary-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.pill-pass { background: var(--bg-success); color: var(--success); }
+.pill-warn { background: var(--bg-warning); color: var(--warn); }
+.pill-fail { background: var(--bg-error); color: var(--error); }
+.pill-stub { background: var(--bg-info); color: var(--info); }
+.chevron {
+  color: var(--text-quaternary);
+  transition: transform 0.2s var(--ease-out);
+  flex-shrink: 0;
+}
+.result-card.expanded .chevron { transform: rotate(180deg); }
+
+.result-card-body {
+  display: none;
+  padding: 0;
+}
+.result-card.expanded .result-card-body { display: block; }
+
+.criterion-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border-hairline);
+  font-size: 12px;
+}
+.criterion-row:last-child { border-bottom: none; }
+.criterion-verdict {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  min-width: 42px;
+  text-align: center;
+  margin-top: 1px;
+}
+.v-pass { background: var(--bg-success); color: var(--success); }
+.v-warn { background: var(--bg-warning); color: var(--warn); }
+.v-fail { background: var(--bg-error); color: var(--error); }
+.v-na { background: var(--surface-canvas); color: var(--text-quaternary); }
+.criterion-text { flex: 1; }
+.criterion-label { font-weight: 600; color: var(--text-primary); line-height: 1.4; }
+.criterion-rationale { color: var(--text-tertiary); margin-top: 2px; line-height: 1.4; font-size: 11px; }
+.lb-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-quaternary);
+  background: var(--surface-canvas);
+  border: 1px solid var(--border-hairline);
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Final verdict banner */
+.final-verdict {
+  border: 2px solid var(--border-hairline);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+.final-verdict.visible { opacity: 1; transform: translateY(0); }
+.verdict-banner {
+  padding: 16px 16px 12px;
+}
+.verdict-banner.ship { background: var(--bg-success); border-bottom: 2px solid var(--success); }
+.verdict-banner.send-back { background: var(--bg-error); border-bottom: 2px solid var(--error); }
+.verdict-banner.ux-team { background: var(--bg-warning); border-bottom: 2px solid var(--warn); }
+.verdict-icon { font-size: 22px; margin-bottom: 6px; }
+.verdict-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  opacity: .7;
+  margin-bottom: 2px;
+}
+.verdict-banner.ship .verdict-label { color: var(--success); }
+.verdict-banner.send-back .verdict-label { color: var(--error); }
+.verdict-banner.ux-team .verdict-label { color: var(--warn); }
+.verdict-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.verdict-banner.ship .verdict-title { color: var(--success); }
+.verdict-banner.send-back .verdict-title { color: var(--error); }
+.verdict-banner.ux-team .verdict-title { color: var(--warn); }
+.verdict-body { font-size: 12px; color: var(--text-secondary); margin-top: 5px; line-height: 1.5; }
+.verdict-counts {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--surface-canvas);
+  flex-wrap: wrap;
+}
+.verdict-count-item { font-size: 12px; display: flex; gap: 5px; align-items: center; }
+.count-num { font-weight: 700; font-family: var(--font-mono); }
+.count-num.fail { color: var(--error); }
+.count-num.warn { color: var(--warn); }
+.count-num.pass { color: var(--success); }
+.verdict-actions {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px;
+  border-top: 1px solid var(--border-hairline);
+}
+.btn-verdict {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 9px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  flex: 1;
+  text-align: center;
+}
+.btn-verdict.approve {
+  background: var(--success);
+  color: #fff;
+}
+.btn-verdict.approve:hover { opacity: .85; }
+.btn-verdict.escalate {
+  background: var(--surface-base);
+  border-color: var(--border-subtle);
+  color: var(--text-secondary);
+}
+.btn-verdict.escalate:hover { background: var(--surface-canvas); }
+.btn-verdict.blocked {
+  background: var(--error);
+  color: #fff;
+}
+.btn-verdict.blocked:hover { opacity: .85; }
+
+/* Approved state */
+.approved-overlay {
+  display: none;
+  padding: 16px;
+  background: var(--bg-success);
+  border: 2px solid var(--success);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--success);
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.3s, transform 0.3s var(--ease-spring);
+}
+.approved-overlay.visible {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+.escalated-overlay {
+  display: none;
+  padding: 16px;
+  background: var(--bg-warning);
+  border: 2px solid var(--warn);
+  border-radius: var(--radius-md);
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--warn);
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.3s, transform 0.3s var(--ease-spring);
+}
+.escalated-overlay.visible {
+  display: flex;
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* Scrollbar */
+.results-area::-webkit-scrollbar { width: 4px; }
+.results-area::-webkit-scrollbar-track { background: transparent; }
+.results-area::-webkit-scrollbar-thumb { background: var(--border-subtle); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<nav class="topbar" role="banner">
+  <a class="topbar-logo" href="../moonshot-home.html">
+    <span class="topbar-wordmark">Moonshot</span>
+  </a>
+  <span class="topbar-slash">/</span>
+  <span class="topbar-page">Guardian Review Demo</span>
+  <div class="topbar-spacer"></div>
+  <span class="topbar-badge">TMS</span>
+</nav>
+
+<!-- Main layout -->
+<div class="demo-shell">
+
+  <!-- Left: Design panel -->
+  <section class="left-panel" aria-label="Design under review">
+
+    <div class="left-header">
+      <div class="left-header-top">
+        <div>
+          <h1>Shipments — Table + Details</h1>
+          <p>A new UI page proposed for TMS. Introduce design issues via the toggles below, then run the Guardian review to see how verdicts change.</p>
+        </div>
+        <button class="design-options-toggle" id="toggleOptionsBtn" aria-expanded="false" aria-controls="designOptionsBar">
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          Design toggles
+        </button>
+      </div>
+    </div>
+
+    <div class="design-options-bar" id="designOptionsBar" role="group" aria-label="Design issue toggles">
+      <div class="options-label">Introduce design issues — each toggle activates one or more audit failures</div>
+      <div class="options-grid">
+
+        <label class="option-toggle" id="lbl-deco">
+          <input type="checkbox" id="toggle-deco" data-issue="deco"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>Decorative noise</strong>
+            <span>Adds a non-functional status ticker above the table → H4 Cognitive Load</span>
+          </span>
+        </label>
+
+        <label class="option-toggle" id="lbl-overflow">
+          <input type="checkbox" id="toggle-overflow" data-issue="overflow"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>Crowded toolbar</strong>
+            <span>Adds 4 extra action buttons above the table → H2 Hick's Law</span>
+          </span>
+        </label>
+
+        <label class="option-toggle" id="lbl-chunks">
+          <input type="checkbox" id="toggle-chunks" data-issue="chunks"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>8+ element chunks</strong>
+            <span>Adds a sidebar column + extra data band → H3 Miller's 7±2</span>
+          </span>
+        </label>
+
+        <label class="option-toggle" id="lbl-contrast">
+          <input type="checkbox" id="toggle-contrast" data-issue="contrast"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>Low contrast text</strong>
+            <span>Drops table text to ~2.8:1 contrast ratio → A1 WCAG 1.4.3</span>
+          </span>
+        </label>
+
+        <label class="option-toggle" id="lbl-focus">
+          <input type="checkbox" id="toggle-focus" data-issue="focus"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>Missing focus rings</strong>
+            <span>Removes focus indicators on all interactive elements → A6 WCAG 2.4.7</span>
+          </span>
+        </label>
+
+        <label class="option-toggle" id="lbl-targets">
+          <input type="checkbox" id="toggle-targets" data-issue="targets"/>
+          <span class="toggle-box" aria-hidden="true">
+            <svg class="toggle-check" width="10" height="10" viewBox="0 0 10 10"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="option-text">
+            <strong>Small touch targets</strong>
+            <span>Shrinks action buttons to &lt;24px → A7 WCAG 2.5.8</span>
+          </span>
+        </label>
+
+      </div>
+    </div>
+
+    <!-- Design canvas -->
+    <div class="design-canvas" role="main">
+      <div class="sim-app" id="simApp">
+
+        <div class="sim-app-header">
+          <span class="sim-app-title">Transportation Management</span>
+          <span class="sim-app-spacer"></span>
+          <span class="sim-pill sim-pill-tms">TMS</span>
+        </div>
+
+        <!-- Decorative noise bar (shown when toggle-deco on) -->
+        <div class="deco-bar" id="decoBar" aria-hidden="true">
+          <span>Live carrier feed:</span>
+          <span class="deco-ticker">FX-1842 ▲ 0.3% · UPS-990 ▼ 1.1% · DHL-773 ▲ 0.8% · ABF-221 — 0.0%</span>
+          <span class="deco-ticker">Last sync: 09:42:17</span>
+        </div>
+
+        <div class="sim-body" id="simBody">
+
+          <div class="sim-table-wrap">
+            <div class="sim-table-toolbar">
+              <span class="sim-table-title">Shipments</span>
+              <div class="sim-toolbar-actions">
+                <!-- Extra actions (shown when toggle-overflow on) -->
+                <div class="extra-actions" id="extraActions" aria-hidden="true">
+                  <button class="btn-sm" tabindex="-1">Export</button>
+                  <button class="btn-sm" tabindex="-1">Filter</button>
+                  <button class="btn-sm" tabindex="-1">Sort</button>
+                  <button class="btn-sm" tabindex="-1">Columns</button>
+                </div>
+                <button class="btn-sm primary" id="newShipmentBtn">+ New</button>
+              </div>
+            </div>
+
+            <!-- Extra info band (shown when toggle-chunks on) -->
+            <div id="chunksBand" style="display:none;margin-bottom:10px;padding:8px 10px;background:var(--bg-info);border-radius:var(--radius-sm);font-size:11px;color:var(--info);display:none;">
+              Period: May 2026 &nbsp;|&nbsp; Region: NA &nbsp;|&nbsp; Mode: All &nbsp;|&nbsp; Carrier: All &nbsp;|&nbsp; Status: All &nbsp;|&nbsp; Priority: All &nbsp;|&nbsp; Cost centre: All &nbsp;|&nbsp; Last updated: 09:55
+            </div>
+
+            <table class="sim-table" id="simTable" role="grid" aria-label="Shipments">
+              <thead>
+                <tr class="table-head">
+                  <th scope="col">ID</th>
+                  <th scope="col">Route</th>
+                  <th scope="col">Carrier</th>
+                  <th scope="col">Mode</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">ETA</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Details tile -->
+          <div class="sim-details" id="simDetails" role="complementary" aria-label="Shipment details">
+            <div class="sim-details-empty" id="detailsEmpty">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M8 12h8M8 8h5M8 16h3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+              <div>
+                <strong>Select a shipment</strong>
+                Click any row to see details
+              </div>
+            </div>
+            <div id="detailsContent" style="display:none;flex-direction:column;gap:14px;flex:1;">
+              <div class="sim-details-header">
+                <div>
+                  <div class="sim-details-title" id="detailsTitle">—</div>
+                  <div class="sim-details-id" id="detailsId">—</div>
+                </div>
+                <button class="details-close" id="detailsCloseBtn" aria-label="Close details">
+                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+
+              <div class="details-section">
+                <div class="details-section-label">Route</div>
+                <div class="details-field"><span class="details-field-key">Origin</span><span class="details-field-val" id="dOrigin">—</span></div>
+                <div class="details-field"><span class="details-field-key">Destination</span><span class="details-field-val" id="dDest">—</span></div>
+                <div class="details-field"><span class="details-field-key">Mode</span><span class="details-field-val" id="dMode">—</span></div>
+              </div>
+
+              <div class="details-divider"></div>
+
+              <div class="details-section">
+                <div class="details-section-label">Carrier & Schedule</div>
+                <div class="details-field"><span class="details-field-key">Carrier</span><span class="details-field-val" id="dCarrier">—</span></div>
+                <div class="details-field"><span class="details-field-key">Pickup</span><span class="details-field-val" id="dPickup">—</span></div>
+                <div class="details-field"><span class="details-field-key">ETA</span><span class="details-field-val" id="dEta">—</span></div>
+                <div class="details-field"><span class="details-field-key">Lane rate</span><span class="details-field-val" id="dRate">—</span></div>
+              </div>
+
+              <div class="details-divider"></div>
+
+              <div class="details-actions">
+                <button class="btn-details primary" id="detailsApproveBtn">Approve route</button>
+                <button class="btn-details secondary" id="detailsViewBtn">View on map</button>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.sim-body -->
+      </div><!-- /.sim-app -->
+    </div><!-- /.design-canvas -->
+  </section><!-- /.left-panel -->
+
+  <!-- Right: Guardian review panel -->
+  <aside class="right-panel" aria-label="Guardian review">
+
+    <div class="right-header">
+      <h2>Guardian Review</h2>
+      <p>Six agents audit this design before it can proceed. Heuristics &amp; Accessibility agents are fully specced; Design System, Content, Interaction, and Responsive run as stubs.</p>
+    </div>
+
+    <div class="agents-list" id="agentsList" role="list" aria-live="polite" aria-label="Agent status">
+      <!-- Populated by JS -->
+    </div>
+
+    <div class="run-area">
+      <button class="btn-run" id="runBtn" aria-live="polite">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 2.5L13 8L3 13.5V2.5Z" fill="currentColor"/></svg>
+        Run Guardian Review
+      </button>
+    </div>
+
+    <div class="results-area" id="resultsArea" role="region" aria-label="Audit results" aria-live="polite">
+      <div class="results-empty" id="resultsEmpty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <strong>No review yet</strong>
+          Configure the design, then hit<br>"Run Guardian Review"
+        </div>
+      </div>
+    </div>
+
+  </aside>
+</div>
+
+<script>
+'use strict';
+
+// ── Shipment data ──────────────────────────────────────────────────────────
+const SHIPMENTS = [
+  { id:'TMS-4821', route:'Chicago → Atlanta', origin:'Chicago, IL', dest:'Atlanta, GA', carrier:'FedEx Freight', mode:'FTL', status:'transit', pickup:'May 23', eta:'May 26', rate:'$2,140' },
+  { id:'TMS-4798', route:'Dallas → Los Angeles', origin:'Dallas, TX', dest:'Los Angeles, CA', carrier:'XPO Logistics', mode:'LTL', status:'delayed', pickup:'May 22', eta:'May 28 ⚠', rate:'$1,870' },
+  { id:'TMS-4756', route:'Newark → Boston', origin:'Newark, NJ', dest:'Boston, MA', carrier:'ABF Freight', mode:'LTL', status:'delivered', pickup:'May 20', eta:'May 22 ✓', rate:'$640' },
+  { id:'TMS-4801', route:'Seattle → Portland', origin:'Seattle, WA', dest:'Portland, OR', carrier:'Old Dominion', mode:'LTL', status:'transit', pickup:'May 24', eta:'May 25', rate:'$390' },
+  { id:'TMS-4815', route:'Memphis → Nashville', origin:'Memphis, TN', dest:'Nashville, TN', carrier:'UPS Freight', mode:'FTL', status:'pending', pickup:'May 26', eta:'May 27', rate:'$890' },
+  { id:'TMS-4829', route:'Denver → Kansas City', origin:'Denver, CO', dest:'Kansas City, MO', carrier:'Estes Express', mode:'LTL', status:'transit', pickup:'May 24', eta:'May 26', rate:'$1,020' },
+];
+
+const STATUS_LABELS = { transit:'In Transit', delayed:'Delayed', delivered:'Delivered', pending:'Pending' };
+const STATUS_CLASSES = { transit:'status-transit', delayed:'status-delayed', delivered:'status-delivered', pending:'status-pending' };
+
+let selectedRow = null;
+let isRunning = false;
+let activeIssues = new Set();
+let approvedState = null; // null | 'approved' | 'escalated'
+
+// ── Agent definitions ──────────────────────────────────────────────────────
+const AGENTS = [
+  { id:'heuristics', name:'Heuristics Agent', emoji:'🔍', desc:'Nielsen heuristics · Hick's Law · Miller 7±2' },
+  { id:'accessibility', name:'Accessibility Agent', emoji:'♿', desc:'WCAG 2.2 AA/AAA audit' },
+  { id:'design-system', name:'Design System Agent', emoji:'🎨', desc:'Token & component compliance' },
+  { id:'content', name:'Content Agent', emoji:'✍️', desc:'Copy quality & microcopy audit' },
+  { id:'interaction', name:'Interaction Agent', emoji:'🖱️', desc:'Interaction pattern review' },
+  { id:'responsive', name:'Responsive Agent', emoji:'📐', desc:'Layout & breakpoint audit' },
+];
+
+// ── Audit criteria evaluation ──────────────────────────────────────────────
+function buildHeuristicsReport(issues) {
+  const hasDeco = issues.has('deco');
+  const hasOverflow = issues.has('overflow');
+  const hasChunks = issues.has('chunks');
+
+  const criteria = [
+    {
+      id:'H1', label:'Nielsen #8 — Aesthetic & minimalist design',
+      lb:true,
+      verdict: hasChunks ? 'FAIL' : 'PASS',
+      rationale: hasChunks
+        ? 'Design band + sidebar column pushes visible element count to 8 — exceeds the ≤ 6 pass threshold.'
+        : 'Visible interactive + content elements above the fold count to 5 in the calm state; within the ≤ 6 threshold.',
+    },
+    {
+      id:'H2', label:"Hick's Law — actionable choices at any state",
+      lb:true,
+      verdict: hasOverflow ? 'FAIL' : 'PASS',
+      rationale: hasOverflow
+        ? 'Toolbar exposes 5 action buttons simultaneously; exceeds the ≤ 3 pass threshold and increases decision time.'
+        : 'Primary actions (New, Approve route, View on map) total 3 per state; within the ≤ 3 threshold.',
+    },
+    {
+      id:'H3', label:"Miller's 7±2 — distinct information chunks",
+      lb:true,
+      verdict: hasChunks ? 'WARN' : 'PASS',
+      rationale: hasChunks
+        ? 'Visible chunk count reaches 8 with the data filter band and extra columns; approaches the 9-item WARN boundary.'
+        : 'Header + table + details tile = 5 distinct chunks in the calm state; well within the ≤ 7 threshold.',
+    },
+    {
+      id:'H4', label:'Cognitive Load — no extraneous elements',
+      lb:true,
+      verdict: hasDeco ? 'FAIL' : 'PASS',
+      rationale: hasDeco
+        ? 'The live carrier rate ticker adds zero decision value and introduces persistent background noise.'
+        : 'No persistent decorative or zero-value UI elements detected in the calm or selection states.',
+    },
+    {
+      id:'H5', label:'Information scent — calm state has one primary focus',
+      lb:true,
+      verdict: hasDeco ? 'WARN' : 'PASS',
+      rationale: hasDeco
+        ? 'Ticker bar competes with the shipments table as a focal point; the user's first fixation is split.'
+        : 'Shipments table headline is the unambiguous first fixation; no competing primary affordance.',
+    },
+    {
+      id:'H6', label:'Information scent — busy state has exactly one primary action',
+      lb:true,
+      verdict: hasOverflow ? 'WARN' : 'PASS',
+      rationale: hasOverflow
+        ? '"Approve route" shares visual weight with 4 toolbar actions when a row is selected; primary action is diluted.'
+        : '"Approve route" is visually dominant in the details tile; all other actions are clearly secondary.',
+    },
+    {
+      id:'H7', label:'F-pattern alignment',
+      lb:false,
+      verdict: 'PASS',
+      rationale:'Table and details tile are left-biased; primary work surface receives first fixation on load.',
+    },
+    {
+      id:'H8', label:'Banner blindness — no static widget > 10% viewport',
+      lb:false,
+      verdict: hasDeco ? 'WARN' : 'PASS',
+      rationale: hasDeco
+        ? 'Carrier ticker occupies ~8% of viewport height but is persistent and unchanging after first render; risks becoming invisible.'
+        : 'No persistent non-changing widget occupies more than 10% of the viewport.',
+    },
+    {
+      id:'H9', label:'Recognition over recall — agent attribution',
+      lb:false,
+      verdict: 'PASS',
+      rationale:'All proposals in the details tile are labelled with action names; no unattributed affordances.',
+    },
+    {
+      id:'H10', label:'Consistency — same visual pattern for same concept',
+      lb:false,
+      verdict: hasOverflow ? 'WARN' : 'PASS',
+      rationale: hasOverflow
+        ? 'Extra toolbar buttons use a different visual pattern than the details-tile actions for the same "act on shipment" concept.'
+        : 'Approval actions use a consistent button pattern throughout the table and details tile.',
+    },
+  ];
+
+  const fails = criteria.filter(c => c.verdict === 'FAIL');
+  const lbFails = criteria.filter(c => c.verdict === 'FAIL' && c.lb);
+  const warns = criteria.filter(c => c.verdict === 'WARN');
+
+  let rec, recClass;
+  if (lbFails.length > 0) { rec = 'SEND BACK'; recClass = 'fail'; }
+  else if (warns.length > 0) { rec = 'NEEDS HUMAN JUDGEMENT'; recClass = 'warn'; }
+  else { rec = 'SHIP'; recClass = 'pass'; }
+
+  return { criteria, fails: fails.length, lbFails: lbFails.length, warns: warns.length, rec, recClass };
+}
+
+function buildAccessibilityReport(issues) {
+  const hasContrast = issues.has('contrast');
+  const hasFocus = issues.has('focus');
+  const hasTargets = issues.has('targets');
+
+  const criteria = [
+    {
+      id:'A1', label:'WCAG 1.4.3 — Contrast (Minimum)',
+      lb:true,
+      verdict: hasContrast ? 'FAIL' : 'PASS',
+      rationale: hasContrast
+        ? 'Measured table body text at ~2.8:1 against white background; fails the 4.5:1 AA body text threshold.'
+        : 'All text/background pairs sampled above 4.5:1 for body text and 3:1 for large text; passes AA threshold.',
+    },
+    {
+      id:'A2', label:'WCAG 2.1.1 — Keyboard',
+      lb:true,
+      verdict: 'PASS',
+      rationale:'All interactive elements (table rows, action buttons, close button) are reachable and operable via Tab and Enter/Space.',
+    },
+    {
+      id:'A3', label:'WCAG 2.2.1 — Timing Adjustable',
+      lb:true,
+      verdict: 'PASS',
+      rationale:'Details tile does not auto-dismiss; "Approve route" action requires explicit user interaction and is not time-limited.',
+    },
+    {
+      id:'A4', label:'WCAG 2.3.1 — Three Flashes',
+      lb:true,
+      verdict: 'PASS',
+      rationale:'No animated element exceeds three state changes per second; no pulsing rings or flashing badges present.',
+    },
+    {
+      id:'A5', label:'WCAG 2.4.3 — Focus Order',
+      lb:true,
+      verdict: 'PASS',
+      rationale:'Focus moves top-rail → table header → table rows → details tile actions in reading order; no unexpected jumps.',
+    },
+    {
+      id:'A6', label:'WCAG 2.4.7 — Focus Visible',
+      lb:true,
+      verdict: hasFocus ? 'FAIL' : 'PASS',
+      rationale: hasFocus
+        ? 'Focus indicator suppressed by CSS `outline: none` on all interactive elements; keyboard users lose position entirely.'
+        : 'Every focused element renders a visible ring; focus indicator is present on buttons, table rows, and the close button.',
+    },
+    {
+      id:'A7', label:'WCAG 2.5.8 — Target Size (Minimum)',
+      lb:true,
+      verdict: hasTargets ? 'FAIL' : 'PASS',
+      rationale: hasTargets
+        ? 'Action buttons rendered at 14×18 CSS pixels; below the 24×24 minimum target size threshold.'
+        : 'All action targets measured ≥ 36×36 CSS pixels; well above the 24×24 AA minimum.',
+    },
+    {
+      id:'A8', label:'WCAG 3.2.4 — Consistent Identification',
+      lb:true,
+      verdict: 'PASS',
+      rationale:'Shipment action buttons use the same component and ARIA pattern in both the table toolbar and the details tile.',
+    },
+    {
+      id:'A9', label:'WCAG 3.3.5 — Help (AAA advisory)',
+      lb:false,
+      verdict: 'PASS',
+      rationale:'Each action button has a descriptive accessible name; delayed status rows include a contextual ETA warning.',
+    },
+    {
+      id:'A10', label:'WCAG 1.4.6 — Contrast Enhanced (AAA advisory)',
+      lb:false,
+      verdict: hasContrast ? 'FAIL' : 'WARN',
+      rationale: hasContrast
+        ? 'Text contrast is far below even the 4.5:1 AA threshold; enhanced 7:1 AAA target is also not met.'
+        : 'Body text measured at 6.3:1; below the 7:1 AAA enhanced threshold, though AA is met. Advisory only.',
+    },
+  ];
+
+  const lbFails = criteria.filter(c => c.verdict === 'FAIL' && c.lb);
+  const fails = criteria.filter(c => c.verdict === 'FAIL');
+  const warns = criteria.filter(c => c.verdict === 'WARN');
+
+  let rec, recClass;
+  if (lbFails.length > 0) { rec = 'SEND BACK'; recClass = 'fail'; }
+  else if (warns.length > 0) { rec = 'NEEDS HUMAN JUDGEMENT'; recClass = 'warn'; }
+  else { rec = 'SHIP'; recClass = 'pass'; }
+
+  return { criteria, fails: fails.length, lbFails: lbFails.length, warns: warns.length, rec, recClass };
+}
+
+function buildStubReport(agentId, issues) {
+  // Stub agents: always produce a mostly-PASS result, with one contextual WARN
+  const stubs = {
+    'design-system': {
+      criteria: [
+        { id:'DS1', label:'Color tokens — all fill/text values reference design system tokens', lb:true, verdict:'PASS', rationale:'Button and surface colors map to --brand-fill, --surface-base, and --border-* tokens; no raw hex overrides detected.' },
+        { id:'DS2', label:'Typography — font sizes and weights use DS scale', lb:true, verdict:'PASS', rationale:'Font sizes use the 11/12/13/14/15px scale; weights are 400/500/600/700 only.' },
+        { id:'DS3', label:'Spacing — padding and gap values match DS spacing scale', lb:false, verdict: issues.has('chunks') ? 'WARN' : 'PASS', rationale: issues.has('chunks') ? 'Filter band uses ad hoc 8px internal padding rather than --infios-spacing-2xs token.' : 'Spacing values align with the 4/8/12/16/20/24px token scale throughout.' },
+      ],
+      rec: issues.has('chunks') ? 'NEEDS HUMAN JUDGEMENT' : 'SHIP',
+      recClass: issues.has('chunks') ? 'warn' : 'pass',
+    },
+    'content': {
+      criteria: [
+        { id:'C1', label:'Action labels — imperative verb + object pattern', lb:true, verdict:'PASS', rationale:'"Approve route" and "View on map" follow the imperative-verb pattern; no ambiguous labels.' },
+        { id:'C2', label:'Status labels — consistent capitalisation and tense', lb:false, verdict: issues.has('overflow') ? 'WARN' : 'PASS', rationale: issues.has('overflow') ? 'Extra toolbar button "Columns" deviates from the verb-first pattern used by other actions.' : 'Status labels (In Transit, Delayed, Delivered, Pending) are consistent in capitalisation and tense.' },
+        { id:'C3', label:'Empty states — instructional copy present', lb:false, verdict:'PASS', rationale:'"Select a shipment / Click any row to see details" provides clear empty-state guidance.' },
+      ],
+      rec: issues.has('overflow') ? 'NEEDS HUMAN JUDGEMENT' : 'SHIP',
+      recClass: issues.has('overflow') ? 'warn' : 'pass',
+    },
+    'interaction': {
+      criteria: [
+        { id:'I1', label:'Row selection — clear selected state affordance', lb:true, verdict:'PASS', rationale:'Selected row uses a distinct background tint and drives the details tile; selection state is unambiguous.' },
+        { id:'I2', label:'Panel open/close — consistent dismiss pattern', lb:true, verdict:'PASS', rationale:'Details tile close button is present, accessible, and dismisses to the empty state.' },
+        { id:'I3', label:'Action confirmation — irreversible actions gated', lb:false, verdict: issues.has('overflow') ? 'WARN' : 'PASS', rationale: issues.has('overflow') ? 'Crowded toolbar may invite accidental clicks on route-level actions without a confirmation step.' : 'Approve route action is isolated in the details tile and requires deliberate selection; confirmation pattern is appropriate.' },
+      ],
+      rec: issues.has('overflow') ? 'NEEDS HUMAN JUDGEMENT' : 'SHIP',
+      recClass: issues.has('overflow') ? 'warn' : 'pass',
+    },
+    'responsive': {
+      criteria: [
+        { id:'R1', label:'Layout — table + details tile degrade gracefully at 1024px', lb:true, verdict:'PASS', rationale:'Grid columns collapse to single column at narrow viewport; details tile stacks below the table.' },
+        { id:'R2', label:'Table — horizontal scroll activates before content is clipped', lb:false, verdict: issues.has('chunks') ? 'WARN' : 'PASS', rationale: issues.has('chunks') ? 'Extra data band and sidebar column risk horizontal overflow at 1280px without explicit min-width handling.' : 'Table renders within a scrollable container; no column clipping observed at 1280×720 or 1024×768.' },
+        { id:'R3', label:'Touch targets — minimum size preserved on mobile breakpoints', lb:true, verdict: issues.has('targets') ? 'FAIL' : 'PASS', rationale: issues.has('targets') ? 'At 375px viewport, small-targets mode renders buttons at 14×18px — below the 24×24 minimum on mobile.' : 'Button heights maintain ≥ 36px at all tested breakpoints.' },
+      ],
+      rec: issues.has('targets') ? 'SEND BACK' : (issues.has('chunks') ? 'NEEDS HUMAN JUDGEMENT' : 'SHIP'),
+      recClass: issues.has('targets') ? 'fail' : (issues.has('chunks') ? 'warn' : 'pass'),
+    },
+  };
+
+  const s = stubs[agentId];
+  const fails = s.criteria.filter(c => c.verdict === 'FAIL').length;
+  const lbFails = s.criteria.filter(c => c.verdict === 'FAIL' && c.lb).length;
+  const warns = s.criteria.filter(c => c.verdict === 'WARN').length;
+  return { criteria: s.criteria, fails, lbFails, warns, rec: s.rec, recClass: s.recClass };
+}
+
+// ── DOM helpers ────────────────────────────────────────────────────────────
+function $(id) { return document.getElementById(id); }
+
+function verdictClass(v) {
+  if (v === 'PASS') return 'v-pass';
+  if (v === 'WARN') return 'v-warn';
+  if (v === 'FAIL') return 'v-fail';
+  return 'v-na';
+}
+
+function pillClass(rec) {
+  if (rec === 'SHIP') return 'pill-pass';
+  if (rec === 'SEND BACK') return 'pill-fail';
+  if (rec === 'NEEDS HUMAN JUDGEMENT') return 'pill-warn';
+  return 'pill-stub';
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ── Render table ───────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = $('tableBody');
+  tbody.innerHTML = '';
+  SHIPMENTS.forEach((s, i) => {
+    const tr = document.createElement('tr');
+    tr.dataset.idx = i;
+    tr.setAttribute('role', 'row');
+    tr.setAttribute('tabindex', '0');
+    tr.setAttribute('aria-selected', selectedRow === i ? 'true' : 'false');
+    if (selectedRow === i) tr.classList.add('selected');
+    tr.innerHTML = `
+      <td class="cell-id">${s.id}</td>
+      <td class="cell-route">${s.route}</td>
+      <td>${s.carrier}</td>
+      <td>${s.mode}</td>
+      <td><span class="status-badge ${STATUS_CLASSES[s.status]}">${STATUS_LABELS[s.status]}</span></td>
+      <td>${s.eta}</td>
+    `;
+    tr.addEventListener('click', () => selectRow(i));
+    tr.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectRow(i); } });
+    tbody.appendChild(tr);
+  });
+}
+
+function selectRow(i) {
+  selectedRow = i;
+  renderTable();
+  showDetails(SHIPMENTS[i]);
+}
+
+function showDetails(s) {
+  $('detailsEmpty').style.display = 'none';
+  const content = $('detailsContent');
+  content.style.display = 'flex';
+  $('detailsTitle').textContent = s.route;
+  $('detailsId').textContent = s.id;
+  $('dOrigin').textContent = s.origin;
+  $('dDest').textContent = s.dest;
+  $('dMode').textContent = s.mode;
+  $('dCarrier').textContent = s.carrier;
+  $('dPickup').textContent = s.pickup;
+  $('dEta').textContent = s.eta;
+  $('dRate').textContent = s.rate;
+}
+
+function clearDetails() {
+  selectedRow = null;
+  renderTable();
+  $('detailsEmpty').style.display = 'flex';
+  $('detailsContent').style.display = 'none';
+}
+
+// ── Agent list render ──────────────────────────────────────────────────────
+function renderAgentList(statuses) {
+  const list = $('agentsList');
+  list.innerHTML = '';
+  AGENTS.forEach(a => {
+    const st = statuses[a.id] || 'idle';
+    const row = document.createElement('div');
+    row.className = 'agent-row';
+    row.setAttribute('role', 'listitem');
+    row.id = `agent-row-${a.id}`;
+    row.innerHTML = `
+      <div class="agent-avatar${st === 'running' ? ' running' : ''}" aria-hidden="true">${a.emoji}</div>
+      <div class="agent-info">
+        <div class="agent-name">${a.name}</div>
+        <div class="agent-desc">${a.desc}</div>
+      </div>
+      <span class="agent-status status-${st}" aria-label="${a.name} status: ${st}">${st.charAt(0).toUpperCase() + st.slice(1)}</span>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function setAgentStatus(agentId, st) {
+  const row = $(`agent-row-${agentId}`);
+  if (!row) return;
+  const avatar = row.querySelector('.agent-avatar');
+  const badge = row.querySelector('.agent-status');
+  avatar.className = 'agent-avatar' + (st === 'running' ? ' running' : '');
+  badge.className = `agent-status status-${st}`;
+  badge.textContent = st.charAt(0).toUpperCase() + st.slice(1);
+  badge.setAttribute('aria-label', `${agentId} status: ${st}`);
+}
+
+// ── Build result card ──────────────────────────────────────────────────────
+function buildResultCard(agent, report) {
+  const card = document.createElement('div');
+  card.className = 'result-card';
+  card.id = `result-${agent.id}`;
+
+  const summaryClass = pillClass(report.rec);
+
+  card.innerHTML = `
+    <div class="result-card-header" role="button" tabindex="0" aria-expanded="false" aria-controls="result-body-${agent.id}">
+      <span style="font-size:16px;flex-shrink:0;" aria-hidden="true">${agent.emoji}</span>
+      <span class="result-agent-name">${agent.name}</span>
+      <span class="result-summary-pill ${summaryClass}">${report.rec}</span>
+      <svg class="chevron" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+        <path d="M2 4.5L7 9.5L12 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="result-card-body" id="result-body-${agent.id}" role="region" aria-label="${agent.name} criteria">
+      ${report.criteria.map(c => `
+        <div class="criterion-row">
+          <span class="criterion-verdict ${verdictClass(c.verdict)}">${c.verdict}</span>
+          <div class="criterion-text">
+            <div class="criterion-label">${c.id}. ${c.label}</div>
+            <div class="criterion-rationale">${c.rationale}</div>
+          </div>
+          ${c.lb ? '<span class="lb-tag" title="Load-bearing — FAIL blocks ship">LB</span>' : ''}
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  const header = card.querySelector('.result-card-header');
+  header.addEventListener('click', () => toggleCard(card, header));
+  header.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleCard(card, header); } });
+
+  return card;
+}
+
+function toggleCard(card, header) {
+  const expanded = card.classList.toggle('expanded');
+  header.setAttribute('aria-expanded', expanded);
+}
+
+// ── Final verdict ──────────────────────────────────────────────────────────
+function buildFinalVerdict(reports) {
+  let totalLbFails = 0, totalFails = 0, totalWarns = 0, totalPass = 0;
+  reports.forEach(r => {
+    totalLbFails += r.lbFails;
+    totalFails += r.fails;
+    totalWarns += r.warns;
+    r.criteria.forEach(c => { if (c.verdict === 'PASS') totalPass++; });
+  });
+
+  let cls, icon, label, title, body, approveLabel, escalateLabel, approveClass, escalateClass;
+
+  if (totalLbFails > 0) {
+    cls = 'send-back';
+    icon = '✗';
+    label = 'Guardian decision';
+    title = 'Blocked — Send Back';
+    body = `${totalLbFails} load-bearing failure${totalLbFails > 1 ? 's' : ''} detected. This design cannot proceed to development until the blocking issues are resolved. Address each FAIL and re-run the review.`;
+    approveLabel = 'Override & Approve';
+    approveClass = 'btn-verdict blocked';
+    escalateLabel = 'Send to UX Team';
+    escalateClass = 'btn-verdict escalate';
+  } else if (totalWarns > 0 || totalFails > 0) {
+    cls = 'ux-team';
+    icon = '⚠';
+    label = 'Guardian decision';
+    title = 'Needs UX Team Involvement';
+    body = `No load-bearing failures — but ${totalWarns} warning${totalWarns !== 1 ? 's' : ''} and ${totalFails} advisory issue${totalFails !== 1 ? 's' : ''} require human judgement before this design proceeds. A UX reviewer should assess each flagged criterion.`;
+    approveLabel = 'Approve for Dev';
+    approveClass = 'btn-verdict approve';
+    escalateLabel = 'Escalate to UX Team';
+    escalateClass = 'btn-verdict escalate';
+  } else {
+    cls = 'ship';
+    icon = '✓';
+    label = 'Guardian decision';
+    title = 'Approved for Development';
+    body = `All ${totalPass} criteria passed across 6 agents. This design is cleared to proceed to development. No UX team review required for the current configuration.`;
+    approveLabel = 'Confirm & Send to Dev';
+    approveClass = 'btn-verdict approve';
+    escalateLabel = 'Request UX Review Anyway';
+    escalateClass = 'btn-verdict escalate';
+  }
+
+  const el = document.createElement('div');
+  el.className = 'final-verdict';
+  el.id = 'finalVerdict';
+  el.innerHTML = `
+    <div class="verdict-banner ${cls}">
+      <div class="verdict-icon" aria-hidden="true">${icon}</div>
+      <div class="verdict-label">${label}</div>
+      <div class="verdict-title">${title}</div>
+      <div class="verdict-body">${body}</div>
+    </div>
+    <div class="verdict-counts">
+      <div class="verdict-count-item"><span class="count-num fail">${totalFails}</span> fail${totalFails !== 1 ? 's' : ''}</div>
+      <div class="verdict-count-item" style="color:var(--text-quaternary)">·</div>
+      <div class="verdict-count-item"><span class="count-num warn">${totalWarns}</span> warn${totalWarns !== 1 ? 's' : ''}</div>
+      <div class="verdict-count-item" style="color:var(--text-quaternary)">·</div>
+      <div class="verdict-count-item"><span class="count-num pass">${totalPass}</span> pass</div>
+    </div>
+    <div class="verdict-actions">
+      <button class="${approveClass}" id="approveBtn">${approveLabel}</button>
+      <button class="${escalateClass}" id="escalateBtn">${escalateLabel}</button>
+    </div>
+  `;
+
+  // Approved/escalated overlays
+  const approvedEl = document.createElement('div');
+  approvedEl.className = 'approved-overlay';
+  approvedEl.id = 'approvedOverlay';
+  approvedEl.innerHTML = '<span aria-hidden="true">✓</span> Sent to development queue';
+
+  const escalatedEl = document.createElement('div');
+  escalatedEl.className = 'escalated-overlay';
+  escalatedEl.id = 'escalatedOverlay';
+  escalatedEl.innerHTML = '<span aria-hidden="true">→</span> Escalated to UX team';
+
+  return { el, approvedEl, escalatedEl };
+}
+
+// ── Run review ─────────────────────────────────────────────────────────────
+async function runReview() {
+  if (isRunning) return;
+  isRunning = true;
+  approvedState = null;
+
+  const runBtn = $('runBtn');
+  runBtn.disabled = true;
+  runBtn.innerHTML = `
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="animation:spin 1s linear infinite">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" stroke-dasharray="28 56" stroke-linecap="round"/>
+    </svg>
+    Running review…
+  `;
+
+  // Clear previous results
+  const resultsArea = $('resultsArea');
+  resultsArea.innerHTML = '';
+
+  // Reset agent statuses
+  const statuses = {};
+  AGENTS.forEach(a => statuses[a.id] = 'idle');
+  renderAgentList(statuses);
+
+  const reports = [];
+
+  for (let i = 0; i < AGENTS.length; i++) {
+    const agent = AGENTS[i];
+
+    // Set running
+    setAgentStatus(agent.id, 'running');
+    await delay(600 + Math.random() * 400);
+
+    // Compute report
+    let report;
+    if (agent.id === 'heuristics') report = buildHeuristicsReport(activeIssues);
+    else if (agent.id === 'accessibility') report = buildAccessibilityReport(activeIssues);
+    else report = buildStubReport(agent.id, activeIssues);
+    reports.push(report);
+
+    // Set status badge
+    const badgeSt = report.lbFails > 0 ? 'fail' : report.warns > 0 || report.fails > 0 ? 'warn' : 'pass';
+    setAgentStatus(agent.id, badgeSt);
+
+    // Append result card
+    const card = buildResultCard(agent, report);
+    resultsArea.appendChild(card);
+    // Force reflow then animate in
+    requestAnimationFrame(() => requestAnimationFrame(() => card.classList.add('visible')));
+
+    await delay(150);
+  }
+
+  // Final verdict
+  await delay(400);
+  const { el, approvedEl, escalatedEl } = buildFinalVerdict(reports);
+  resultsArea.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('visible')));
+
+  resultsArea.appendChild(approvedEl);
+  resultsArea.appendChild(escalatedEl);
+
+  // Hook up verdict buttons
+  el.querySelector('#approveBtn').addEventListener('click', async () => {
+    approvedEl.style.display = 'flex';
+    el.style.display = 'none';
+    await delay(50);
+    approvedEl.classList.add('visible');
+  });
+  el.querySelector('#escalateBtn').addEventListener('click', async () => {
+    escalatedEl.style.display = 'flex';
+    el.style.display = 'none';
+    await delay(50);
+    escalatedEl.classList.add('visible');
+  });
+
+  // Scroll to verdict
+  await delay(100);
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Re-enable run button
+  runBtn.disabled = false;
+  runBtn.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 2.5L13 8L3 13.5V2.5Z" fill="currentColor"/></svg>
+    Re-run Guardian Review
+  `;
+  isRunning = false;
+}
+
+// ── Toggle handling ────────────────────────────────────────────────────────
+function applyToggles() {
+  const body = document.body;
+  body.classList.toggle('low-contrast', activeIssues.has('contrast'));
+  body.classList.toggle('no-focus', activeIssues.has('focus'));
+  body.classList.toggle('small-targets', activeIssues.has('targets'));
+  $('decoBar').classList.toggle('visible', activeIssues.has('deco'));
+  const extra = $('extraActions');
+  extra.classList.toggle('visible', activeIssues.has('overflow'));
+  extra.setAttribute('aria-hidden', !activeIssues.has('overflow'));
+  const chunksBand = $('chunksBand');
+  chunksBand.style.display = activeIssues.has('chunks') ? 'block' : 'none';
+}
+
+document.querySelectorAll('.option-toggle input[type=checkbox]').forEach(cb => {
+  cb.addEventListener('change', function() {
+    const issue = this.dataset.issue;
+    const lbl = document.getElementById(`lbl-${issue}`);
+    if (this.checked) {
+      activeIssues.add(issue);
+      lbl.classList.add('active');
+    } else {
+      activeIssues.delete(issue);
+      lbl.classList.remove('active');
+    }
+    applyToggles();
+  });
+});
+
+// ── Options bar toggle ─────────────────────────────────────────────────────
+$('toggleOptionsBtn').addEventListener('click', function() {
+  const bar = $('designOptionsBar');
+  const open = bar.classList.toggle('open');
+  this.setAttribute('aria-expanded', open);
+  this.textContent = open ? '▲ Hide toggles' : '▼ Design toggles';
+  // Re-add icon
+  this.insertAdjacentHTML('afterbegin', '<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="margin-right:0"><path d="M2 4h12M2 8h8M2 12h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg> ');
+});
+
+// ── Details close ──────────────────────────────────────────────────────────
+$('detailsCloseBtn').addEventListener('click', clearDetails);
+
+// ── Run button ─────────────────────────────────────────────────────────────
+$('runBtn').addEventListener('click', runReview);
+
+// ── Spin animation ─────────────────────────────────────────────────────────
+const style = document.createElement('style');
+style.textContent = '@keyframes spin { to { transform: rotate(360deg); } }';
+document.head.appendChild(style);
+
+// ── Init ───────────────────────────────────────────────────────────────────
+renderTable();
+renderAgentList({});
+</script>
+</body>
+</html>
