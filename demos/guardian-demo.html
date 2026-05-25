@@ -1148,7 +1148,7 @@ let approvedState = null; // null | 'approved' | 'escalated'
 
 // ── Agent definitions ──────────────────────────────────────────────────────
 const AGENTS = [
-  { id:'heuristics', name:'Heuristics Agent', emoji:'🔍', desc:'Nielsen heuristics · Hick's Law · Miller 7±2' },
+  { id:'heuristics', name:'Heuristics Agent', emoji:'🔍', desc:'Nielsen heuristics · Hick’s Law · Miller 7±2' },
   { id:'accessibility', name:'Accessibility Agent', emoji:'♿', desc:'WCAG 2.2 AA/AAA audit' },
   { id:'design-system', name:'Design System Agent', emoji:'🎨', desc:'Token & component compliance' },
   { id:'content', name:'Content Agent', emoji:'✍️', desc:'Copy quality & microcopy audit' },
@@ -1200,7 +1200,7 @@ function buildHeuristicsReport(issues) {
       lb:true,
       verdict: hasDeco ? 'WARN' : 'PASS',
       rationale: hasDeco
-        ? 'Ticker bar competes with the shipments table as a focal point; the user's first fixation is split.'
+        ? 'Ticker bar competes with the shipments table as a focal point; the user’s first fixation is split.'
         : 'Shipments table headline is the unambiguous first fixation; no competing primary affordance.',
     },
     {
