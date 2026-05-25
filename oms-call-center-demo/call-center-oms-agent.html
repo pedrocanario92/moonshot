@@ -1,0 +1,2240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1440">
+<title>Carnival UK — Call Center OMS Agent</title>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --color-bg-page:#F0EFF4;
+  --color-primary:#6B3FA0;
+  --color-primary-light:#EDE9F7;
+  --color-primary-dark:#4A2B72;
+  --color-success:#1A7F4B;
+  --color-success-bg:#ECFDF5;
+  --color-warning:#B45309;
+  --color-warning-bg:#FFFBEB;
+  --color-danger:#C0392B;
+  --color-danger-bg:#FEF2F0;
+  --color-surface:#FFFFFF;
+  --color-surface-2:#F8F8FA;
+  --color-border:#E4E4E7;
+  --color-text:#18181B;
+  --color-text-muted:#71717A;
+  --color-text-faint:#A1A1AA;
+  --color-call-bar-bg:#1C1C1E;
+  --color-call-timer:#34C759;
+  --panel-left:320px;
+  --panel-right:320px;
+  --panel-radius:12px;
+  --panel-shadow:0 2px 8px rgba(0,0,0,0.08),0 0 1px rgba(0,0,0,0.10);
+  --panel-gap:12px;
+  --sidebar-width:48px;
+  --topnav-height:48px;
+  --font-base:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"SF Mono","Fira Code",monospace;
+}
+html,body{height:100%;font-family:var(--font-base);font-size:13px;color:var(--color-text);background:var(--color-bg-page);overflow:hidden;}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:2px;}
+button{cursor:pointer;font-family:inherit;font-size:inherit;}
+input,textarea,select{font-family:inherit;font-size:inherit;}
+
+/* ── INFIOS TOP NAV ── */
+.top-nav{
+  height:var(--topnav-height);
+  background:#111113;
+  border-bottom:1px solid #1E1E22;
+  display:flex;align-items:center;
+  padding:0 16px 0 60px;gap:12px;
+  position:fixed;top:0;left:0;right:0;
+  z-index:99;
+}
+.top-nav-brand{color:#A3C44A;font-weight:700;font-size:16px;letter-spacing:-0.5px;}
+.top-nav-sep{width:1px;height:20px;background:#2E2E38;flex-shrink:0;}
+.top-nav-section{color:#9090A8;font-size:13px;}
+.top-nav-avatar{width:36px;height:36px;background:#3A2A50;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#A3C44A;letter-spacing:0.5px;flex-shrink:0;}
+.top-nav-icon{color:#6B6B80;display:flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:6px;cursor:pointer;}
+.top-nav-icon:hover{color:#A1A1AA;}
+
+/* ── INFIOS SIDEBAR ── */
+.sidebar{
+  width:var(--sidebar-width);height:100vh;
+  background:#F2F2F5;
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 0 12px;gap:4px;
+  position:fixed;left:0;top:0;
+  z-index:100;
+  border-right:1px solid #E2E2E8;
+}
+.sidebar-brand{margin-bottom:8px;display:flex;align-items:center;justify-content:center;width:36px;height:36px;}
+.sidebar-sep{height:1px;background:#D8D8E0;width:28px;margin:4px 0;flex-shrink:0;}
+.sidebar-icon{
+  width:36px;height:36px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:8px;color:#6B6B80;
+  cursor:pointer;border:none;background:transparent;
+  transition:background 150ms,color 150ms;
+  flex-shrink:0;
+}
+.sidebar-icon:hover{background:#E4E4EA;color:#18181B;}
+.sidebar-icon.active{background:#1E1E24;color:#A3C44A;border-radius:10px;}
+
+/* ── DEV TOOLBAR ── */
+#dev-toolbar{
+  position:fixed;top:var(--topnav-height);left:0;right:0;height:40px;
+  background:#111111;display:flex;align-items:center;gap:6px;
+  padding:0 12px 0 60px;z-index:99;
+}
+.toolbar-label{font-size:10px;font-weight:700;letter-spacing:.1em;color:#444;text-transform:uppercase;margin-right:4px;font-family:var(--font-mono);}
+.tb-btn{
+  background:transparent;border:1px solid #2A2A2A;color:#71717A;
+  border-radius:5px;padding:3px 10px;font-size:11px;transition:all .15s;
+  font-family:var(--font-mono);
+}
+.tb-btn:hover{background:#1E1E1E;color:#A1A1AA;}
+.tb-btn.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+
+/* ── APP SHELL ── */
+#app{
+  display:flex;
+  gap:var(--panel-gap);
+  padding:var(--panel-gap);
+  margin-top:calc(var(--topnav-height) + 40px);
+  margin-left:var(--sidebar-width);
+  height:calc(100vh - var(--topnav-height) - 40px);
+  box-sizing:border-box;
+  transition:margin-right 240ms ease;
+}
+
+/* ── PANEL BASE ── */
+.panel{
+  border-radius:var(--panel-radius);
+  box-shadow:var(--panel-shadow);
+  background:var(--color-surface);
+  overflow:hidden;
+}
+
+/* ── LEFT PANEL ── */
+#panel-left{
+  width:var(--panel-left);
+  min-width:var(--panel-left);
+  max-width:var(--panel-left);
+  display:flex;
+  flex-direction:column;
+}
+
+/* ── CENTER AREA ── */
+#center-area{
+  flex:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  transition:margin-right 240ms ease;
+}
+.right-open #center-area{
+  margin-right:calc(var(--panel-right) + var(--panel-gap));
+}
+
+/* ── RIGHT PANEL ── */
+#panel-right{
+  position:fixed;
+  right:var(--panel-gap);
+  top:calc(var(--topnav-height) + 40px + var(--panel-gap));
+  width:var(--panel-right);
+  height:calc(100vh - var(--topnav-height) - 40px - var(--panel-gap) * 2);
+  transform:translateX(calc(var(--panel-right) + var(--panel-gap)));
+  transition:transform 240ms ease;
+  z-index:200;
+  display:flex;
+  flex-direction:column;
+}
+.right-open #panel-right{
+  transform:translateX(0);
+}
+
+/* ── TAB STRIP ── */
+.tab-strip{
+  display:flex;
+  border-bottom:1px solid var(--color-border);
+  background:var(--color-surface);
+  flex-shrink:0;
+}
+.tab-btn{
+  flex:1;padding:10px 4px;
+  border:none;background:transparent;
+  font-size:12px;font-weight:500;
+  color:var(--color-text-muted);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  transition:all .15s;
+}
+.tab-btn.active{color:var(--color-primary);border-bottom-color:var(--color-primary);}
+.tab-btn:hover:not(.active){color:var(--color-text);}
+
+/* ── LEFT PANEL SECTIONS ── */
+.lp-scroll{flex:1;overflow-y:auto;padding:0 0 4px;}
+.lp-section{padding:10px 12px;border-bottom:1px solid var(--color-border);}
+.lp-section:last-child{border-bottom:none;}
+.section-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--color-text-faint);text-transform:uppercase;margin-bottom:6px;}
+
+.customer-name{font-size:14px;font-weight:600;color:var(--color-text);margin-bottom:2px;display:flex;align-items:center;gap:6px;}
+.customer-contact{font-size:12px;color:var(--color-text-muted);margin-bottom:6px;}
+.badges-row{display:flex;gap:6px;flex-wrap:wrap;}
+.hold-badge{background:#B45309;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:4px;letter-spacing:.05em;}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;letter-spacing:.04em;}
+.badge-verified{background:var(--color-success-bg);color:var(--color-success);}
+.badge-platinum{background:#FEF3C7;color:#92400E;}
+.badge-confirmed{background:var(--color-success-bg);color:var(--color-success);}
+.badge-on-hold{background:var(--color-warning-bg);color:var(--color-warning);}
+.badge-cancelled{background:var(--color-danger-bg);color:var(--color-danger);}
+.badge-success{background:var(--color-success-bg);color:var(--color-success);}
+.badge-warning{background:var(--color-warning-bg);color:var(--color-warning);}
+.badge-danger{background:var(--color-danger-bg);color:var(--color-danger);}
+.badge-resolved{background:var(--color-success-bg);color:var(--color-success);}
+.badge-escalated{background:var(--color-danger-bg);color:var(--color-danger);}
+.badge-callback{background:var(--color-warning-bg);color:var(--color-warning);}
+.badge-active-bk{background:var(--color-primary-light);color:var(--color-primary);font-size:10px;font-weight:600;padding:2px 7px;border-radius:100px;}
+
+/* Customer need textarea */
+#customer-need{
+  width:100%;border:1px solid var(--color-border);border-radius:6px;
+  padding:6px 8px;resize:none;font-size:12px;color:var(--color-text);
+  background:var(--color-surface-2);margin-bottom:3px;
+}
+#customer-need:focus{outline:2px solid var(--color-primary);outline-offset:0;border-color:var(--color-primary);}
+.char-count{font-size:10px;color:var(--color-text-faint);text-align:right;}
+
+/* Note cards */
+.note-card{background:var(--color-surface-2);border-radius:6px;padding:6px 8px;margin-bottom:6px;border:1px solid var(--color-border);}
+.note-date{font-size:10px;color:var(--color-text-faint);margin-bottom:2px;}
+.note-text{font-size:11px;color:var(--color-text-muted);line-height:1.4;}
+
+/* Link buttons */
+.link-btn{background:none;border:none;color:var(--color-primary);font-size:11px;cursor:pointer;padding:0;margin-top:4px;}
+.link-btn:hover{text-decoration:underline;}
+
+/* Chips */
+.chips-row{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
+.topic-chip{background:var(--color-primary-light);color:var(--color-primary);font-size:11px;font-weight:500;padding:3px 8px;border-radius:100px;}
+
+/* Channel chips */
+.channel-chips{display:flex;flex-wrap:wrap;gap:6px;padding:10px 12px;border-bottom:1px solid var(--color-border);}
+.channel-chip{
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  color:var(--color-text-muted);font-size:11px;font-weight:500;
+  padding:5px 10px;border-radius:100px;cursor:pointer;transition:all .15s;
+}
+.channel-chip:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.channel-chip.selected{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+
+/* Related bookings */
+.related-bk-card{
+  border:1.5px solid var(--color-border);border-radius:8px;
+  padding:8px 10px;margin-bottom:6px;cursor:pointer;
+  transition:all .15s;
+}
+.related-bk-card:hover{border-color:var(--color-primary);}
+.related-bk-card.active-bk{border-color:var(--color-primary);background:var(--color-primary-light);}
+.rb-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;}
+.rb-id{font-size:11px;font-weight:700;color:var(--color-text);font-family:var(--font-mono);}
+.rb-guest{font-size:11px;color:var(--color-text-muted);margin-bottom:4px;}
+.rb-footer{display:flex;align-items:center;justify-content:space-between;}
+.rb-total{font-size:12px;font-weight:600;color:var(--color-text);}
+.set-active-btn{background:none;border:1px solid var(--color-border);color:var(--color-text-muted);font-size:10px;padding:2px 7px;border-radius:4px;cursor:pointer;transition:all .15s;}
+.set-active-btn:hover{border-color:var(--color-primary);color:var(--color-primary);}
+
+/* Quick actions */
+.quick-action-btn{
+  display:flex;align-items:center;gap:6px;width:100%;
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  color:var(--color-text);font-size:12px;padding:7px 10px;
+  border-radius:6px;margin-bottom:5px;transition:all .15s;text-align:left;
+}
+.quick-action-btn:hover{border-color:var(--color-primary);background:var(--color-primary-light);color:var(--color-primary);}
+.icon-xs{width:12px;height:12px;flex-shrink:0;}
+.icon-sm{width:14px;height:14px;flex-shrink:0;}
+
+/* LP Footer */
+.lp-footer{
+  display:flex;flex-wrap:wrap;gap:4px;padding:8px;
+  border-top:1px solid var(--color-border);flex-shrink:0;
+  background:var(--color-surface);
+}
+.footer-btn{
+  flex:1;min-width:calc(50% - 4px);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  color:var(--color-text-muted);font-size:11px;padding:6px 4px;
+  border-radius:6px;transition:all .15s;
+}
+.footer-btn:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-light);}
+.footer-btn--warn:hover{border-color:var(--color-danger);color:var(--color-danger);background:var(--color-danger-bg);}
+.footer-btn svg{width:12px;height:12px;}
+
+/* ── CALL BAR ── */
+.call-bar-card{
+  background:var(--color-call-bar-bg);
+  border-radius:var(--panel-radius);
+  box-shadow:0 4px 16px rgba(0,0,0,0.24);
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  color:#fff;
+  flex-shrink:0;
+  position:relative;
+  transition:opacity 200ms ease,transform 200ms ease;
+}
+.call-bar-card[hidden]{display:none!important;}
+.call-bar-group{display:flex;align-items:center;gap:8px;}
+.call-bar-timer{font-family:var(--font-mono);font-size:18px;font-weight:600;color:var(--color-call-timer);min-width:52px;}
+.call-bar-label{font-size:12px;color:rgba(255,255,255,.6);}
+.call-bar-controls{gap:4px;}
+.cb-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 12px;border-radius:8px;border:none;
+  background:rgba(255,255,255,.08);color:#fff;cursor:pointer;
+  font-size:11px;font-family:var(--font-base);transition:background .15s;
+}
+.cb-btn:hover{background:rgba(255,255,255,.15);}
+.cb-btn.active-hold{background:#B45309;color:#fff;}
+.cb-btn.active-mute{background:#C0392B;color:#fff;}
+.cb-end-btn{
+  width:40px;height:40px;border-radius:50%;
+  background:#C0392B;border:none;color:#fff;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.cb-end-btn:hover{background:#a93226;}
+.cb-end-confirm{display:flex;align-items:center;gap:8px;flex:1;justify-content:center;}
+.cb-end-confirm span{color:rgba(255,255,255,.8);font-size:12px;}
+.cb-confirm-btn{background:#C0392B;border:none;color:#fff;font-size:11px;font-weight:600;padding:6px 14px;border-radius:6px;cursor:pointer;}
+.cb-confirm-btn:hover{background:#a93226;}
+.cb-cancel-btn{background:rgba(255,255,255,.12);border:none;color:#fff;font-size:11px;padding:6px 14px;border-radius:6px;cursor:pointer;}
+.cb-cancel-btn:hover{background:rgba(255,255,255,.2);}
+
+/* Keypad */
+.keypad-modal{
+  position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:#1C1C1E;border:1px solid #333;border-radius:12px;
+  padding:12px;width:200px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.keypad-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;color:#fff;font-size:12px;font-weight:600;}
+.keypad-header button{background:none;border:none;color:#71717A;font-size:14px;cursor:pointer;}
+.keypad-display{background:#111;border-radius:6px;padding:6px 10px;font-family:var(--font-mono);font-size:16px;color:var(--color-call-timer);min-height:32px;margin-bottom:8px;letter-spacing:.1em;}
+.keypad-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;}
+.kp-key{background:rgba(255,255,255,.1);border:none;color:#fff;font-size:15px;font-weight:500;padding:10px;border-radius:8px;cursor:pointer;transition:background .15s;}
+.kp-key:hover{background:rgba(255,255,255,.2);}
+
+/* Contacts dropdown */
+.contacts-dropdown{
+  position:absolute;top:calc(100% + 8px);left:50%;transform:translateX(-50%);
+  background:#1C1C1E;border:1px solid #333;border-radius:10px;
+  padding:6px;width:220px;z-index:500;box-shadow:0 8px 24px rgba(0,0,0,.4);
+}
+.contact-row{display:flex;flex-direction:column;padding:8px 10px;border-radius:7px;cursor:pointer;transition:background .15s;}
+.contact-row:hover{background:rgba(255,255,255,.1);}
+.contact-name{font-size:12px;font-weight:600;color:#fff;}
+.contact-phone{font-size:11px;color:rgba(255,255,255,.5);font-family:var(--font-mono);}
+
+/* ── AGENT WORKSPACE ── */
+#agent-workspace{flex:1;display:flex;flex-direction:column;min-height:0;}
+.agent-header{
+  display:flex;align-items:center;gap:10px;padding:10px 14px;
+  border-bottom:1px solid var(--color-border);flex-shrink:0;background:var(--color-surface);
+}
+.agent-header-left{display:flex;align-items:center;gap:6px;}
+.agent-title{font-size:14px;font-weight:700;color:var(--color-text);}
+.agent-sep{color:var(--color-border);margin:0 2px;}
+.agent-status-dot{width:7px;height:7px;border-radius:50%;background:#34C759;flex-shrink:0;}
+.agent-status-text{font-size:11px;color:var(--color-text-muted);}
+.agent-header-center{flex:1;display:flex;justify-content:center;}
+.agent-header-right{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+
+.active-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;font-size:11px;font-weight:600;}
+.active-pill svg{width:11px;height:11px;}
+.active-pill-active{background:var(--color-primary);color:#fff;}
+.active-pill-none{background:var(--color-surface-2);color:var(--color-text-faint);border:1px solid var(--color-border);}
+
+.new-session-btn{background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text-muted);font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .15s;}
+.new-session-btn:hover{border-color:var(--color-primary);color:var(--color-primary);}
+
+.chat-area{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;}
+
+/* Chat messages */
+.agent-bubble-wrap{display:flex;gap:8px;align-items:flex-start;}
+.agent-avatar{width:26px;height:26px;border-radius:50%;background:var(--color-primary);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.agent-avatar svg{width:13px;height:13px;color:#fff;}
+.agent-bubble{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:0 10px 10px 10px;padding:8px 12px;font-size:12px;line-height:1.5;color:var(--color-text);max-width:520px;}
+.agent-bubble strong{color:var(--color-primary);}
+
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;text-align:center;padding:20px;}
+.empty-icon{font-size:32px;margin-bottom:8px;}
+.empty-title{font-size:18px;font-weight:700;color:var(--color-text);margin-bottom:6px;}
+.empty-sub{font-size:13px;color:var(--color-text-muted);margin-bottom:16px;}
+.starter-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%;max-width:520px;}
+.starter-card{
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  border-radius:8px;padding:10px 12px;font-size:12px;color:var(--color-text);
+  cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;
+}
+.starter-card:hover{border-color:var(--color-primary);background:var(--color-primary-light);}
+.starter-card small{color:var(--color-text-faint);font-size:11px;display:block;margin-top:3px;}
+
+/* Action cards */
+.action-card{
+  border:1.5px solid var(--color-border);border-radius:10px;overflow:hidden;
+  cursor:pointer;transition:all .15s;
+}
+.action-card:hover{border-color:var(--color-primary);box-shadow:0 0 0 3px var(--color-primary-light);}
+.action-card-lookup{}
+.action-card-blocked{cursor:default;}
+.action-card-success{border-color:var(--color-success);}
+.action-card-success:hover{border-color:var(--color-success);box-shadow:0 0 0 3px var(--color-success-bg);}
+.ac-header{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--color-surface-2);border-bottom:1px solid var(--color-border);}
+.blocked-header{background:var(--color-danger-bg);}
+.success-header{background:var(--color-success-bg);border-bottom-color:rgba(26,127,75,.2);}
+.success-header svg{color:var(--color-success);}
+.ac-icon{color:var(--color-primary);}
+.ac-icon svg{width:14px;height:14px;}
+.ac-title{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--color-text-faint);text-transform:uppercase;flex:1;}
+.ac-bid{font-size:11px;font-weight:700;font-family:var(--font-mono);color:var(--color-text);}
+.ac-edit-hint{font-size:10px;color:var(--color-primary);opacity:.6;margin-left:auto;}
+.action-card:hover .ac-edit-hint{opacity:1;}
+.ac-body{padding:10px 12px;}
+
+/* Meta grid */
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-bottom:10px;}
+.meta-grid > div{display:flex;flex-direction:column;gap:1px;}
+.meta-label{font-size:10px;color:var(--color-text-faint);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.meta-val{font-size:12px;color:var(--color-text);font-weight:500;}
+
+/* Line items */
+.line-item-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px solid var(--color-border);flex-wrap:wrap;}
+.service-tag{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;letter-spacing:.04em;}
+.spa-tag{background:#EDE9F7;color:#6B3FA0;}
+.exp-tag{background:#FEF3C7;color:#92400E;}
+.retail-tag{background:#ECFDF5;color:#1A7F4B;}
+.li-name{font-size:12px;font-weight:500;flex:1;}
+.li-detail{font-size:11px;color:var(--color-text-muted);}
+.li-price{font-size:12px;font-weight:700;color:var(--color-text);margin-left:auto;}
+.ac-total-row{display:flex;justify-content:space-between;padding:6px 0;border-top:1px solid var(--color-border);font-size:12px;margin-top:4px;}
+.ac-total-row strong{font-size:13px;}
+.ac-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;padding:7px 14px;border-radius:7px;font-size:12px;font-weight:600;border:none;cursor:pointer;transition:all .15s;text-align:center;}
+.btn-primary{background:var(--color-primary);color:#fff;}
+.btn-primary:hover{background:var(--color-primary-dark);}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
+.btn-secondary{background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text-muted);}
+.btn-secondary:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.btn-danger-outline{background:transparent;border:1.5px solid var(--color-danger);color:var(--color-danger);}
+.btn-danger-outline:hover{background:var(--color-danger-bg);}
+.btn-danger-confirm{background:transparent;border:1.5px solid var(--color-danger);color:var(--color-danger);}
+.btn-danger-confirm:hover{background:var(--color-danger-bg);}
+.btn-danger-solid{background:var(--color-danger);color:#fff;border:1.5px solid var(--color-danger);}
+.btn-danger-solid:hover{background:#a93226;}
+.btn-warning{background:var(--color-warning);color:#fff;border:none;}
+.btn-warning:hover{background:#9a4400;}
+.btn-success-outline{background:transparent;border:1.5px solid var(--color-success);color:var(--color-success);}
+.btn-success-outline:hover{background:var(--color-success-bg);}
+.btn-sm{padding:4px 10px;font-size:11px;}
+
+/* Action in progress */
+.action-in-progress{
+  display:flex;align-items:center;gap:8px;
+  background:var(--color-primary-light);border:1px solid var(--color-primary);
+  border-radius:8px;padding:8px 12px;font-size:12px;color:var(--color-primary);
+}
+.action-in-progress svg{width:14px;height:14px;flex-shrink:0;}
+.action-in-progress-danger{background:var(--color-danger-bg);border-color:var(--color-danger);color:var(--color-danger);}
+
+/* Blocked */
+.blocked-reason{font-size:12px;font-weight:600;color:var(--color-danger);margin-bottom:4px;}
+.blocked-tag{background:var(--color-danger);color:#fff;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.06em;}
+.blocked-header-box{border:1px solid var(--color-danger-bg);background:var(--color-danger-bg);border-radius:8px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:4px;}
+.blocked-header-box p{font-size:12px;}
+
+/* Success card */
+.conf-ref-box{background:var(--color-success-bg);border:1px solid rgba(26,127,75,.2);border-radius:8px;padding:10px;margin-bottom:10px;}
+.conf-ref-label{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--color-success);text-transform:uppercase;margin-bottom:4px;}
+.conf-ref-number{font-size:15px;font-weight:700;font-family:var(--font-mono);color:var(--color-success);}
+.conf-summary{font-size:12px;color:var(--color-text-muted);margin-bottom:10px;}
+.status-rows{display:flex;flex-direction:column;gap:4px;margin-bottom:10px;}
+.status-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:6px;font-size:12px;}
+.success-row{background:var(--color-success-bg);}
+.status-icon{font-size:13px;}
+.check-icon{margin-left:auto;color:var(--color-success);font-weight:700;}
+.customer-summary-toggle{border:1px solid var(--color-border);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.summary-toggle-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--color-surface-2);border:none;font-size:12px;font-weight:600;color:var(--color-text);cursor:pointer;}
+.summary-toggle-btn:hover{background:var(--color-primary-light);}
+.summary-toggle-btn svg{width:14px;height:14px;}
+.customer-summary-content{padding:10px 12px;font-size:12px;color:var(--color-text-muted);line-height:1.5;background:var(--color-surface);}
+
+/* Input bar */
+.input-bar-wrapper{padding:8px 10px;border-top:1px solid var(--color-border);background:var(--color-surface);flex-shrink:0;}
+.suggestion-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:7px;}
+.chip{
+  background:var(--color-surface-2);border:1px solid var(--color-border);
+  color:var(--color-text-muted);font-size:11px;font-weight:500;
+  padding:4px 10px;border-radius:100px;cursor:pointer;transition:all .15s;
+  white-space:nowrap;
+}
+.chip:hover{border-color:var(--color-primary);color:var(--color-primary);background:var(--color-primary-light);}
+.input-bar{display:flex;gap:6px;align-items:center;}
+.chat-input{
+  flex:1;border:1px solid var(--color-border);border-radius:8px;
+  padding:8px 12px;font-size:13px;background:var(--color-surface-2);
+  color:var(--color-text);
+}
+.chat-input:focus{outline:2px solid var(--color-primary);outline-offset:0;border-color:var(--color-primary);}
+.send-btn{
+  width:34px;height:34px;border-radius:8px;background:var(--color-primary);
+  border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;
+  flex-shrink:0;transition:background .15s;
+}
+.send-btn:hover{background:var(--color-primary-dark);}
+.send-btn svg{width:14px;height:14px;}
+
+/* ── RIGHT PANEL ── */
+.rp-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;border-bottom:1px solid var(--color-border);flex-shrink:0;
+  background:var(--color-surface);
+}
+.rp-header > div{display:flex;align-items:center;gap:8px;}
+.rp-booking-id{font-size:12px;font-weight:700;font-family:var(--font-mono);color:var(--color-text);}
+.rp-close-btn{background:none;border:1px solid var(--color-border);color:var(--color-text-muted);width:26px;height:26px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;}
+.rp-close-btn:hover{border-color:var(--color-danger);color:var(--color-danger);}
+.rp-action-title{padding:8px 14px;font-size:12px;font-weight:700;color:var(--color-primary);border-bottom:1px solid var(--color-border);flex-shrink:0;background:var(--color-primary-light);}
+.rp-body{flex:1;overflow-y:auto;padding:12px 14px;}
+
+/* Forms in right panel */
+.form-field{display:flex;flex-direction:column;gap:3px;margin-bottom:10px;}
+.form-field label{font-size:11px;font-weight:600;color:var(--color-text-muted);}
+.form-input{border:1px solid var(--color-border);border-radius:6px;padding:6px 8px;font-size:12px;background:var(--color-surface-2);}
+.form-input:focus{outline:2px solid var(--color-primary);outline-offset:0;border-color:var(--color-primary);}
+.form-field-inline{display:flex;flex-direction:column;gap:2px;}
+.form-field-inline label{font-size:10px;font-weight:600;color:var(--color-text-faint);}
+.form-input-sm{border:1px solid var(--color-border);border-radius:5px;padding:4px 7px;font-size:12px;background:var(--color-surface-2);}
+.form-input-sm:focus{outline:2px solid var(--color-primary);outline-offset:0;}
+.li-edit-row{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:8px;padding:10px;margin-bottom:10px;}
+.li-edit-name{font-size:12px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px;}
+.li-edit-controls{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px;}
+.stepper{display:flex;align-items:center;gap:6px;}
+.stepper-btn{width:24px;height:24px;border-radius:5px;border:1px solid var(--color-border);background:var(--color-surface);font-size:15px;color:var(--color-text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;line-height:1;}
+.stepper-btn:hover{border-color:var(--color-primary);color:var(--color-primary);}
+#guest-count{font-size:13px;font-weight:700;min-width:20px;text-align:center;}
+.avail-indicator{font-size:11px;font-weight:600;}
+.avail-ok{color:var(--color-success);}
+.diff-section{background:var(--color-primary-light);border:1px solid var(--color-primary);border-radius:8px;padding:10px;margin-bottom:10px;}
+.diff-label{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--color-primary);text-transform:uppercase;margin-bottom:6px;}
+.diff-row{display:flex;align-items:center;gap:8px;font-size:12px;flex-wrap:wrap;}
+.diff-before{color:var(--color-text-muted);text-decoration:line-through;}
+.diff-arrow{color:var(--color-primary);font-weight:700;}
+.diff-after{color:var(--color-primary);font-weight:600;}
+.diff-price{font-size:11px;color:var(--color-text-muted);margin-top:4px;}
+.rp-actions{display:flex;flex-direction:column;gap:6px;}
+
+/* Cancel form */
+.cancel-scope{border:1px solid var(--color-border);border-radius:8px;overflow:hidden;margin-bottom:10px;}
+.scope-row{display:flex;gap:8px;padding:7px 10px;border-bottom:1px solid var(--color-border);font-size:12px;}
+.scope-row:last-child{border-bottom:none;}
+.scope-label{font-size:10px;font-weight:700;color:var(--color-text-faint);text-transform:uppercase;letter-spacing:.05em;width:50px;flex-shrink:0;padding-top:1px;}
+.scope-val{color:var(--color-text);font-weight:500;}
+.refund-box{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:8px;padding:10px;margin-bottom:10px;}
+.refund-row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;}
+.refund-total{border-top:1px solid var(--color-border);padding-top:6px;margin-top:4px;font-weight:600;}
+.policy-note{font-size:11px;color:var(--color-success);background:var(--color-success-bg);border:1px solid rgba(26,127,75,.2);border-radius:6px;padding:8px;margin-bottom:12px;line-height:1.4;}
+
+/* Alt table */
+.alt-table{width:100%;border-collapse:collapse;font-size:12px;}
+.alt-table td{padding:7px 6px;border-bottom:1px solid var(--color-border);}
+.alt-table tr:last-child td{border-bottom:none;}
+
+/* Bookings tab */
+.bookings-search-bar{padding:8px 10px;display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--color-border);}
+.bookings-search-input{border:1px solid var(--color-border);border-radius:6px;padding:5px 10px;font-size:12px;width:100%;background:var(--color-surface-2);}
+.bookings-search-input:focus{outline:2px solid var(--color-primary);outline-offset:0;}
+.filter-chips{display:flex;gap:4px;flex-wrap:wrap;}
+.filter-chip{background:var(--color-surface-2);border:1px solid var(--color-border);color:var(--color-text-muted);font-size:10px;font-weight:600;padding:3px 8px;border-radius:100px;cursor:pointer;transition:all .15s;letter-spacing:.03em;}
+.filter-chip:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.filter-chip.active{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+.bookings-list{flex:1;overflow-y:auto;}
+.bk-row{
+  display:flex;flex-direction:column;gap:2px;padding:8px 12px;
+  border-bottom:1px solid var(--color-border);cursor:pointer;
+  transition:all .15s;border-left:3px solid transparent;
+}
+.bk-row:hover{background:var(--color-surface-2);}
+.bk-row.active-bk-row{border-left-color:var(--color-primary);background:var(--color-primary-light);}
+.bk-row-header{display:flex;align-items:center;justify-content:space-between;}
+.bk-row-id{font-size:11px;font-weight:700;font-family:var(--font-mono);color:var(--color-text);}
+.bk-row-guest{font-size:12px;font-weight:500;color:var(--color-text);}
+.bk-row-meta{font-size:11px;color:var(--color-text-muted);}
+.bk-row-footer{display:flex;justify-content:space-between;align-items:center;}
+.bk-row-total{font-size:12px;font-weight:700;}
+.bookings-pagination{display:flex;align-items:center;justify-content:space-between;padding:6px 10px;border-top:1px solid var(--color-border);font-size:11px;color:var(--color-text-muted);flex-shrink:0;}
+.pg-btn{background:none;border:1px solid var(--color-border);color:var(--color-text-muted);padding:2px 8px;border-radius:4px;cursor:pointer;font-size:11px;}
+.pg-btn:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+/* Call tab */
+.call-summary-block{padding:10px 12px;border-bottom:1px solid var(--color-border);}
+.call-active-row{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:600;margin-bottom:2px;}
+.green-dot{width:8px;height:8px;border-radius:50%;background:#34C759;flex-shrink:0;}
+.call-tab-timer{font-family:var(--font-mono);font-size:12px;color:var(--color-success);margin-left:auto;}
+.call-meta{font-size:11px;color:var(--color-text-muted);}
+.call-summary-textarea{width:100%;border:1px solid var(--color-border);border-radius:6px;padding:6px 8px;font-size:12px;resize:none;background:var(--color-surface-2);margin-top:4px;color:var(--color-text);}
+.call-summary-textarea:focus{outline:2px solid var(--color-primary);}
+.no-call-placeholder{padding:20px 12px;text-align:center;color:var(--color-text-faint);font-size:12px;}
+.call-history-row{padding:8px 12px;border-bottom:1px solid var(--color-border);display:flex;flex-direction:column;gap:2px;}
+.ch-date{font-size:10px;color:var(--color-text-faint);}
+.ch-customer{font-size:12px;font-weight:600;}
+.ch-meta{font-size:11px;color:var(--color-text-muted);display:flex;align-items:center;gap:6px;}
+
+/* New booking screen */
+.new-booking-card{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:10px;}
+.service-type-row{display:flex;gap:6px;}
+.svc-btn{background:var(--color-surface);border:1.5px solid var(--color-border);color:var(--color-text-muted);font-size:12px;font-weight:600;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all .15s;}
+.svc-btn:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.svc-btn.selected{background:var(--color-primary);border-color:var(--color-primary);color:#fff;}
+.avail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.slot-btn{border-radius:6px;font-size:11px;font-weight:600;padding:7px 4px;border:1.5px solid;cursor:pointer;transition:all .15s;text-align:center;}
+.slot-open{background:var(--color-success-bg);border-color:rgba(26,127,75,.3);color:var(--color-success);}
+.slot-open:hover{background:var(--color-success);color:#fff;border-color:var(--color-success);}
+.slot-waitlist{background:var(--color-warning-bg);border-color:rgba(180,83,9,.3);color:var(--color-warning);}
+.slot-full{background:var(--color-surface-2);border-color:var(--color-border);color:var(--color-text-faint);cursor:not-allowed;opacity:.6;}
+.guest-stepper-row{display:flex;align-items:center;gap:10px;}
+.basket-area{border-top:1px solid var(--color-border);padding-top:10px;}
+.basket-empty{font-size:12px;color:var(--color-text-faint);padding:8px 0;text-align:center;}
+
+/* ── V5: TYPING INDICATOR ── */
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-5px);opacity:1;}}
+.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--color-text-faint);animation:typingBounce 1.2s ease-in-out infinite;margin:0 2px;}
+.typing-dot:nth-child(2){animation-delay:.2s;}
+.typing-dot:nth-child(3){animation-delay:.4s;}
+.typing-bubble{display:flex;align-items:center;min-width:52px;padding:10px 14px!important;}
+
+/* ── V5: CONFIDENCE BADGE ── */
+.conf-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:100px;font-size:11px;font-weight:600;margin-left:8px;}
+.conf-high{background:var(--color-success-bg);color:var(--color-success);}
+.conf-med{background:var(--color-warning-bg);color:var(--color-warning);}
+.conf-low{background:var(--color-danger-bg);color:var(--color-danger);}
+.conf-chip{background:var(--color-surface-2);color:var(--color-text-muted);}
+
+/* Interpretation bubble */
+.interpret-row{display:flex;flex-wrap:wrap;align-items:center;gap:4px;}
+.interpret-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-faint);}
+.interpret-intent{font-size:13px;font-weight:500;color:var(--color-text);}
+
+/* Operator bubble */
+.msg-operator{display:flex;justify-content:flex-end;margin:4px 0;}
+.op-bubble{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:12px 12px 2px 12px;padding:8px 14px;font-size:13px;color:var(--color-text-muted);max-width:380px;}
+
+/* ── V5: BRIEFING BLOCK ── */
+.briefing-block{background:var(--color-primary-light);border:1px solid #C4B5E8;border-radius:8px;padding:14px 16px;font-size:12px;margin:8px 0;}
+.briefing-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-primary-dark);margin-bottom:10px;}
+.briefing-row{display:flex;gap:10px;margin-bottom:8px;line-height:1.5;}
+.briefing-row:last-child{margin-bottom:0;}
+.briefing-icon{flex-shrink:0;font-size:14px;margin-top:1px;}
+.briefing-detail{color:var(--color-text-muted);display:block;font-size:11px;}
+
+/* ── V5: DISCOUNT HINT ── */
+.discount-hint{background:#FFFBEB;border:1px solid #FDE68A;border-left:3px solid #B45309;border-radius:8px;padding:12px 16px;font-size:12px;margin:6px 0 6px 38px;max-width:580px;}
+.dh-top{display:flex;gap:10px;align-items:flex-start;margin-bottom:10px;}
+.dh-icon{font-size:16px;flex-shrink:0;}
+.dh-dismiss{margin-left:auto;border:none;background:transparent;cursor:pointer;color:var(--color-text-faint);font-size:16px;line-height:1;padding:0 0 0 8px;}
+.dh-dismiss:hover{color:var(--color-text);}
+.dh-actions{display:flex;gap:8px;padding-left:26px;}
+.btn-warning-outline{background:transparent;border:1px solid var(--color-warning);color:var(--color-warning);padding:4px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-warning-outline:hover{background:var(--color-warning-bg);}
+.btn-ghost{background:transparent;border:1px solid var(--color-border);color:var(--color-text-muted);padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;transition:all .15s;}
+.btn-ghost:hover{border-color:var(--color-text-muted);color:var(--color-text);}
+
+/* ── V5: DRAFT NOTE ── */
+.draft-note-section{background:var(--color-surface-2);border:1px solid var(--color-border);border-radius:8px;padding:12px;margin:12px 0;}
+.draft-note-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-faint);margin-bottom:8px;}
+.draft-note-textarea{width:100%;border:1px solid transparent;border-radius:4px;padding:8px;font-size:12px;font-family:var(--font-base);background:transparent;resize:none;line-height:1.5;color:var(--color-text);}
+.draft-note-textarea.editing{border-color:var(--color-primary);background:#fff;outline:none;}
+.draft-note-actions{display:flex;gap:8px;margin-top:8px;}
+.btn-success-solid{background:var(--color-success);color:#fff;border:1px solid var(--color-success);padding:5px 12px;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;}
+.btn-success-solid:hover{background:#15673e;}
+.btn-success-solid.saved{background:#15673e;cursor:default;}
+.customer-summary-section{border-top:1px solid var(--color-border);padding-top:12px;margin-top:4px;}
+.cs-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--color-text-faint);margin-bottom:6px;}
+.cs-text{font-size:12px;color:var(--color-text);line-height:1.6;font-style:italic;margin-bottom:8px;}
+
+/* ── V6: CALL ENDED STATE ── */
+.call-bar-card.ended{background:#2A1A1A;}
+.call-bar-card.ended .call-bar-timer{color:#9090A8;}
+.call-bar-card.ended .call-bar-label{color:#9090A8;}
+.call-status-ended-label{color:#D04060;font-size:11px;margin-right:4px;font-weight:600;}
+.cb-btn.cb-disabled{opacity:0.35;pointer-events:none;cursor:not-allowed;}
+.cb-dismiss-btn{background:transparent;border:none;color:#9090A8;font-size:12px;cursor:pointer;padding:4px 10px;border-radius:6px;white-space:nowrap;}
+.cb-dismiss-btn:hover{color:#C0C0D0;}
+@keyframes callBarFadeOut{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-8px);}}
+.call-bar-card.dismissing{animation:callBarFadeOut 200ms ease forwards;}
+
+/* ── V6: CALL ENDED LEFT PANEL INDICATOR ── */
+.call-ended-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#9090A8;flex-shrink:0;}
+</style>
+</head>
+<body>
+
+<!-- INFIOS TOP NAV -->
+<header class="top-nav" role="banner">
+  <span class="top-nav-brand">infios</span>
+  <div class="top-nav-sep"></div>
+  <span class="top-nav-section">OMS Sites and Channels</span>
+  <div style="flex:1"></div>
+  <button class="top-nav-icon" aria-label="Language"><i data-lucide="globe" style="width:16px;height:16px"></i></button>
+  <button class="top-nav-icon" aria-label="Notifications"><i data-lucide="bell" style="width:16px;height:16px"></i></button>
+  <div class="top-nav-avatar" aria-label="User: Grace Chen">GC</div>
+</header>
+
+<!-- INFIOS SIDEBAR -->
+<nav class="sidebar" role="navigation" aria-label="Main navigation">
+  <div class="sidebar-brand">
+    <div style="width:28px;height:28px;background:#A3C44A;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#1A1A1A;font-family:var(--font-base);letter-spacing:-0.5px;">i</div>
+  </div>
+  <button class="sidebar-icon" aria-label="Apps"><i data-lucide="grid" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Collapse navigation"><i data-lucide="chevron-right" style="width:16px;height:16px"></i></button>
+  <div class="sidebar-sep" role="separator"></div>
+  <button class="sidebar-icon" aria-label="Search"><i data-lucide="search" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Contacts"><i data-lucide="user-circle" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon active" aria-label="Settings" aria-current="page"><i data-lucide="settings" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Agent Performance"><i data-lucide="bar-chart-2" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Shift Log"><i data-lucide="list" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Floor Map"><i data-lucide="map-pin" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Warehouse"><i data-lucide="layers" style="width:16px;height:16px"></i></button>
+  <div class="sidebar-sep" role="separator"></div>
+  <button class="sidebar-icon" aria-label="Team"><i data-lucide="users" style="width:16px;height:16px"></i></button>
+  <button class="sidebar-icon" aria-label="Documents"><i data-lucide="folder" style="width:16px;height:16px"></i></button>
+</nav>
+
+<!-- DEV TOOLBAR -->
+<div id="dev-toolbar" role="toolbar" aria-label="Developer state switcher">
+  <span class="toolbar-label">DEV</span>
+  <button class="tb-btn" data-screen="1">1 · Empty</button>
+  <button class="tb-btn" data-screen="2">2 · Call Active</button>
+  <button class="tb-btn" data-screen="3">3 · Lookup</button>
+  <button class="tb-btn" data-screen="4">4 · Modify</button>
+  <button class="tb-btn" data-screen="5">5 · Cancel</button>
+  <button class="tb-btn" data-screen="6">6 · Blocked</button>
+  <button class="tb-btn" data-screen="7">7 · New Booking</button>
+  <button class="tb-btn" data-screen="8">8 · Completed</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- LEFT PANEL -->
+  <div id="panel-left" class="panel"></div>
+
+  <!-- CENTER AREA -->
+  <div id="center-area">
+    <!-- Floating call bar -->
+    <div id="floating-call-bar" class="call-bar-card" hidden role="region" aria-label="Active call controls">
+    </div>
+
+    <!-- Agent workspace -->
+    <div id="agent-workspace" class="panel">
+      <div id="agent-header" class="agent-header">
+        <div class="agent-header-left">
+          <i data-lucide="zap" style="width:18px;height:18px;color:var(--color-primary)"></i>
+          <span class="agent-title">Order Agent</span>
+          <span class="agent-sep">|</span>
+          <span class="agent-status-dot"></span>
+          <span class="agent-status-text">Connected to OMS · Carnival UK</span>
+        </div>
+        <div class="agent-header-center">
+          <div id="active-booking-pill" class="active-pill active-pill-none" aria-live="polite">No active booking</div>
+        </div>
+        <div class="agent-header-right">
+          <button class="new-session-btn" data-action="go-1">New session</button>
+        </div>
+      </div>
+      <div id="chat-area" class="chat-area"></div>
+      <div class="input-bar-wrapper">
+        <div class="suggestion-chips" id="suggestion-chips"></div>
+        <div class="input-bar">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Ask the agent or type an action…" aria-label="Chat input">
+          <button class="send-btn" aria-label="Send"><i data-lucide="send"></i></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div id="panel-right" class="panel" role="dialog" aria-label="Booking action panel"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────
+const BOOKINGS = [
+  { id: "BK-78431-mp1dzew3", shortId: "BK-78431", status: "CONFIRMED", guest: "Grace Chen", vessel: "Carnival Venezia", deck: "Lido Deck", cabin: "Cabin 5050", sailDate: "10 Jun 2026", channel: "eCommerce", total: 22.99, items: [{ type: "Spa", name: "Oversized Mug Package", date: "12 Jun 2026", time: "10:00", guests: 3, price: 22.99 }] },
+  { id: "BK-78442-mp1dzew3", shortId: "BK-78442", status: "CONFIRMED", guest: "Natalie Harris", vessel: "Carnival Venezia", deck: "Deck 11", cabin: "Cabin 2210", sailDate: "10 Jun 2026", channel: "Phone", total: 70.96, items: [{ type: "Spa", name: "Color Crush Massage", date: "11 Jun 2026", time: "14:00", guests: 2, price: 70.96 }] },
+  { id: "BK-78440-mp1dzew3", shortId: "BK-78440", status: "CONFIRMED", guest: "Scarlett White", vessel: "Carnival Venezia", deck: "Deck 9", cabin: "Cabin 3340", sailDate: "10 Jun 2026", channel: "eCommerce", total: 77.96, items: [{ type: "Experience", name: "Havana Bar Package", date: "10 Jun 2026", time: "14:00", guests: 2, price: 77.96 }] },
+];
+
+const BOOKING_LIST = [
+  { id: "BK-78431-mp1dzew3", shortId: "BK-78431", status: "CONFIRMED", guest: "Grace Chen", vessel: "Carnival Venezia", deck: "Lido Deck", total: 22.99 },
+  { id: "BK-78442-mp1dzew3", shortId: "BK-78442", status: "CONFIRMED", guest: "Natalie Harris", vessel: "Carnival Venezia", deck: "Deck 11", total: 70.96 },
+  { id: "BK-78440-mp1dzew3", shortId: "BK-78440", status: "CONFIRMED", guest: "Scarlett White", vessel: "Carnival Venezia", deck: "Deck 9", total: 77.96 },
+  { id: "BK-78455-xp3rtq8b", shortId: "BK-78455", status: "CONFIRMED", guest: "James Fletcher", vessel: "Carnival Venezia", deck: "Deck 7", total: 145.00 },
+  { id: "BK-78461-kn7vwm2c", shortId: "BK-78461", status: "ON HOLD", guest: "Priya Patel", vessel: "Carnival Dream", deck: "Deck 9", total: 89.50 },
+  { id: "BK-78467-bx9pqj5f", shortId: "BK-78467", status: "CONFIRMED", guest: "Oliver Clarke", vessel: "Carnival Venezia", deck: "Deck 11", total: 220.00 },
+  { id: "BK-78473-rw4hls1a", shortId: "BK-78473", status: "CANCELLED", guest: "Sarah Thompson", vessel: "Carnival Sunshine", deck: "Deck 8", total: 0.00 },
+  { id: "BK-78479-mz6dcn9y", shortId: "BK-78479", status: "CONFIRMED", guest: "Emma Williams", vessel: "Carnival Venezia", deck: "Lido Deck", total: 55.99 },
+  { id: "BK-78485-qv2jty7k", shortId: "BK-78485", status: "CONFIRMED", guest: "Liam Johnson", vessel: "Carnival Dream", deck: "Deck 10", total: 167.50 },
+];
+
+const CALL_HISTORY = [
+  { date: "03 May 2026", customer: "Grace Chen", duration: "4:22", outcome: "Resolved" },
+  { date: "28 Apr 2026", customer: "Grace Chen", duration: "2:08", outcome: "Resolved" },
+  { date: "22 Apr 2026", customer: "James Fletcher", duration: "6:44", outcome: "Escalated" },
+  { date: "18 Apr 2026", customer: "Priya Patel", duration: "3:15", outcome: "Callback" },
+  { date: "12 Apr 2026", customer: "Natalie Harris", duration: "1:55", outcome: "Resolved" },
+];
+
+// ─────────────────────────────────────────────
+// APP STATE
+// ─────────────────────────────────────────────
+const app = {
+  screen: 1,
+  activeBookingId: null,
+  showCustomer: false,
+  channel: null,
+  leftTab: 'ongoing',
+  bookingsFilter: 'all',
+  bookingsSearch: '',
+  call: {
+    active: false,
+    startTime: null,
+    pausedElapsed: 0,
+    isMuted: false,
+    isOnHold: false,
+    intervalId: null,
+    endConfirmMode: false,
+    callEnded: false,
+    callEndedTime: '00:00',
+  },
+  rightPanel: { open: false, bookingId: null, mode: null },
+  cancelStep: 0,
+  cancelTimer: null,
+  previewShown: false,
+  modifyGuests: 3,
+  modifyTime: '10:00',
+  summaryOpen: false,
+  keypadOpen: false,
+  keypadInput: '',
+  contactsOpen: false,
+  discountHintDismissed: false,
+  noteSaved: false,
+};
+
+const SCREEN_CFG = {
+  1:  { activeBookingId: null,                showCustomer: false, channel: null,    callActive: false, rightPanel: false, leftTab: 'ongoing' },
+  2:  { activeBookingId: 'BK-78431-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: false, leftTab: 'ongoing' },
+  3:  { activeBookingId: 'BK-78431-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: false, leftTab: 'ongoing' },
+  4:  { activeBookingId: 'BK-78431-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: true,  rpMode: 'modify',  rpBid: 'BK-78431-mp1dzew3', leftTab: 'ongoing' },
+  5:  { activeBookingId: 'BK-78440-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: true,  rpMode: 'cancel',  rpBid: 'BK-78440-mp1dzew3', leftTab: 'ongoing' },
+  6:  { activeBookingId: 'BK-78442-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: true,  rpMode: 'blocked', rpBid: 'BK-78442-mp1dzew3', leftTab: 'ongoing' },
+  7:  { activeBookingId: null,                showCustomer: true,  channel: 'email', callActive: false, rightPanel: false, leftTab: 'ongoing' },
+  8:  { activeBookingId: 'BK-78440-mp1dzew3', showCustomer: true,  channel: 'phone', callActive: true,  rightPanel: false, leftTab: 'call' },
+};
+
+// ─────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────
+function getCallElapsed() {
+  if (!app.call.startTime) return app.call.pausedElapsed;
+  return Math.floor((Date.now() - app.call.startTime) / 1000) + app.call.pausedElapsed;
+}
+
+function formatTime(secs) {
+  const m = String(Math.floor(secs / 60)).padStart(2, '0');
+  const s = String(secs % 60).padStart(2, '0');
+  return `${m}:${s}`;
+}
+
+function tickTimer() {
+  if (!app.call.active || app.call.isOnHold) return;
+  const display = formatTime(getCallElapsed());
+  const cbTimer = document.getElementById('call-bar-timer');
+  if (cbTimer) cbTimer.textContent = display;
+  const callTabTimer = document.getElementById('call-tab-timer');
+  if (callTabTimer) callTabTimer.textContent = display;
+}
+
+// ─────────────────────────────────────────────
+// SWITCH SCREEN
+// ─────────────────────────────────────────────
+function switchScreen(n) {
+  const cfg = SCREEN_CFG[n];
+  if (!cfg) return;
+
+  if (app.call.intervalId) { clearInterval(app.call.intervalId); app.call.intervalId = null; }
+  if (app.cancelTimer) { clearTimeout(app.cancelTimer); app.cancelTimer = null; }
+
+  app.screen = n;
+  app.activeBookingId = cfg.activeBookingId;
+  app.showCustomer = cfg.showCustomer;
+  app.channel = cfg.channel;
+  app.leftTab = cfg.leftTab;
+  app.cancelStep = 0;
+  app.previewShown = false;
+  app.modifyGuests = 3;
+  app.modifyTime = '10:00';
+  app.summaryOpen = false;
+  app.keypadOpen = false;
+  app.keypadInput = '';
+  app.contactsOpen = false;
+  app.call.endConfirmMode = false;
+  app.discountHintDismissed = false;
+  app.noteSaved = false;
+  app.call.isMuted = false;
+  app.call.isOnHold = false;
+  app.call.pausedElapsed = 0;
+  app.call.callEnded = false;
+  app.call.callEndedTime = '00:00';
+
+  app.call.active = cfg.callActive;
+  if (cfg.callActive) {
+    app.call.startTime = Date.now();
+    app.call.intervalId = setInterval(tickTimer, 1000);
+  } else {
+    app.call.startTime = null;
+  }
+
+  app.rightPanel.open = cfg.rightPanel || false;
+  app.rightPanel.mode = cfg.rpMode || null;
+  app.rightPanel.bookingId = cfg.rpBid || null;
+
+  renderAll();
+}
+
+// ─────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────
+function statusBadgeClass(s) {
+  if (!s) return 'badge-confirmed';
+  const u = s.toUpperCase();
+  if (u === 'CONFIRMED') return 'badge-confirmed';
+  if (u === 'ON HOLD') return 'badge-on-hold';
+  if (u === 'CANCELLED') return 'badge-cancelled';
+  return 'badge-confirmed';
+}
+
+function outcomeBadgeClass(o) {
+  if (o === 'Resolved') return 'badge-resolved';
+  if (o === 'Escalated') return 'badge-escalated';
+  if (o === 'Callback') return 'badge-callback';
+  return 'badge-resolved';
+}
+
+function getBooking(id) {
+  return BOOKINGS.find(b => b.id === id) || null;
+}
+
+// ─────────────────────────────────────────────
+// RENDER ALL
+// ─────────────────────────────────────────────
+function renderAll() {
+  renderToolbar();
+  renderLeftPanel();
+  renderCallBar();
+  renderCenter();
+  renderRightPanel();
+  document.getElementById('app').classList.toggle('right-open', app.rightPanel.open);
+  if (window.lucide) lucide.createIcons();
+  attachEvents();
+}
+
+// ─────────────────────────────────────────────
+// TOOLBAR
+// ─────────────────────────────────────────────
+function renderToolbar() {
+  document.querySelectorAll('.tb-btn[data-screen]').forEach(btn => {
+    btn.classList.toggle('active', +btn.dataset.screen === app.screen);
+  });
+}
+
+// ─────────────────────────────────────────────
+// LEFT PANEL
+// ─────────────────────────────────────────────
+function renderLeftPanel() {
+  const el = document.getElementById('panel-left');
+
+  const tabHTML = `
+    <div class="tab-strip" role="tablist" aria-label="Left panel tabs">
+      <button class="tab-btn ${app.leftTab==='ongoing'?'active':''}" data-tab="ongoing" role="tab" aria-selected="${app.leftTab==='ongoing'}">On Going</button>
+      <button class="tab-btn ${app.leftTab==='bookings'?'active':''}" data-tab="bookings" role="tab" aria-selected="${app.leftTab==='bookings'}">Bookings</button>
+      <button class="tab-btn ${app.leftTab==='call'?'active':''}" data-tab="call" role="tab" aria-selected="${app.leftTab==='call'}">Call</button>
+    </div>
+  `;
+
+  let contentHTML = '';
+  if (app.leftTab === 'ongoing') contentHTML = renderOnGoingTab();
+  else if (app.leftTab === 'bookings') contentHTML = renderBookingsTab();
+  else if (app.leftTab === 'call') contentHTML = renderCallTab();
+
+  el.innerHTML = tabHTML + contentHTML;
+}
+
+function renderOnGoingTab() {
+  let html = '<div class="lp-scroll">';
+
+  // Channel selector (screen 1 only)
+  if (!app.showCustomer) {
+    html += `
+      <div class="channel-chips">
+        <button class="channel-chip ${app.channel==='phone'?'selected':''}" data-channel="phone">📞 Phone</button>
+        <button class="channel-chip ${app.channel==='email'?'selected':''}" data-channel="email">✉ Email</button>
+        <button class="channel-chip ${app.channel==='chat'?'selected':''}" data-channel="chat">💬 Chat</button>
+        <button class="channel-chip ${app.channel==='case'?'selected':''}" data-channel="case">📋 Case</button>
+        <button class="channel-chip ${app.channel==='backoffice'?'selected':''}" data-channel="backoffice">🏢 Back-office</button>
+      </div>
+    `;
+  }
+
+  // Customer identity
+  if (app.showCustomer) {
+    html += `
+      <div class="lp-section" id="section-customer">
+        <div class="customer-name">Grace Chen <span class="hold-badge" id="hold-badge" ${app.call.isOnHold?'':'hidden'}>ON HOLD</span>${app.call.callEnded?'<span style="font-size:11px;color:#9090A8;font-weight:500;margin-left:4px;display:inline-flex;align-items:center;gap:4px;"><span class="call-ended-dot"></span>Call ended</span>':''}</div>
+        <div class="customer-contact">${app.channel==='email' ? 'grace.chen@email.com' : '+44 7700 900123'}</div>
+        <div class="badges-row">
+          <span class="badge badge-verified" role="status" aria-label="Verified">✓ Verified</span>
+          <span class="badge badge-platinum" role="status" aria-label="Platinum loyalty">Platinum</span>
+        </div>
+      </div>
+    `;
+
+    // Customer need
+    html += `
+      <div class="lp-section">
+        <div class="section-label">CUSTOMER NEED</div>
+        <textarea id="customer-need" maxlength="120" rows="2">Modify spa time, cancel mug order</textarea>
+        <div class="char-count">47/120</div>
+      </div>
+    `;
+
+    // Previous notes
+    html += `
+      <div class="lp-section">
+        <div class="section-label">PREVIOUS NOTES</div>
+        <div class="note-card">
+          <div class="note-date">03 May 2026</div>
+          <div class="note-text">Called re: cabin upgrade. Declined upgrade, happy with Deck 11.…</div>
+        </div>
+        <div class="note-card">
+          <div class="note-date">28 Apr 2026</div>
+          <div class="note-text">Booked spa package. Loyalty discount applied.…</div>
+        </div>
+        <button class="link-btn" id="btn-view-notes">View all notes</button>
+      </div>
+    `;
+
+    // Pending topics
+    html += `
+      <div class="lp-section">
+        <div class="section-label">PENDING TOPICS</div>
+        <div class="chips-row"><span class="topic-chip">Refund query</span></div>
+        <button class="link-btn">+ Add topic</button>
+      </div>
+    `;
+
+    // Related bookings
+    html += `<div class="lp-section"><div class="section-label">RELATED BOOKINGS</div>`;
+    BOOKINGS.forEach(bk => {
+      const isActive = bk.id === app.activeBookingId;
+      html += `
+        <div class="related-bk-card ${isActive?'active-bk':''}" data-id="${bk.id}">
+          <div class="rb-header">
+            <span class="rb-id">${bk.shortId}</span>
+            <span class="badge ${statusBadgeClass(bk.status)}">${bk.status}</span>
+          </div>
+          <div class="rb-guest">${bk.guest}</div>
+          <div class="rb-footer">
+            <span class="rb-total">£${bk.total.toFixed(2)}</span>
+            ${isActive
+              ? `<span class="badge badge-active-bk">⚡ Active</span>`
+              : `<button class="set-active-btn" data-action="set-active" data-id="${bk.id}">Set active</button>`
+            }
+          </div>
+        </div>
+      `;
+    });
+    html += '</div>';
+
+    // Quick actions
+    html += `
+      <div class="lp-section">
+        <div class="section-label">QUICK ACTIONS</div>
+        <button class="quick-action-btn" data-action="quick-modify" data-id="BK-78431-mp1dzew3">
+          <i data-lucide="edit-3" class="icon-xs"></i> Modify BK-78431
+        </button>
+        <button class="quick-action-btn" data-action="quick-cancel" data-id="BK-78440-mp1dzew3">
+          <i data-lucide="x-circle" class="icon-xs"></i> Cancel BK-78440
+        </button>
+        <button class="quick-action-btn" data-action="quick-lookup" data-id="BK-78442-mp1dzew3">
+          <i data-lucide="search" class="icon-xs"></i> Look up BK-78442
+        </button>
+      </div>
+    `;
+  }
+
+  html += '</div>';
+
+  // Footer
+  html += `
+    <div class="lp-footer">
+      <button class="footer-btn"><i data-lucide="search"></i> Search</button>
+      <button class="footer-btn"><i data-lucide="plus"></i> New booking</button>
+      <button class="footer-btn"><i data-lucide="file-text"></i> Add note</button>
+      <button class="footer-btn footer-btn--warn"><i data-lucide="alert-triangle"></i> Escalate</button>
+    </div>
+  `;
+
+  return html;
+}
+
+function renderBookingsTab() {
+  const q = app.bookingsSearch.toLowerCase();
+  const f = app.bookingsFilter;
+  const filtered = BOOKING_LIST.filter(bk => {
+    const matchFilter = f === 'all' || bk.status.toUpperCase().replace(' ', '') === f.toUpperCase().replace(' ', '');
+    const matchSearch = !q || bk.guest.toLowerCase().includes(q) || bk.id.toLowerCase().includes(q) || bk.shortId.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  const filterOptions = ['all', 'CONFIRMED', 'ON HOLD', 'CANCELLED'];
+  const filterLabels = { all: 'All', CONFIRMED: 'Confirmed', 'ON HOLD': 'On Hold', CANCELLED: 'Cancelled' };
+
+  let html = `
+    <div class="bookings-search-bar">
+      <input type="text" class="bookings-search-input" id="bookings-search" placeholder="Search by name or booking ID…" value="${app.bookingsSearch}" aria-label="Search bookings">
+      <div class="filter-chips">
+        ${filterOptions.map(fo => `<button class="filter-chip ${app.bookingsFilter===fo?'active':''}" data-filter="${fo}">${filterLabels[fo]}</button>`).join('')}
+      </div>
+    </div>
+    <div class="bookings-list">
+  `;
+
+  if (filtered.length === 0) {
+    html += `<div style="padding:20px;text-align:center;color:var(--color-text-faint);font-size:12px;">No bookings found</div>`;
+  } else {
+    filtered.forEach(bk => {
+      const isActive = bk.id === app.activeBookingId;
+      html += `
+        <div class="bk-row ${isActive?'active-bk-row':''}" data-action="set-active" data-id="${bk.id}">
+          <div class="bk-row-header">
+            <span class="bk-row-id">${bk.shortId}</span>
+            <span class="badge ${statusBadgeClass(bk.status)}">${bk.status}</span>
+          </div>
+          <div class="bk-row-guest">${bk.guest}</div>
+          <div class="bk-row-meta">${bk.vessel} · ${bk.deck}</div>
+          <div class="bk-row-footer">
+            <span class="bk-row-total">£${bk.total.toFixed(2)}</span>
+            ${isActive ? `<span class="badge badge-active-bk">⚡ Active</span>` : ''}
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  html += `</div>
+    <div class="bookings-pagination">
+      <span>1–${filtered.length} of ${filtered.length}</span>
+      <div style="display:flex;gap:4px">
+        <button class="pg-btn" disabled>←</button>
+        <button class="pg-btn" disabled>→</button>
+      </div>
+    </div>
+  `;
+
+  return html;
+}
+
+function renderCallTab() {
+  let html = '';
+
+  if (app.call.callEnded) {
+    html += `
+      <div class="call-summary-block">
+        <div class="call-active-row">
+          <span class="call-ended-dot"></span>
+          <span style="color:#9090A8">Call ended · Grace Chen</span>
+          <span id="call-tab-timer" class="call-tab-timer" style="color:#9090A8">${app.call.callEndedTime}</span>
+        </div>
+        <div class="call-meta">Phone · +44 7700 900123</div>
+        <div class="section-label" style="margin-top:8px">CALL SUMMARY</div>
+        <textarea class="call-summary-textarea" rows="3">BK-78440 cancelled successfully. Refund of £77.96 initiated. Customer satisfied. Refund query resolved.</textarea>
+        <button class="link-btn">+ Add call note</button>
+      </div>
+    `;
+  } else if (app.call.active) {
+    const elapsed = formatTime(getCallElapsed());
+    const callSummary = app.screen === 8
+      ? 'BK-78440 cancelled successfully. Refund of £77.96 initiated. Customer satisfied. Refund query resolved.'
+      : 'Customer requesting spa time change and mug cancellation. Refund query pending.';
+    html += `
+      <div class="call-summary-block">
+        <div class="call-active-row">
+          <span class="green-dot"></span>
+          <span aria-live="polite">Active Call · Grace Chen</span>
+          <span id="call-tab-timer" class="call-tab-timer">${elapsed}</span>
+        </div>
+        <div class="call-meta">Phone · +44 7700 900123</div>
+        <div class="section-label" style="margin-top:8px">CALL SUMMARY</div>
+        <textarea class="call-summary-textarea" rows="3">${callSummary}</textarea>
+        <button class="link-btn">+ Add call note</button>
+      </div>
+    `;
+  } else {
+    html += `<div class="no-call-placeholder">No active call</div>`;
+  }
+
+  html += `<div class="lp-section"><div class="section-label">RECENT CALLS</div>`;
+  CALL_HISTORY.forEach(ch => {
+    html += `
+      <div class="call-history-row">
+        <div class="ch-date">${ch.date}</div>
+        <div class="ch-customer">${ch.customer}</div>
+        <div class="ch-meta">${ch.duration} · <span class="badge ${outcomeBadgeClass(ch.outcome)}">${ch.outcome}</span></div>
+      </div>
+    `;
+  });
+  html += '</div>';
+
+  return `<div style="flex:1;overflow-y:auto;">${html}</div>`;
+}
+
+// ─────────────────────────────────────────────
+// CALL BAR
+// ─────────────────────────────────────────────
+function renderCallBar() {
+  const bar = document.getElementById('floating-call-bar');
+  bar.hidden = !app.call.active && !app.call.callEnded;
+  if (!app.call.active && !app.call.callEnded) return;
+
+  // Call Ended state
+  if (app.call.callEnded) {
+    bar.className = 'call-bar-card ended';
+    bar.innerHTML = `
+      <div class="call-bar-group">
+        <span class="call-bar-timer" id="call-bar-timer">${app.call.callEndedTime}</span>
+        <span class="call-bar-label"><span class="call-status-ended-label">Call ended ·</span>${app.call.callEndedTime}</span>
+      </div>
+      <div class="call-bar-group call-bar-controls">
+        <button class="cb-btn cb-disabled" disabled aria-disabled="true">
+          <i data-lucide="pause" class="icon-sm"></i><span>Hold</span>
+        </button>
+        <button class="cb-btn cb-disabled" disabled aria-disabled="true">
+          <i data-lucide="mic-off" class="icon-sm"></i><span>Mute</span>
+        </button>
+        <button class="cb-btn cb-disabled" disabled aria-disabled="true">
+          <i data-lucide="grid-3x3" class="icon-sm"></i><span>Keypad</span>
+        </button>
+        <button class="cb-btn cb-disabled" disabled aria-disabled="true">
+          <i data-lucide="users" class="icon-sm"></i><span>Contacts</span>
+        </button>
+      </div>
+      <div class="call-bar-group" style="margin-left:auto">
+        <button class="cb-dismiss-btn dismiss" data-action="dismiss-call-bar" aria-label="Dismiss call bar">✕ Dismiss</button>
+      </div>
+    `;
+    return;
+  }
+
+  const elapsed = formatTime(getCallElapsed());
+
+  if (app.call.endConfirmMode) {
+    bar.innerHTML = `
+      <div class="cb-end-confirm">
+        <span>End this call?</span>
+        <button data-action="confirm-end-call" class="cb-confirm-btn">Yes — End</button>
+        <button data-action="cancel-end-call" class="cb-cancel-btn">Cancel</button>
+      </div>
+    `;
+    return;
+  }
+
+  bar.className = 'call-bar-card';
+  const holdLabel = app.call.isOnHold ? 'Resume' : 'Hold';
+  const muteLabel = app.call.isMuted ? 'Unmute' : 'Mute';
+  const holdClass = app.call.isOnHold ? 'active-hold' : '';
+  const muteClass = app.call.isMuted ? 'active-mute' : '';
+  const statusLabel = app.call.isOnHold ? '⏸ On Hold' : '● Active Call';
+
+  bar.innerHTML = `
+    <div class="call-bar-group">
+      <span class="call-bar-timer" id="call-bar-timer" aria-live="off">${elapsed}</span>
+      <span class="call-bar-label" aria-live="polite" id="call-bar-status">${statusLabel}</span>
+    </div>
+    <div class="call-bar-group call-bar-controls">
+      <button class="cb-btn ${holdClass}" id="cb-hold" aria-pressed="${app.call.isOnHold}" data-action="cb-toggle-hold">
+        <i data-lucide="${app.call.isOnHold?'play':'pause'}" class="icon-sm"></i>
+        <span>${holdLabel}</span>
+      </button>
+      <button class="cb-btn ${muteClass}" id="cb-mute" aria-pressed="${app.call.isMuted}" data-action="cb-toggle-mute">
+        <i data-lucide="mic-off" class="icon-sm"></i>
+        <span>${muteLabel}</span>
+      </button>
+      <button class="cb-btn" data-action="cb-keypad">
+        <i data-lucide="grid-3x3" class="icon-sm"></i>
+        <span>Keypad</span>
+      </button>
+      <button class="cb-btn" data-action="cb-contacts">
+        <i data-lucide="users" class="icon-sm"></i>
+        <span>Contacts</span>
+      </button>
+    </div>
+    <div class="call-bar-group" style="margin-left:auto">
+      <button class="cb-end-btn" aria-label="End call" data-action="cb-end-call">
+        <i data-lucide="phone-off" class="icon-sm"></i>
+      </button>
+    </div>
+    ${app.keypadOpen ? `
+      <div class="keypad-modal" id="keypad-modal">
+        <div class="keypad-header">
+          <span>Keypad</span>
+          <button data-action="close-keypad">✕</button>
+        </div>
+        <div class="keypad-display" id="keypad-display">${app.keypadInput}</div>
+        <div class="keypad-grid">
+          ${['1','2','3','4','5','6','7','8','9','*','0','#'].map(d =>
+            `<button class="kp-key" data-action="keypad-digit" data-digit="${d}">${d}</button>`
+          ).join('')}
+        </div>
+      </div>
+    ` : ''}
+    ${app.contactsOpen ? `
+      <div class="contacts-dropdown" id="contacts-dropdown">
+        <div class="contact-row">
+          <span class="contact-name">Grace Chen</span>
+          <span class="contact-phone">+44 7700 900123</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-name">Natalie Harris</span>
+          <span class="contact-phone">+44 7911 234567</span>
+        </div>
+        <div class="contact-row">
+          <span class="contact-name">Supervisor Line</span>
+          <span class="contact-phone">+44 800 000 123</span>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+// ─────────────────────────────────────────────
+// CENTER / CHAT
+// ─────────────────────────────────────────────
+function renderCenter() {
+  // Active booking pill
+  const pill = document.getElementById('active-booking-pill');
+  if (app.activeBookingId) {
+    const bk = getBooking(app.activeBookingId);
+    const label = bk ? `${bk.shortId}-${bk.id.split('-').slice(2).join('-').toUpperCase()} · ${bk.guest.toUpperCase()}` : app.activeBookingId.toUpperCase();
+    pill.className = 'active-pill active-pill-active';
+    pill.innerHTML = `<i data-lucide="zap"></i><span>${label}</span>`;
+  } else {
+    pill.className = 'active-pill active-pill-none';
+    pill.innerHTML = 'No active booking';
+  }
+
+  // Chat area
+  const chatArea = document.getElementById('chat-area');
+  chatArea.innerHTML = renderChatContent();
+
+  // Chips
+  const chips = document.getElementById('suggestion-chips');
+  chips.innerHTML = renderChips();
+}
+
+function agentBubble(html) {
+  return `
+    <div class="agent-bubble-wrap">
+      <div class="agent-avatar"><i data-lucide="zap"></i></div>
+      <div class="agent-bubble">${html}</div>
+    </div>
+  `;
+}
+
+function starterGrid() {
+  return `
+    <div class="starter-grid">
+      <div class="starter-card" data-action="go-3">🔍 Look up a booking<br><small>"Look up BK-78442-mp1dzew3"</small></div>
+      <div class="starter-card" data-action="go-4">✏️ Modify a booking<br><small>"Change guest count, time slot, or cabin"</small></div>
+      <div class="starter-card" data-action="go-5">🚫 Cancel a booking<br><small>"Cancel BK-78440-mp1dzew3"</small></div>
+      <div class="starter-card">🧖 Cancel spa treatment<br><small>"Search by name"</small></div>
+      <div class="starter-card">✨ Cancel experience<br><small>"Search by name"</small></div>
+    </div>
+  `;
+}
+
+function renderChatContent() {
+  const s = app.screen;
+
+  if (s === 1) {
+    return `
+      <div class="empty-state">
+        <div class="empty-icon">⚡</div>
+        <h2 class="empty-title">Order Agent — Carnival UK</h2>
+        <p class="empty-sub">Look up, modify, or cancel spa and experience bookings.</p>
+        ${starterGrid()}
+      </div>
+    `;
+  }
+
+  if (s === 2) {
+    const briefing = `
+      <div class="briefing-block">
+        <div class="briefing-title">PRE-CALL BRIEFING</div>
+        <div class="briefing-row"><span class="briefing-icon">🔵</span><div><strong>Platinum member</strong> — qualifies for free date change<br><span class="briefing-detail">No fee on rescheduling within 14 days of booking</span></div></div>
+        <div class="briefing-row"><span class="briefing-icon">⚠</span><div><strong>Open topic from last call:</strong> Refund query (03 May 2026)<br><span class="briefing-detail">Not yet resolved.</span></div></div>
+        <div class="briefing-row"><span class="briefing-icon">ℹ</span><div><strong>3 related bookings</strong> across 3 guests<br><span class="briefing-detail">Confirm which booking before any action.</span></div></div>
+      </div>`;
+    return agentBubble(`I found <strong>Grace Chen</strong> on Carnival Venezia sailing 10 Jun 2026. <strong>BK-78431-mp1dzew3</strong> is set as active. Here's what to know before you start:${briefing}What would you like to do?`)
+      + `<div style="margin-top:4px">${starterGrid()}</div>`;
+  }
+
+  if (s === 3) {
+    const bk = getBooking('BK-78431-mp1dzew3');
+    return agentBubble(`I found <strong>BK-78431-mp1dzew3</strong>. Here are the details:`) + `
+      <div class="action-card action-card-lookup" data-action="open-right-modify" data-id="BK-78431-mp1dzew3" role="button" tabindex="0" title="Click to edit">
+        <div class="ac-header">
+          <span class="ac-icon"><i data-lucide="search"></i></span>
+          <span class="ac-title">BOOKING LOOKUP</span>
+          <span class="ac-bid">BK-78431-MP1DZEW3</span>
+          <span class="ac-edit-hint">→ Click to edit</span>
+        </div>
+        <div class="ac-body">
+          <div class="meta-grid">
+            <div><span class="meta-label">Guest</span><span class="meta-val">Grace Chen</span></div>
+            <div><span class="meta-label">Status</span><span class="badge badge-confirmed">CONFIRMED</span></div>
+            <div><span class="meta-label">Vessel</span><span class="meta-val">Carnival Venezia</span></div>
+            <div><span class="meta-label">Cabin</span><span class="meta-val">Cabin 5050</span></div>
+            <div><span class="meta-label">Sail Date</span><span class="meta-val">10 Jun 2026</span></div>
+            <div><span class="meta-label">Channel</span><span class="meta-val">eCommerce</span></div>
+          </div>
+          <div class="section-label">LINE ITEMS</div>
+          <div class="line-item-row">
+            <span class="service-tag spa-tag">Spa</span>
+            <span class="li-name">Oversized Mug Package</span>
+            <span class="li-detail">12 Jun 2026 · 10:00 · 3 guests</span>
+            <span class="li-price">£22.99</span>
+          </div>
+          <div class="ac-total-row"><span>Total</span><strong>£22.99</strong></div>
+          <div class="ac-actions">
+            <button class="btn btn-primary" data-action="open-right-modify" data-id="BK-78431-mp1dzew3">Modify this booking</button>
+            <button class="btn btn-danger-outline" data-action="open-right-cancel" data-id="BK-78431-mp1dzew3">Cancel this booking</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (s === 4) {
+    const hint = !app.discountHintDismissed ? `
+      <div class="discount-hint" id="discount-hint">
+        <div class="dh-top">
+          <span class="dh-icon">💡</span>
+          <div><strong>Heads up — Thursday 12 Jun is 15% cheaper</strong><br>Same time slot (10:00) is available. Worth mentioning?</div>
+          <button class="dh-dismiss" data-action="dismiss-hint" aria-label="Dismiss deal hint">✕</button>
+        </div>
+        <div class="dh-actions">
+          <button class="btn-warning-outline" data-action="mention-hint" id="btn-mention-hint">Mention to customer</button>
+          <button class="btn-ghost" data-action="dismiss-hint">Dismiss</button>
+        </div>
+      </div>` : '';
+    return `
+      <div class="msg-operator"><div class="op-bubble">Move the spa to the 12th</div></div>
+      ${agentBubble(`<div class="interpret-row"><span class="interpret-label">I understood:</span> <span class="interpret-intent">Modify spa line item on BK-78431 · date: 11 Jun → 12 Jun</span><span class="conf-badge conf-high" aria-label="Agent confidence: 95 percent">95% · High confidence</span></div>`)}
+      <div class="action-in-progress">
+        <i data-lucide="edit-3"></i>
+        <span>Modifying <strong>BK-78431-mp1dzew3</strong></span>
+        <button class="btn btn-sm btn-secondary" data-action="open-right-panel" style="margin-left:auto">Open panel →</button>
+      </div>
+      ${hint}`;
+  }
+
+  if (s === 5) {
+    return agentBubble(`I'll stage a cancellation for <strong>BK-78440-mp1dzew3</strong>. Please review the impact in the panel →`) + `
+      <div class="action-in-progress action-in-progress-danger">
+        <i data-lucide="alert-circle"></i>
+        <span>Cancellation staged for <strong>BK-78440-mp1dzew3</strong></span>
+        <button class="btn btn-sm btn-secondary" data-action="open-right-panel" style="margin-left:auto">Review →</button>
+      </div>
+    `;
+  }
+
+  if (s === 6) {
+    return agentBubble(`⚠ The requested spa time slot on 11 Jun 2026 at 14:00 is <strong>sold out</strong>.`) + `
+      <div class="action-card action-card-blocked">
+        <div class="ac-header blocked-header">
+          <span>🚫</span>
+          <span class="ac-title">ACTION BLOCKED — AVAILABILITY</span>
+        </div>
+        <div class="ac-body">
+          <div class="blocked-reason">Color Crush Massage · 11 Jun 2026 · 14:00 · No availability</div>
+          <p style="font-size:12px;color:var(--color-text-muted);margin-bottom:10px">4 alternative slots available. See panel for details →</p>
+          <div class="ac-actions">
+            <button class="btn btn-secondary" data-action="open-right-panel">View alternatives</button>
+            <button class="btn btn-warning">Escalate to supervisor</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (s === 7) {
+    return agentBubble(`Starting a new booking for Grace Chen. Let's check availability.`) + `
+      <div class="new-booking-card">
+        <div>
+          <div class="section-label">SERVICE TYPE</div>
+          <div class="service-type-row">
+            <button class="svc-btn selected" data-svc="spa">Spa</button>
+            <button class="svc-btn" data-svc="experience">Experience</button>
+            <button class="svc-btn" data-svc="retail">Retail</button>
+          </div>
+        </div>
+        <div class="meta-grid" style="gap:8px 12px">
+          <div>
+            <label class="meta-label" for="nb-vessel">Vessel</label>
+            <input id="nb-vessel" class="form-input" value="Carnival Venezia" readonly>
+          </div>
+          <div>
+            <label class="meta-label" for="nb-sail">Sail Date</label>
+            <input id="nb-sail" class="form-input" value="10 Jun 2026" readonly>
+          </div>
+          <div>
+            <label class="meta-label" for="nb-category">Category</label>
+            <input id="nb-category" class="form-input" value="Spa Treatments">
+          </div>
+          <div>
+            <label class="meta-label">Date</label>
+            <input type="date" class="form-input" value="2026-06-12">
+          </div>
+        </div>
+        <div>
+          <div class="section-label">AVAILABILITY</div>
+          <div class="avail-grid">
+            <button class="slot-btn slot-open">09:00<br><small>4 open</small></button>
+            <button class="slot-btn slot-open">10:00<br><small>2 open</small></button>
+            <button class="slot-btn slot-waitlist">11:00<br><small>Waitlist</small></button>
+            <button class="slot-btn slot-full">12:00<br><small>Full</small></button>
+            <button class="slot-btn slot-open">13:00<br><small>6 open</small></button>
+            <button class="slot-btn slot-full">14:00<br><small>Full</small></button>
+            <button class="slot-btn slot-open">15:00<br><small>3 open</small></button>
+            <button class="slot-btn slot-open">16:00<br><small>5 open</small></button>
+            <button class="slot-btn slot-waitlist">17:00<br><small>Waitlist</small></button>
+            <button class="slot-btn slot-open">18:00<br><small>2 open</small></button>
+            <button class="slot-btn slot-full">19:00<br><small>Full</small></button>
+            <button class="slot-btn slot-open">20:00<br><small>1 open</small></button>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">GUESTS</div>
+          <div class="guest-stepper-row">
+            <button class="stepper-btn">−</button>
+            <span style="font-size:14px;font-weight:700;min-width:20px;text-align:center">2</span>
+            <button class="stepper-btn">+</button>
+            <span style="font-size:11px;color:var(--color-text-muted);margin-left:6px">guests</span>
+          </div>
+        </div>
+        <div class="basket-area">
+          <div class="section-label">BASKET</div>
+          <div class="basket-empty">No items added yet. Select a slot above.</div>
+        </div>
+        <button class="btn btn-primary" disabled style="opacity:.4;cursor:not-allowed">Proceed to payment</button>
+      </div>
+    `;
+  }
+
+  if (s === 8) {
+    return agentBubble(`✓ <strong>BK-78440-mp1dzew3 has been cancelled.</strong> Here is the confirmation:`) + `
+      <div class="action-card action-card-success">
+        <div class="ac-header success-header">
+          <i data-lucide="check-circle"></i>
+          <span class="ac-title">CANCELLATION CONFIRMED</span>
+        </div>
+        <div class="ac-body">
+          <div class="conf-ref-box">
+            <div class="conf-ref-label">CONFIRMATION REFERENCE</div>
+            <div class="conf-ref-number">CNF-2026-05-78440-CX</div>
+          </div>
+          <div class="conf-summary">Havana Bar Package · Scarlett White · White Group · 2 guests · Cancelled 21 May 2026 14:32</div>
+          <div class="status-rows">
+            <div class="status-row success-row"><span class="status-icon">✉</span><span>Confirmation email sent to grace.chen@email.com</span><span class="check-icon">✓</span></div>
+            <div class="status-row success-row"><span class="status-icon">📝</span><span>Note added to booking record</span><span class="check-icon">✓</span></div>
+            <div class="status-row success-row"><span class="status-icon">🗂</span><span>Audit event written · 21 May 2026 14:32</span><span class="check-icon">✓</span></div>
+          </div>
+          <div class="draft-note-section">
+            <div class="draft-note-label">DRAFT BOOKING NOTE</div>
+            <textarea id="draft-note-textarea" class="draft-note-textarea" rows="3">Cancellation processed per customer request. Havana Bar Package · BK-78440 · 2 guests. Refund £77.96 to original payment method. Customer confirmed via email.</textarea>
+            <div class="draft-note-actions">
+              <button class="btn-success-solid${app.noteSaved?' saved':''}" id="btn-save-note" data-action="save-note">${app.noteSaved?'✓ Saved':'Save to booking record'}</button>
+              <button class="btn-ghost" data-action="edit-note">Edit note</button>
+            </div>
+          </div>
+          <div class="customer-summary-section">
+            <div class="cs-label">CUSTOMER-FACING SUMMARY</div>
+            <div class="cs-text" id="cs-text">"Your booking BK-78440-mp1dzew3 for the Havana Bar Package on 10 Jun 2026 has been successfully cancelled. A refund of £77.96 will be returned to your original payment method within 5–7 business days."</div>
+            <button class="btn-ghost" id="btn-copy-summary" data-action="copy-summary">Copy ▸</button>
+          </div>
+          <div class="ac-actions">
+            <button class="btn btn-primary" data-action="go-2">Start new action</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  return '';
+}
+
+function renderChips() {
+  const chips = {
+    1: ['Look up a booking', 'New booking', 'Cancel a booking'],
+    2: ['Modify BK-78431', 'Cancel BK-78440', 'View all bookings', 'Look up BK-78442'],
+    3: ['Modify this booking', 'Cancel this booking', 'Look up another'],
+    4: ['Preview changes', 'Reset'],
+    5: ['Confirm cancellation', 'Keep booking'],
+    6: ['Select 09:00', 'Select 10:00', 'Escalate'],
+    7: ['Check availability', 'Add to basket', 'New booking'],
+    8: ['Start new action', 'Send confirmation email'],
+  };
+  return (chips[app.screen] || []).map(c => `<button class="chip">${c}</button>`).join('');
+}
+
+// ─────────────────────────────────────────────
+// RIGHT PANEL
+// ─────────────────────────────────────────────
+function renderRightPanel() {
+  const el = document.getElementById('panel-right');
+  if (!app.rightPanel.open) { el.innerHTML = ''; return; }
+
+  const mode = app.rightPanel.mode;
+  const bid = app.rightPanel.bookingId;
+  const bk = getBooking(bid);
+  if (!bk && mode !== 'blocked') { el.innerHTML = ''; return; }
+
+  let headerBid = bk ? bk.id : 'BK-78442-mp1dzew3';
+  let headerStatus = bk ? bk.status : 'CONFIRMED';
+  const actionTitleMap = { modify: 'Modify booking', cancel: 'Cancel booking', blocked: 'Availability blocked' };
+
+  let html = `
+    <div class="rp-header">
+      <div>
+        <span class="rp-booking-id">${headerBid}</span>
+        <span class="badge ${statusBadgeClass(headerStatus)}">${headerStatus}</span>
+      </div>
+      <button class="rp-close-btn" data-action="close-right-panel" aria-label="Close panel">✕</button>
+    </div>
+    <div class="rp-action-title">${actionTitleMap[mode] || 'Booking action'}</div>
+  `;
+
+  if (mode === 'modify') {
+    html += `
+      <div class="rp-body">
+        <div class="form-field">
+          <label for="mod-cabin">Cabin</label>
+          <input id="mod-cabin" type="text" value="${bk.cabin}" class="form-input">
+        </div>
+        <div class="form-field">
+          <label for="mod-venue">Venue</label>
+          <input id="mod-venue" type="text" value="${bk.deck}" class="form-input">
+        </div>
+        <div class="section-label">LINE ITEMS</div>
+        ${bk.items.map(item => `
+          <div class="li-edit-row">
+            <div class="li-edit-name"><span class="service-tag spa-tag">${item.type}</span> ${item.name}</div>
+            <div class="li-edit-controls">
+              <div class="form-field-inline">
+                <label for="mod-date">Date</label>
+                <input id="mod-date" type="date" value="2026-06-12" class="form-input-sm">
+              </div>
+              <div class="form-field-inline">
+                <label for="mod-time">Time</label>
+                <select id="mod-time" class="form-input-sm" data-action="mod-time-change">
+                  <option value="09:00">09:00</option>
+                  <option value="10:00" ${app.modifyTime==='10:00'?'selected':''}>10:00</option>
+                  <option value="11:00" ${app.modifyTime==='11:00'?'selected':''}>11:00</option>
+                  <option value="14:00" ${app.modifyTime==='14:00'?'selected':''}>14:00</option>
+                </select>
+              </div>
+              <div class="form-field-inline">
+                <label>Guests</label>
+                <div class="stepper">
+                  <button class="stepper-btn" data-action="guest-minus">−</button>
+                  <span id="guest-count">${app.modifyGuests}</span>
+                  <button class="stepper-btn" data-action="guest-plus">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="avail-indicator avail-ok" id="avail-indicator">✓ Available</div>
+          </div>
+        `).join('')}
+        <div class="diff-section" id="modify-diff" ${app.previewShown?'':'hidden'}>
+          <div class="diff-label">BEFORE / AFTER</div>
+          <div class="diff-row">
+            <span class="diff-before" id="diff-before">Time: 10:00 · Guests: 3</span>
+            <span class="diff-arrow">→</span>
+            <span class="diff-after" id="diff-after">Time: ${app.modifyTime} · Guests: ${app.modifyGuests}</span>
+          </div>
+          <div class="diff-price">Price diff: £0.00</div>
+        </div>
+        <div class="rp-actions">
+          <button class="btn btn-secondary" data-action="preview-changes" id="btn-preview">Preview changes</button>
+          <button class="btn btn-primary" data-action="confirm-modify" id="btn-confirm-mod" ${app.previewShown?'':'disabled'} style="opacity:${app.previewShown?1:.4};cursor:${app.previewShown?'pointer':'not-allowed'}">Confirm modification</button>
+        </div>
+        <div class="rp-actions" style="margin-top:6px">
+          <button class="btn btn-secondary" data-action="close-right-panel">Cancel</button>
+        </div>
+      </div>
+    `;
+  }
+
+  if (mode === 'cancel') {
+    const cancelBtnText = app.cancelStep === 1 ? 'Click again to confirm ▸' : 'Confirm cancellation';
+    const cancelBtnClass = app.cancelStep === 1 ? 'btn btn-danger-solid' : 'btn btn-danger-confirm';
+    html += `
+      <div class="rp-body">
+        <div class="cancel-scope">
+          <div class="scope-row"><span class="scope-label">Booking</span><span class="scope-val">BK-78440-mp1dzew3</span></div>
+          <div class="scope-row"><span class="scope-label">Guest</span><span class="scope-val">Scarlett White · White Group</span></div>
+          <div class="scope-row"><span class="scope-label">Items</span><span class="scope-val">Havana Bar Package · 10 Jun 2026 · 14:00 · 2 guests</span></div>
+          <div class="scope-row"><span class="scope-label">Sail</span><span class="scope-val">10 Jun 2026 · Carnival Venezia</span></div>
+        </div>
+        <div class="refund-box">
+          <div class="refund-row"><span>Services</span><span>£77.96</span></div>
+          <div class="refund-row"><span>Cancellation fee</span><span>£0.00</span></div>
+          <div class="refund-row refund-total"><span>Net refund</span><strong>£77.96</strong></div>
+        </div>
+        <div class="policy-note">Full refund applies. Cancellation received 31+ days before sailing. No fee per Carnival UK policy §4.2.</div>
+        <div class="rp-actions">
+          <button class="${cancelBtnClass}" id="btn-cancel-confirm" data-action="cancel-step" aria-label="Confirm cancellation of BK-78440-mp1dzew3">
+            ${cancelBtnText}
+          </button>
+          <button class="btn btn-secondary" data-action="close-right-panel">Keep booking</button>
+        </div>
+      </div>
+    `;
+  }
+
+  if (mode === 'blocked') {
+    html += `
+      <div class="rp-body">
+        <div class="blocked-header-box">
+          <span class="blocked-tag">SOLD OUT</span>
+          <p style="font-size:13px;font-weight:600;margin-top:4px">Color Crush Massage · 11 Jun 2026 · 14:00</p>
+          <p style="font-size:12px;color:var(--color-text-muted)">No availability for this time slot.</p>
+        </div>
+        <div class="section-label">ALTERNATIVE SLOTS</div>
+        <table class="alt-table">
+          <tr><td>09:00</td><td><span class="badge badge-success">Available</span></td><td><button class="btn btn-sm btn-success-outline" data-action="select-slot" data-time="09:00">Select</button></td></tr>
+          <tr><td>10:00</td><td><span class="badge badge-success">Available</span></td><td><button class="btn btn-sm btn-success-outline" data-action="select-slot" data-time="10:00">Select</button></td></tr>
+          <tr><td>11:00</td><td><span class="badge badge-warning">Wait list</span></td><td><button class="btn btn-sm btn-secondary" data-action="select-slot" data-time="11:00">Join waitlist</button></td></tr>
+          <tr><td>14:00</td><td><span class="badge badge-danger">Sold out</span></td><td style="color:var(--color-text-faint)">—</td></tr>
+        </table>
+        <div class="rp-actions" style="margin-top:12px">
+          <button class="btn btn-secondary" data-action="escalate">⚠ Escalate to supervisor</button>
+        </div>
+      </div>
+    `;
+  }
+
+  el.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+// PANEL ACTIONS
+// ─────────────────────────────────────────────
+function openRightPanel(mode, bookingId) {
+  app.rightPanel.open = true;
+  app.rightPanel.mode = mode;
+  app.rightPanel.bookingId = bookingId;
+  document.getElementById('app').classList.add('right-open');
+  renderRightPanel();
+  if (window.lucide) lucide.createIcons();
+}
+
+function closeRightPanel() {
+  app.rightPanel.open = false;
+  document.getElementById('app').classList.remove('right-open');
+  const rp = document.getElementById('panel-right');
+  if (rp) rp.innerHTML = '';
+}
+
+// ─────────────────────────────────────────────
+// EVENT HANDLERS
+// ─────────────────────────────────────────────
+function handleCallBarAction(action, btn) {
+  if (action === 'cb-toggle-hold') {
+    app.call.isOnHold = !app.call.isOnHold;
+    if (app.call.isOnHold) {
+      app.call.pausedElapsed = getCallElapsed();
+      app.call.startTime = null;
+    } else {
+      app.call.startTime = Date.now();
+    }
+    renderCallBar();
+    // Update hold badge
+    const holdBadge = document.getElementById('hold-badge');
+    if (holdBadge) holdBadge.hidden = !app.call.isOnHold;
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+  if (action === 'cb-toggle-mute') {
+    app.call.isMuted = !app.call.isMuted;
+    renderCallBar();
+    if (window.lucide) lucide.createIcons();
+    return;
+  }
+  if (action === 'cb-keypad') {
+    app.keypadOpen = !app.keypadOpen;
+    app.contactsOpen = false;
+    renderCallBar(); if (window.lucide) lucide.createIcons(); return;
+  }
+  if (action === 'cb-contacts') {
+    app.contactsOpen = !app.contactsOpen;
+    app.keypadOpen = false;
+    renderCallBar(); if (window.lucide) lucide.createIcons(); return;
+  }
+  if (action === 'close-keypad') { app.keypadOpen = false; renderCallBar(); if (window.lucide) lucide.createIcons(); return; }
+  if (action === 'keypad-digit') {
+    app.keypadInput += btn.dataset.digit || '';
+    const display = document.getElementById('keypad-display');
+    if (display) display.textContent = app.keypadInput;
+    return;
+  }
+  if (action === 'cb-end-call') {
+    app.call.endConfirmMode = true;
+    renderCallBar(); if (window.lucide) lucide.createIcons(); return;
+  }
+  if (action === 'confirm-end-call') {
+    const frozenTime = formatTime(getCallElapsed());
+    if (app.call.intervalId) { clearInterval(app.call.intervalId); app.call.intervalId = null; }
+    app.call.active = false;
+    app.call.endConfirmMode = false;
+    app.call.callEnded = true;
+    app.call.callEndedTime = frozenTime;
+    renderCallBar();
+    if (window.lucide) lucide.createIcons();
+    // Update On Going tab call indicator without switching tabs
+    renderLeftPanel();
+    if (window.lucide) lucide.createIcons();
+    attachEvents();
+    return;
+  }
+  if (action === 'cancel-end-call') {
+    app.call.endConfirmMode = false;
+    renderCallBar(); if (window.lucide) lucide.createIcons(); return;
+  }
+  if (action === 'dismiss-call-bar') {
+    const bar = document.getElementById('floating-call-bar');
+    if (bar) {
+      bar.classList.add('dismissing');
+      setTimeout(() => { bar.hidden = true; bar.classList.remove('dismissing', 'ended'); }, 200);
+    }
+    app.call.callEnded = false;
+    return;
+  }
+}
+
+function handleLeftAction(action, id, btn) {
+  if (action === 'set-active') {
+    app.activeBookingId = id;
+    renderLeftPanel(); renderCenter(); if (window.lucide) lucide.createIcons(); attachEvents(); return;
+  }
+  if (action === 'quick-modify') { switchScreen(4); return; }
+  if (action === 'quick-cancel') { switchScreen(5); return; }
+  if (action === 'quick-lookup') { switchScreen(3); return; }
+}
+
+function handleCenterAction(action, id, btn) {
+  if (action === 'open-right-modify') { openRightPanel('modify', id || app.activeBookingId); return; }
+  if (action === 'open-right-cancel') { openRightPanel('cancel', id || 'BK-78440-mp1dzew3'); return; }
+  if (action === 'open-right-panel') {
+    if (app.rightPanel.mode) { app.rightPanel.open = true; document.getElementById('app').classList.add('right-open'); renderRightPanel(); if (window.lucide) lucide.createIcons(); }
+    return;
+  }
+  if (action === 'go-1') { switchScreen(1); return; }
+  if (action === 'go-2') { switchScreen(2); return; }
+  if (action === 'go-3') { switchScreen(3); return; }
+  if (action === 'go-4') { switchScreen(4); return; }
+  if (action === 'go-5') { switchScreen(5); return; }
+  if (action === 'toggle-summary') {
+    app.summaryOpen = !app.summaryOpen;
+    const content = document.getElementById('customer-summary');
+    if (content) content.hidden = !app.summaryOpen;
+    return;
+  }
+  if (action === 'dismiss-hint') {
+    app.discountHintDismissed = true;
+    const hint = document.getElementById('discount-hint');
+    if (hint) hint.remove();
+    return;
+  }
+  if (action === 'mention-hint') {
+    const text = 'Thursday 12 Jun is 15% cheaper — same 10:00 slot available.';
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.textContent = '✓ Copied';
+    btn.disabled = true;
+    return;
+  }
+  if (action === 'save-note') {
+    if (app.noteSaved) return;
+    btn.textContent = 'Saving…';
+    btn.disabled = true;
+    setTimeout(() => {
+      app.noteSaved = true;
+      btn.textContent = '✓ Saved';
+      btn.classList.add('saved');
+    }, 900);
+    return;
+  }
+  if (action === 'edit-note') {
+    const ta = document.getElementById('draft-note-textarea');
+    if (ta) { ta.classList.add('editing'); ta.focus(); }
+    return;
+  }
+  if (action === 'copy-summary') {
+    const el = document.getElementById('cs-text');
+    const text = el ? el.textContent.trim() : '';
+    navigator.clipboard.writeText(text).catch(() => {});
+    btn.textContent = '✓ Copied';
+    btn.disabled = true;
+    return;
+  }
+}
+
+function handleRightAction(action, time, btn) {
+  if (action === 'close-right-panel') { closeRightPanel(); return; }
+  if (action === 'preview-changes') {
+    app.previewShown = true;
+    const diff = document.getElementById('modify-diff');
+    if (diff) diff.hidden = false;
+    const modTime = document.getElementById('mod-time');
+    const newTime = modTime ? modTime.value : app.modifyTime;
+    app.modifyTime = newTime;
+    const before = document.getElementById('diff-before');
+    const after = document.getElementById('diff-after');
+    if (before) before.textContent = `Time: 10:00 · Guests: 3`;
+    if (after) after.textContent = `Time: ${app.modifyTime} · Guests: ${app.modifyGuests}`;
+    const confirmBtn = document.getElementById('btn-confirm-mod');
+    if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.style.opacity = '1'; confirmBtn.style.cursor = 'pointer'; }
+    return;
+  }
+  if (action === 'mod-time-change') {
+    app.modifyTime = btn.value;
+    if (app.previewShown) {
+      const after = document.getElementById('diff-after');
+      if (after) after.textContent = `Time: ${app.modifyTime} · Guests: ${app.modifyGuests}`;
+    }
+    return;
+  }
+  if (action === 'guest-plus') {
+    app.modifyGuests = Math.min(10, app.modifyGuests + 1);
+    const el = document.getElementById('guest-count');
+    if (el) el.textContent = app.modifyGuests;
+    if (app.previewShown) {
+      const after = document.getElementById('diff-after');
+      if (after) after.textContent = `Time: ${app.modifyTime} · Guests: ${app.modifyGuests}`;
+    }
+    return;
+  }
+  if (action === 'guest-minus') {
+    app.modifyGuests = Math.max(1, app.modifyGuests - 1);
+    const el = document.getElementById('guest-count');
+    if (el) el.textContent = app.modifyGuests;
+    if (app.previewShown) {
+      const after = document.getElementById('diff-after');
+      if (after) after.textContent = `Time: ${app.modifyTime} · Guests: ${app.modifyGuests}`;
+    }
+    return;
+  }
+  if (action === 'confirm-modify') {
+    if (!app.previewShown) return;
+    closeRightPanel();
+    switchScreen(8);
+    return;
+  }
+  if (action === 'cancel-step') {
+    if (app.cancelStep === 0) {
+      app.cancelStep = 1;
+      btn.textContent = 'Click again to confirm ▸';
+      btn.classList.remove('btn-danger-confirm');
+      btn.classList.add('btn-danger-solid');
+      if (app.cancelTimer) clearTimeout(app.cancelTimer);
+      app.cancelTimer = setTimeout(() => {
+        app.cancelStep = 0;
+        const b = document.getElementById('btn-cancel-confirm');
+        if (b) { b.textContent = 'Confirm cancellation'; b.classList.remove('btn-danger-solid'); b.classList.add('btn-danger-confirm'); }
+      }, 4000);
+    } else if (app.cancelStep === 1) {
+      clearTimeout(app.cancelTimer);
+      app.cancelTimer = null;
+      app.cancelStep = 0;
+      closeRightPanel();
+      switchScreen(8);
+    }
+    return;
+  }
+  if (action === 'select-slot') {
+    closeRightPanel();
+    switchScreen(2);
+    return;
+  }
+  if (action === 'escalate') {
+    alert('Escalating to supervisor. Ticket created.');
+    return;
+  }
+}
+
+// ─────────────────────────────────────────────
+// NL PROCESSING
+// ─────────────────────────────────────────────
+function interpretCommand(text) {
+  const t = text.toLowerCase();
+  if (/cancel|cancell/.test(t)) {
+    return { cardType: 'cancel', intent: 'Cancel booking BK-78440-mp1dzew3', confidence: 92 };
+  }
+  if (/modif|change|move|reschedul|spa/.test(t)) {
+    const hasDate = /\d{1,2}(th|st|nd|rd)?[\s-]*(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{1,2})/i.test(t) || /\d{1,2}(th|st|nd|rd)/.test(t) || /12th|11th|13th/.test(t);
+    const confidence = hasDate ? 95 : 78;
+    const dateStr = hasDate ? '11 Jun → 12 Jun' : 'current date';
+    return { cardType: 'modify', intent: `Modify spa line item on BK-78431 · date: ${dateStr}`, confidence };
+  }
+  if (/look.?up|find|search|booking/.test(t)) {
+    return { cardType: 'lookup', intent: 'Look up booking details', confidence: 88 };
+  }
+  if (/new.?book|add.?book/.test(t)) {
+    return { cardType: 'new-booking', intent: 'Start new booking for Grace Chen', confidence: 85 };
+  }
+  return { cardType: 'general', intent: text, confidence: 61 };
+}
+
+function confBadgeHtml(confidence) {
+  if (confidence === null) return `<span class="conf-badge conf-chip">chip</span>`;
+  if (confidence >= 95) return `<span class="conf-badge conf-high" aria-label="Agent confidence: ${confidence} percent">${confidence}% · High confidence</span>`;
+  if (confidence >= 75) return `<span class="conf-badge conf-med" aria-label="Agent confidence: ${confidence} percent">${confidence}% · Medium confidence</span>`;
+  return `<span class="conf-badge conf-low" aria-label="Agent confidence: ${confidence} percent">${confidence}% · Low confidence</span>`;
+}
+
+function appendToChat(html) {
+  const feed = document.getElementById('chat-area');
+  if (!feed) return;
+  const div = document.createElement('div');
+  div.innerHTML = html;
+  while (div.firstChild) feed.appendChild(div.firstChild);
+  feed.scrollTop = feed.scrollHeight;
+  if (window.lucide) lucide.createIcons();
+}
+
+function processNLInput(text) {
+  if (!text || !text.trim()) return;
+  const input = document.getElementById('chat-input');
+  if (input) input.value = '';
+
+  // Operator bubble
+  appendToChat(`<div class="msg-operator"><div class="op-bubble">${text}</div></div>`);
+
+  // Step 1: typing indicator
+  setTimeout(() => {
+    appendToChat(`<div class="msg-agent" id="typing-indicator"><div class="agent-avatar"><i data-lucide="sparkles"></i></div><div class="agent-bubble typing-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div></div>`);
+    if (window.lucide) lucide.createIcons();
+
+    // Step 2: interpretation message
+    setTimeout(() => {
+      const typingEl = document.getElementById('typing-indicator');
+      if (typingEl) typingEl.remove();
+      const { cardType, intent, confidence } = interpretCommand(text);
+      appendToChat(agentBubble(`<div class="interpret-row"><span class="interpret-label">I understood:</span> <span class="interpret-intent">${intent}</span>${confBadgeHtml(confidence)}</div>`));
+
+      // Step 3: action card
+      setTimeout(() => {
+        const screenMap = { modify: 4, cancel: 5, lookup: 3, 'new-booking': 7, general: 2 };
+        const targetScreen = screenMap[cardType] || 2;
+        appendToChat(`<div class="action-in-progress">
+          <i data-lucide="zap"></i>
+          <span>Routing to <strong>${cardType.replace('-', ' ')}</strong> flow</span>
+          <button class="btn btn-sm btn-secondary" data-action="go-${targetScreen}" style="margin-left:auto">Continue →</button>
+        </div>`);
+        if (window.lucide) lucide.createIcons();
+
+        // Step 4: discount hint for modify with date
+        if (cardType === 'modify' && !app.discountHintDismissed) {
+          setTimeout(() => {
+            appendToChat(`<div class="discount-hint" id="discount-hint">
+              <div class="dh-top">
+                <span class="dh-icon">💡</span>
+                <div><strong>Heads up — Thursday 12 Jun is 15% cheaper</strong><br>Same time slot (10:00) is available. Worth mentioning?</div>
+                <button class="dh-dismiss" data-action="dismiss-hint" aria-label="Dismiss deal hint">✕</button>
+              </div>
+              <div class="dh-actions">
+                <button class="btn-warning-outline" data-action="mention-hint" id="btn-mention-hint">Mention to customer</button>
+                <button class="btn-ghost" data-action="dismiss-hint">Dismiss</button>
+              </div>
+            </div>`);
+          }, 600);
+        }
+      }, 400);
+    }, 800);
+  }, 300);
+}
+
+// ─────────────────────────────────────────────
+// ATTACH EVENTS
+// ─────────────────────────────────────────────
+function attachEvents() {
+  // Toolbar
+  const toolbar = document.getElementById('dev-toolbar');
+  toolbar.onclick = e => {
+    const btn = e.target.closest('[data-screen]');
+    if (btn) switchScreen(+btn.dataset.screen);
+  };
+
+  // Call bar
+  const callBar = document.getElementById('floating-call-bar');
+  callBar.onclick = e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    handleCallBarAction(btn.dataset.action, btn);
+  };
+
+  // Left panel delegation
+  const lp = document.getElementById('panel-left');
+  lp.onclick = e => {
+    // Tab buttons
+    const tabBtn = e.target.closest('[data-tab]');
+    if (tabBtn) {
+      app.leftTab = tabBtn.dataset.tab;
+      renderLeftPanel();
+      if (window.lucide) lucide.createIcons();
+      attachEvents();
+      return;
+    }
+    // Filter chips
+    const filterBtn = e.target.closest('[data-filter]');
+    if (filterBtn) {
+      app.bookingsFilter = filterBtn.dataset.filter;
+      renderLeftPanel();
+      if (window.lucide) lucide.createIcons();
+      attachEvents();
+      return;
+    }
+    // Action buttons
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    handleLeftAction(btn.dataset.action, btn.dataset.id, btn);
+  };
+
+  // Bookings search
+  const bkSearch = document.getElementById('bookings-search');
+  if (bkSearch) {
+    bkSearch.oninput = e => {
+      app.bookingsSearch = e.target.value;
+      // Re-render just the list portion
+      const lp2 = document.getElementById('panel-left');
+      if (lp2 && app.leftTab === 'bookings') {
+        renderLeftPanel();
+        if (window.lucide) lucide.createIcons();
+        attachEvents();
+      }
+    };
+    // Prevent click propagation from clearing filter
+    bkSearch.onclick = e => e.stopPropagation();
+  }
+
+  // Center / workspace
+  const ws = document.getElementById('agent-workspace');
+  ws.onclick = e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    handleCenterAction(btn.dataset.action, btn.dataset.id, btn);
+  };
+
+  // Right panel
+  const rp = document.getElementById('panel-right');
+  rp.onclick = e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    handleRightAction(btn.dataset.action, btn.dataset.time, btn);
+  };
+
+  // Right panel select change
+  rp.onchange = e => {
+    if (e.target.dataset.action === 'mod-time-change') {
+      handleRightAction('mod-time-change', null, e.target);
+    }
+  };
+
+  // Customer need char count
+  const need = document.getElementById('customer-need');
+  if (need) {
+    need.oninput = () => {
+      const cc = document.querySelector('.char-count');
+      if (cc) cc.textContent = `${need.value.length}/120`;
+    };
+  }
+
+  // Chat input — NL commands
+  const chatInput = document.getElementById('chat-input');
+  const sendBtn = document.querySelector('.send-btn');
+  if (chatInput) {
+    chatInput.onkeydown = e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        processNLInput(chatInput.value.trim());
+      }
+    };
+  }
+  if (sendBtn) {
+    sendBtn.onclick = () => {
+      const ci = document.getElementById('chat-input');
+      if (ci) processNLInput(ci.value.trim());
+    };
+  }
+
+  // New session btn in header
+  const newSessionBtn = document.querySelector('.new-session-btn');
+  if (newSessionBtn) {
+    newSessionBtn.onclick = () => switchScreen(1);
+  }
+
+  // Escape key
+  document.onkeydown = e => {
+    if (e.key === 'Escape') {
+      if (app.rightPanel.open) closeRightPanel();
+      if (app.keypadOpen || app.contactsOpen) {
+        app.keypadOpen = false;
+        app.contactsOpen = false;
+        renderCallBar();
+        if (window.lucide) lucide.createIcons();
+      }
+    }
+  };
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  switchScreen(1);
+});
+</script>
+</body>
+</html>
