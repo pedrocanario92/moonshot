@@ -5,7 +5,9 @@ A two-part argument that **UX practitioners must own the AI capabilities being b
 1. **Move 1 — a real agentic system for a WMS.** Approval-first model: every agent proposes, no agent executes alone. Demonstrates what human-in-the-loop AI looks like in a production UX context — approval gates, escalation logic, role-scoped views, agent performance monitoring.
 2. **Move 2 — extending the argument to the UX practice itself.** Guardian agents that run quality checks (Heuristics, Accessibility) before each homepage ships. Horizon agents that extend design intelligence into work that currently never gets done.
 
-The shipped deliverable is the pair `moonshot-home.html` + `moonshot-prototype.html`, both at the repo root. `moonshot-home.html` is the strategy doc + agent showcase, with the prototype embedded via an iframe pointing at `moonshot-prototype.html`. Both files are edited directly; before significant changes, snapshot the current version into `archive/` first as a rollback.
+> **Folder layout (1 October 2026).** Demos now live in `demos/`: `moonshot-home.html`, `moonshot-prototype.html`, `call-center-oms-agent.html`, `guardian-demo.html`, plus the `guardian-ux/` plugin and `tms-demo/` prompts and reports. The static, execution-centric Watchtower prototype and its briefs are in `watchtower demo september 26/`. The file map below predates this move — read `demos/` wherever it says repo root.
+
+The shipped deliverable is the pair `moonshot-home.html` + `moonshot-prototype.html`, both in `demos/`. `moonshot-home.html` is the strategy doc + agent showcase, with the prototype embedded via an iframe pointing at `moonshot-prototype.html`. Both files are edited directly; before significant changes, snapshot the current version into `archive/` first as a rollback.
 
 ---
 

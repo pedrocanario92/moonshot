@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guardian Audit — TM Operations Dashboard (TMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --surface-base:#FFFFFF;
+  --surface-canvas:#F4F4F4;
+  --border-hairline:#E5E8EC;
+  --border-subtle:#D5DCE2;
+  --border-strong:#98A4B0;
+  --text-primary:#171F29;
+  --text-secondary:#324155;
+  --text-tertiary:#58636E;
+  --text-quaternary:#98A4B0;
+  --brand-fill:#171F29;
+  --charcoal:#262523;
+  --accent:#CADF35;
+  --accent-deep:#9DAE2E;
+  --link:#5436CC;
+  --warn:#B64C00;
+  --info:#2B7AB1;
+  --success:#2C812C;
+  --error:#D0413A;
+  --bg-success:#E6FFE6;
+  --bg-warning:#FFFBE6;
+  --bg-info:#E6F7FF;
+  --bg-error:#FFF0F0;
+  --shadow-sm:0 2px 8px rgba(35,38,37,.08);
+  --shadow-md:0 6px 18px rgba(35,38,37,.10);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-pill:9999px;
+  --font-sans:'Noto Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:var(--font-sans); font-size:14px; color:var(--text-primary); background:var(--surface-canvas); line-height:1.5; }
+
+.topbar { background:var(--charcoal); padding:0 32px; height:52px; display:flex; align-items:center; gap:14px; }
+.topbar-wordmark { font-size:15px; font-weight:700; color:var(--accent); letter-spacing:-0.2px; }
+.topbar-slash { color:rgba(255,255,255,.25); font-size:16px; }
+.topbar-page { font-size:14px; color:rgba(255,255,255,.55); font-weight:500; }
+.topbar-spacer { flex:1; }
+.topbar-badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:var(--radius-pill); background:rgba(202,223,53,.15); color:var(--accent); letter-spacing:.3px; text-transform:uppercase; }
+
+.page { max-width:920px; margin:0 auto; padding:32px 32px 64px; }
+
+.report-head { background:var(--surface-base); border:1px solid var(--border-hairline); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:28px 32px; margin-bottom:20px; }
+.report-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--text-quaternary); }
+.report-title { font-size:26px; font-weight:700; letter-spacing:-0.5px; margin-top:6px; }
+.report-sub { font-size:14px; color:var(--text-tertiary); margin-top:8px; max-width:660px; }
+.meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:22px; padding-top:20px; border-top:1px solid var(--border-hairline); }
+.meta-item .k { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text-quaternary); }
+.meta-item .v { font-size:13px; font-weight:600; color:var(--text-secondary); margin-top:3px; }
+.meta-item .v.mono { font-family:var(--font-mono); font-size:12px; }
+
+.decision { border-radius:var(--radius-lg); overflow:hidden; margin-bottom:24px; border:2px solid; }
+.decision.ship { border-color:var(--success); }
+.decision.send-back { border-color:var(--error); }
+.decision.ux-team { border-color:var(--warn); }
+.decision-top { padding:22px 28px; display:flex; align-items:center; gap:18px; }
+.decision.ship .decision-top { background:var(--bg-success); }
+.decision.send-back .decision-top { background:var(--bg-error); }
+.decision.ux-team .decision-top { background:var(--bg-warning); }
+.decision-icon { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; flex-shrink:0; color:#fff; }
+.decision.ship .decision-icon { background:var(--success); }
+.decision.send-back .decision-icon { background:var(--error); }
+.decision.ux-team .decision-icon { background:var(--warn); }
+.decision-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; opacity:.75; }
+.decision.send-back .decision-label { color:var(--error); }
+.decision-title { font-size:21px; font-weight:700; letter-spacing:-0.3px; margin-top:1px; }
+.decision.send-back .decision-title { color:var(--error); }
+.decision-counts { display:flex; gap:26px; padding:14px 28px; background:var(--surface-base); }
+.decision-count .n { font-family:var(--font-mono); font-size:20px; font-weight:700; }
+.decision-count .n.fail { color:var(--error); }
+.decision-count .n.warn { color:var(--warn); }
+.decision-count .n.pass { color:var(--success); }
+.decision-count .lbl { font-size:11px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.4px; }
+
+.section { background:var(--surface-base); border:1px solid var(--border-hairline); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin-bottom:18px; overflow:hidden; }
+.section-head { padding:18px 24px; border-bottom:1px solid var(--border-hairline); display:flex; align-items:center; gap:12px; }
+.section-emoji { font-size:18px; }
+.section-title { font-size:16px; font-weight:700; flex:1; letter-spacing:-0.2px; }
+.section-rec { font-size:11px; font-weight:700; padding:4px 10px; border-radius:var(--radius-pill); text-transform:uppercase; letter-spacing:.3px; }
+.rec-ship { background:var(--bg-success); color:var(--success); }
+.rec-warn { background:var(--bg-warning); color:var(--warn); }
+.rec-fail { background:var(--bg-error); color:var(--error); }
+.section-body { padding:6px 0; }
+.section-intro { padding:14px 24px 4px; font-size:13px; color:var(--text-tertiary); }
+
+.crit { display:flex; gap:14px; align-items:flex-start; padding:12px 24px; border-bottom:1px solid var(--border-hairline); }
+.crit:last-child { border-bottom:none; }
+.verdict { font-size:10px; font-weight:700; padding:3px 7px; border-radius:5px; text-transform:uppercase; letter-spacing:.3px; flex-shrink:0; min-width:46px; text-align:center; margin-top:1px; }
+.v-pass { background:var(--bg-success); color:var(--success); }
+.v-warn { background:var(--bg-warning); color:var(--warn); }
+.v-fail { background:var(--bg-error); color:var(--error); }
+.v-na { background:var(--surface-canvas); color:var(--text-quaternary); }
+.crit-text { flex:1; }
+.crit-label { font-size:13px; font-weight:600; color:var(--text-primary); }
+.crit-rationale { font-size:12px; color:var(--text-tertiary); margin-top:3px; }
+.lb { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; color:var(--text-quaternary); background:var(--surface-canvas); border:1px solid var(--border-hairline); padding:2px 6px; border-radius:4px; flex-shrink:0; margin-top:2px; }
+.summary-line { padding:13px 24px; background:var(--surface-canvas); font-size:12px; color:var(--text-secondary); display:flex; gap:18px; flex-wrap:wrap; align-items:center; }
+.summary-line strong { color:var(--text-primary); }
+
+.spec-list { padding:8px 24px 18px; }
+.spec-item { display:flex; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border-hairline); font-size:13px; }
+.spec-item:last-child { border-bottom:none; }
+.spec-item .sk { font-weight:600; color:var(--text-secondary); min-width:210px; }
+.spec-item .sv { color:var(--text-tertiary); flex:1; }
+
+/* Fix list */
+.fixes { background:var(--surface-base); border:1px solid var(--border-hairline); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin-bottom:18px; overflow:hidden; }
+.fixes-head { padding:18px 24px; border-bottom:1px solid var(--border-hairline); font-size:16px; font-weight:700; letter-spacing:-0.2px; }
+.fix-row { display:flex; gap:14px; align-items:flex-start; padding:12px 24px; border-bottom:1px solid var(--border-hairline); }
+.fix-row:last-child { border-bottom:none; }
+.fix-tag { font-size:10px; font-weight:700; font-family:var(--font-mono); color:var(--error); background:var(--bg-error); padding:3px 7px; border-radius:5px; flex-shrink:0; margin-top:1px; min-width:42px; text-align:center; }
+.fix-text { flex:1; font-size:13px; }
+.fix-text .issue { font-weight:600; color:var(--text-primary); }
+.fix-text .suggest { color:var(--text-tertiary); margin-top:2px; }
+.fix-text .suggest b { color:var(--success); font-weight:600; }
+
+.foot { margin-top:28px; padding-top:18px; border-top:1px solid var(--border-hairline); font-size:11px; color:var(--text-tertiary); line-height:1.6; }
+.foot strong { color:var(--text-secondary); }
+
+@page { size:A4; margin:14mm 12mm; }
+@media print {
+  body { background:#fff; }
+  .topbar { padding:0 14mm; }
+  .page { max-width:none; padding:18px 0 0; }
+  .section, .report-head, .decision, .fixes { box-shadow:none; break-inside:avoid; }
+  .crit, .fix-row { break-inside:avoid; }
+  a { color:inherit; text-decoration:none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <span class="topbar-wordmark">Moonshot</span>
+  <span class="topbar-slash">/</span>
+  <span class="topbar-page">Guardian Audit</span>
+  <span class="topbar-spacer"></span>
+  <span class="topbar-badge">TMS</span>
+</nav>
+
+<div class="page">
+
+  <header class="report-head">
+    <div class="report-eyebrow">Guardian Layer · Pre-development design audit</div>
+    <h1 class="report-title">Guardian Audit — TM Operations Dashboard (TMS)</h1>
+    <p class="report-sub">A single-screen command-centre for a transportation manager at shift start: a 7-button toolbar, a 6-tile KPI bar, a live route map, a real-time exceptions feed with inline Approve / Dismiss, a carrier performance table with sparklines, and a 30-day cost-trend chart — all on screen at once, with no calm state.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Audit run</div><div class="v mono">2026-06-29T09:48:00Z</div></div>
+      <div class="meta-item"><div class="k">Pillar</div><div class="v">TMS — Transportation Mgmt</div></div>
+      <div class="meta-item"><div class="k">Page type</div><div class="v">Complex · 5-zone dashboard</div></div>
+      <div class="meta-item"><div class="k">Agents run</div><div class="v">6 (2 specced · 4 stub)</div></div>
+    </div>
+  </header>
+
+  <div class="decision send-back">
+    <div class="decision-top">
+      <div class="decision-icon">✗</div>
+      <div>
+        <div class="decision-label">Overall Guardian decision</div>
+        <div class="decision-title">Blocked — Send Back</div>
+      </div>
+    </div>
+    <div class="decision-counts">
+      <div class="decision-count"><span class="n fail">7</span> <span class="lbl">Load-bearing FAILs</span></div>
+      <div class="decision-count"><span class="n warn">17</span> <span class="lbl">Advisory FAILs + WARNs</span></div>
+      <div class="decision-count"><span class="n pass">10</span> <span class="lbl">Criteria passed</span></div>
+    </div>
+  </div>
+
+  <!-- Step 1: spec -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">📐</span><span class="section-title">Step 1 — Derived design spec</span></div>
+    <div class="spec-list">
+      <div class="spec-item"><span class="sk">Interactive elements above fold</span><span class="sv">~20+ — 7 toolbar buttons + 6 KPI tiles + map panel + exceptions feed (with 2 inline actions per row) all render simultaneously. Far exceeds the ≤ 6 threshold.</span></div>
+      <div class="spec-item"><span class="sk">Actions — default state</span><span class="sv">7 persistent toolbar actions (New Shipment, Approve All, Export, Filter, Sort, View Report, Configure) — all weighted as primary.</span></div>
+      <div class="spec-item"><span class="sk">Actions — exception-selected state</span><span class="sv">Inline "Approve reroute" + "Dismiss" appear alongside the 7 persistent toolbar actions; no single primary action dominates.</span></div>
+      <div class="spec-item"><span class="sk">Persistent decorative elements</span><span class="sv">Per-KPI delta arrows + mini sparklines, animated carrier pins that pulse on delay, and a "live" label that flashes on a 60-second refresh. None drives a decision.</span></div>
+      <div class="spec-item"><span class="sk">Calm / empty state</span><span class="sv">None — "the dashboard always shows all data". No instructional empty state exists.</span></div>
+      <div class="spec-item"><span class="sk">Ambiguities affecting the audit</span><span class="sv">Pulse rate of the carrier pins is unspecified (relevant to A4 Three Flashes); the real-time feed's refresh behaviour while an Approve/Dismiss is in progress is unspecified (relevant to A3 Timing Adjustable). Both are flagged rather than assumed.</span></div>
+    </div>
+  </section>
+
+  <!-- Heuristics -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">🔍</span><span class="section-title">Heuristics Agent</span><span class="section-rec rec-fail">SEND BACK</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H1. Nielsen #8 — Aesthetic &amp; minimalist design</div><div class="crit-rationale">~20+ interactive + content elements render above the fold (toolbar, 6 KPI tiles, map, feed); grossly exceeds the ≤ 6 threshold.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H2. Hick's Law — actionable choices at any state</div><div class="crit-rationale">The persistent toolbar exposes 7 primary actions before any per-row Approve/Dismiss; more than double the ≤ 3 threshold and a heavy decision-time penalty.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H3. Miller's 7±2 — distinct information chunks</div><div class="crit-rationale">Toolbar + 6 KPI tiles + map + exceptions feed + carrier table + cost chart = 11+ distinct chunks competing at once; over the ≤ 7 threshold and past the 9-item WARN boundary.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H4. Cognitive Load — no extraneous elements</div><div class="crit-rationale">KPI delta arrows, mini sparklines, pulsing map pins, and the flashing "live" label add persistent visual noise with zero decision value.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H5. Information scent — calm state has one primary focus</div><div class="crit-rationale">There is no calm state; five zones compete permanently for first fixation, so the gaze never lands on a single primary focus.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H6. Information scent — busy state has exactly one primary action</div><div class="crit-rationale">When an exception is selected, inline Approve/Dismiss share weight with 7 persistent toolbar actions; no single primary action is identifiable.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">H7. F-pattern alignment <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">A full-width KPI bar over a 60/40 map-and-feed split creates multiple entry points; the first fixation is not predictable.</div></div></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">H8. Banner blindness <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">The persistent KPI bar with static deltas/sparklines occupies well over 10% of the viewport and is unchanging — it will be tuned out within a minute.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">H9. Recognition over recall <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">The reroute suggestions in the exceptions feed are unattributed; no agent avatar/name explains who proposed the reroute.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">H10. Consistency <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">"Approve All" (toolbar) and "Approve reroute" (inline) present the same approve concept with different visual patterns and scope.</div></div></div>
+    </div>
+    <div class="summary-line"><span><strong>6</strong> load-bearing FAILs</span><span><strong>3</strong> WARNs</span><span><strong>1</strong> advisory FAIL</span><span>Recommendation: <strong>SEND BACK</strong></span></div>
+  </section>
+
+  <!-- Accessibility -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">♿</span><span class="section-title">Accessibility Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· WCAG 2.2</span></span><span class="section-rec rec-fail">SEND BACK</span></div>
+    <div class="section-intro">Level AA (load-bearing — FAIL blocks ship)</div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A1. WCAG 1.4.3 — Contrast (Minimum)</div><div class="crit-rationale">Text pairs use Infios DS tokens that meet 4.5:1 / 3:1; no contrast failure observed (the design's defects are cognitive-load, not colour).</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A2. WCAG 2.1.1 — Keyboard</div><div class="crit-rationale">All toolbar, feed, and table actions are native controls and remain individually reachable via the keyboard (though the count is high).</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">A3. WCAG 2.2.1 — Timing Adjustable</div><div class="crit-rationale">The real-time exceptions feed plus a 60-second auto-refresh can re-order or remove a row while an Approve/Dismiss decision is in progress, displacing the action without user control.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">A4. WCAG 2.3.1 — Three Flashes</div><div class="crit-rationale">Carrier pins "pulse" on delay and the "live" label flashes on refresh; pulse frequency is unspecified — if it exceeds 3 flashes/second this becomes a load-bearing FAIL. Needs measurement.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">A5. WCAG 2.4.3 — Focus Order</div><div class="crit-rationale">With five simultaneous zones and no defined tab sequence, focus order across toolbar → KPIs → map → feed → tables is not demonstrably linear.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A6. WCAG 2.4.7 — Focus Visible</div><div class="crit-rationale">DS focus-border token is assumed present on interactive elements; no suppression of focus indicators specified.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">A7. WCAG 2.5.8 — Target Size (Minimum)</div><div class="crit-rationale">Two inline actions per feed row plus per-row sparklines crowd the row; targets risk dropping below 24×24px. Needs measurement at production density.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">A8. WCAG 3.2.4 — Consistent Identification</div><div class="crit-rationale">"Approve All" and "Approve reroute" identify related approve functions with different labels/components; consistency should be verified before build.</div></div><span class="lb">LB</span></div>
+    </div>
+    <div class="section-intro">Level AAA (advisory — never blocks ship)</div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A9. WCAG 3.3.5 — Help</div><div class="crit-rationale">Each exception row states its issue reason (Carrier delay, Weather hold, etc.), so a rationale is reachable from every escalation.</div></div></div>
+      <div class="crit"><span class="verdict v-na">N/A</span><div class="crit-text"><div class="crit-label">A10. WCAG 1.4.6 — Contrast (Enhanced)</div><div class="crit-rationale">N/A — AA contrast (A1) is met and not borderline, so the AAA enhanced target does not surface.</div></div></div>
+    </div>
+    <div class="summary-line"><span><strong>1</strong> Level AA FAIL</span><span><strong>4</strong> WARNs</span><span>Recommendation: <strong>SEND BACK</strong></span></div>
+  </section>
+
+  <!-- Design System stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">🎨</span><span class="section-title">Design System Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-warn">NEEDS HUMAN JUDGEMENT</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">DS1. Color tokens reference Infios DS tokens</div><div class="crit-rationale">KPI delta colours and sparkline strokes risk ad-hoc red/green values outside the DS status-token set; verify against tokens.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">DS2. Typography uses the DS scale</div><div class="crit-rationale">KPI and table type can be mapped onto the existing 11–15px scale and 400–700 weights.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">DS3. Spacing matches the DS scale</div><div class="crit-rationale">Packing five dense zones above the fold tends to force sub-token gaps; spacing likely deviates from the 4/8/12/16px scale.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>NEEDS HUMAN JUDGEMENT</strong></span></div>
+  </section>
+
+  <!-- Content stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">✍️</span><span class="section-title">Content Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-warn">NEEDS HUMAN JUDGEMENT</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">C1. Action labels — imperative verb + object</div><div class="crit-rationale">"Filter", "Sort", and "Configure" are bare verbs with no object, breaking the verb+object pattern set by "New Shipment" / "View Report".</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">C2. Status labels — consistent capitalisation and tense</div><div class="crit-rationale">Issue labels mix forms — "Carrier delay", "Weather hold", "Port congestion", and the abbreviation "Driver HOS" are not a consistent set.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">C3. Empty states — instructional copy present</div><div class="crit-rationale">With no calm/empty state, there is no instructional copy for a zero-exception or no-data condition.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>NEEDS HUMAN JUDGEMENT</strong></span></div>
+  </section>
+
+  <!-- Interaction stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">🖱️</span><span class="section-title">Interaction Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-fail">SEND BACK</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">I1. Row selection — clear selected-state affordance</div><div class="crit-rationale">An "exception selected" state is defined for the feed, giving a selection affordance.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">I2. Panel open/close — consistent dismiss pattern</div><div class="crit-rationale">Five always-on zones have no open/close or dismiss model, so there is no consistent panel pattern to evaluate.</div></div></div>
+      <div class="crit"><span class="verdict v-fail">FAIL</span><div class="crit-text"><div class="crit-label">I3. Action confirmation — irreversible actions gated <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">"Approve All" commits bulk reroutes in one click with no confirmation step — a high-blast-radius irreversible action that is ungated.</div></div></div>
+    </div>
+    <div class="summary-line"><span><strong>1</strong> advisory FAIL</span><span><strong>1</strong> WARN</span><span>Recommendation: <strong>SEND BACK</strong></span></div>
+  </section>
+
+  <!-- Responsive stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">📱</span><span class="section-title">Responsive Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-warn">NEEDS HUMAN JUDGEMENT</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">R1. Layout degrades gracefully at 1024px</div><div class="crit-rationale">Five zones plus a 60/40 split and two full-width tables will crowd or overlap at 1024px without a defined reflow strategy.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">R2. Table horizontal scroll before clipping</div><div class="crit-rationale">The carrier table's sparkline column risks horizontal overflow on narrower viewports without explicit min-width handling.</div></div></div>
+      <div class="crit"><span class="verdict v-warn">WARN</span><div class="crit-text"><div class="crit-label">R3. Touch targets maintain minimum size on mobile</div><div class="crit-rationale">Two inline actions per dense feed row will fall below the 24×24px minimum once the layout narrows to mobile.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>NEEDS HUMAN JUDGEMENT</strong></span></div>
+  </section>
+
+  <!-- Final decision -->
+  <div class="decision send-back">
+    <div class="decision-top">
+      <div class="decision-icon">✗</div>
+      <div>
+        <div class="decision-label">Overall Guardian decision</div>
+        <div class="decision-title">Blocked — Send Back</div>
+      </div>
+    </div>
+    <div class="decision-counts">
+      <div class="decision-count"><span class="n fail">7</span> <span class="lbl">Load-bearing FAILs</span></div>
+      <div class="decision-count"><span class="n warn">17</span> <span class="lbl">Advisory FAILs + WARNs</span></div>
+      <div class="decision-count"><span class="n pass">10</span> <span class="lbl">Criteria passed</span></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-secondary);margin:-8px 4px 18px;">Seven load-bearing failures — six on the Heuristics agent (H1, H2, H3, H4, H5, H6) and one on Accessibility (A3 Timing Adjustable). The dashboard cannot proceed to development until the blocking issues are resolved. The advisory FAILs and WARNs below should be addressed in the same pass.</p>
+
+  <!-- Fix list -->
+  <div class="fixes">
+    <div class="fixes-head">Blocking issues &amp; suggested fixes</div>
+    <div class="fix-row"><span class="fix-tag">H1</span><div class="fix-text"><div class="issue">~20+ elements above the fold.</div><div class="suggest"><b>Fix:</b> Make the exceptions feed the single default surface; move KPIs, map, carrier table, and cost chart behind tabs or a progressive "expand" so ≤ 6 elements show at rest.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">H2</span><div class="fix-text"><div class="issue">7 persistent primary toolbar actions.</div><div class="suggest"><b>Fix:</b> Keep one primary ("New Shipment") in the toolbar; collapse Export/Filter/Sort/View Report/Configure into an overflow menu. Target ≤ 3 visible primaries.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">H3</span><div class="fix-text"><div class="issue">11+ competing information chunks.</div><div class="suggest"><b>Fix:</b> Show one zone at a time (default to the exceptions feed); let the manager drill into map / carrier / cost views rather than holding all in working memory.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">H4</span><div class="fix-text"><div class="issue">Decorative deltas, sparklines, pulsing pins, flashing "live" label.</div><div class="suggest"><b>Fix:</b> Remove zero-decision-value chrome; surface a metric only when it changes a decision, and replace animation with a static "updated 09:48" timestamp.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">H5</span><div class="fix-text"><div class="issue">No calm state; nothing owns first fixation.</div><div class="suggest"><b>Fix:</b> Introduce a calm state whose single focus is the highest-severity exception; everything else is secondary until summoned.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">H6</span><div class="fix-text"><div class="issue">Selected exception has no single primary action.</div><div class="suggest"><b>Fix:</b> On selection, promote "Approve reroute" as the one dominant action and demote the persistent toolbar so the busy state has exactly one primary.</div></div></div>
+    <div class="fix-row"><span class="fix-tag">A3</span><div class="fix-text"><div class="issue">Live refresh can displace an in-progress Approve/Dismiss.</div><div class="suggest"><b>Fix:</b> Pause/queue the auto-refresh while a row's action is focused or open, and never re-order or remove a row that has a pending decision.</div></div></div>
+  </div>
+
+  <div class="foot">
+    <strong>Joint Guardian audit produced by the Heuristics Agent and the Accessibility Agent</strong>, with stub verdicts from the Design System, Content, Interaction, and Responsive agents.
+    Criteria taken from <span style="font-family:var(--font-mono)">agents/guardian/heuristics-agent.md</span> and <span style="font-family:var(--font-mono)">agents/guardian/accessibility-agent.md</span>.
+    Per both agents' Tier-1 guardrails, a load-bearing FAIL is never silently downgraded to a WARN; per Tier-2, this report is a proposal and the block can only be overridden by a human reviewer. The agents do not modify the page.
+  </div>
+
+</div>
+</body>
+</html>

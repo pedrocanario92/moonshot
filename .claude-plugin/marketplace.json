@@ -1,0 +1,17 @@
+{
+  "name": "infios-guardian-marketplace",
+  "owner": {
+    "name": "Pedro Canario",
+    "email": "pedro.canario@infios.com"
+  },
+  "metadata": {
+    "description": "Marketplace hosting the Guardian UX plugin — read-only UX audit agents."
+  },
+  "plugins": [
+    {
+      "name": "guardian-ux",
+      "source": "./demos/guardian-ux",
+      "description": "Six read-only UX guardian agents (accessibility, heuristics, design-system, content, interaction, responsive) that audit any UI and produce a joint PASS/WARN/FAIL report before you ship."
+    }
+  ]
+}

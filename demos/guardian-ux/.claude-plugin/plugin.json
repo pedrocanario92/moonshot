@@ -1,0 +1,12 @@
+{
+  "name": "guardian-ux",
+  "displayName": "Guardian UX",
+  "version": "0.1.0",
+  "description": "Six read-only UX guardian agents that audit any UI you build — accessibility (WCAG 2.2), usability heuristics, design-system adherence, content, interaction, and responsive behaviour — and produce a joint PASS/WARN/FAIL report before you ship. Auto-activates when you prompt about reviewing or shipping a screen.",
+  "author": {
+    "name": "Pedro Canario",
+    "email": "pedro.canario@infios.com"
+  },
+  "keywords": ["ux", "ui", "accessibility", "wcag", "design-review", "audit", "guardian", "usability"],
+  "license": "MIT"
+}

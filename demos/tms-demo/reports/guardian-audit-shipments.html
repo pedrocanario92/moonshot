@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Guardian Audit — Shipments (TMS)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --surface-base:#FFFFFF;
+  --surface-canvas:#F4F4F4;
+  --border-hairline:#E5E8EC;
+  --border-subtle:#D5DCE2;
+  --border-strong:#98A4B0;
+  --text-primary:#171F29;
+  --text-secondary:#324155;
+  --text-tertiary:#58636E;
+  --text-quaternary:#98A4B0;
+  --brand-fill:#171F29;
+  --charcoal:#262523;
+  --accent:#CADF35;
+  --accent-deep:#9DAE2E;
+  --link:#5436CC;
+  --warn:#B64C00;
+  --info:#2B7AB1;
+  --success:#2C812C;
+  --error:#D0413A;
+  --bg-success:#E6FFE6;
+  --bg-warning:#FFFBE6;
+  --bg-info:#E6F7FF;
+  --bg-error:#FFF0F0;
+  --shadow-sm:0 2px 8px rgba(35,38,37,.08);
+  --shadow-md:0 6px 18px rgba(35,38,37,.10);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --radius-pill:9999px;
+  --font-sans:'Noto Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
+}
+*, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:var(--font-sans); font-size:14px; color:var(--text-primary); background:var(--surface-canvas); line-height:1.5; }
+
+/* Top bar */
+.topbar { background:var(--charcoal); padding:0 32px; height:52px; display:flex; align-items:center; gap:14px; }
+.topbar-wordmark { font-size:15px; font-weight:700; color:var(--accent); letter-spacing:-0.2px; }
+.topbar-slash { color:rgba(255,255,255,.25); font-size:16px; }
+.topbar-page { font-size:14px; color:rgba(255,255,255,.55); font-weight:500; }
+.topbar-spacer { flex:1; }
+.topbar-badge { font-size:11px; font-weight:600; padding:3px 9px; border-radius:var(--radius-pill); background:rgba(202,223,53,.15); color:var(--accent); letter-spacing:.3px; text-transform:uppercase; }
+
+.page { max-width:920px; margin:0 auto; padding:32px 32px 64px; }
+
+/* Report header */
+.report-head { background:var(--surface-base); border:1px solid var(--border-hairline); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:28px 32px; margin-bottom:20px; }
+.report-eyebrow { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.7px; color:var(--text-quaternary); }
+.report-title { font-size:26px; font-weight:700; letter-spacing:-0.5px; margin-top:6px; }
+.report-sub { font-size:14px; color:var(--text-tertiary); margin-top:8px; max-width:640px; }
+.meta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-top:22px; padding-top:20px; border-top:1px solid var(--border-hairline); }
+.meta-item .k { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; color:var(--text-quaternary); }
+.meta-item .v { font-size:13px; font-weight:600; color:var(--text-secondary); margin-top:3px; }
+.meta-item .v.mono { font-family:var(--font-mono); font-size:12px; }
+
+/* Decision banner */
+.decision { border-radius:var(--radius-lg); overflow:hidden; margin-bottom:24px; border:2px solid; }
+.decision.ship { border-color:var(--success); }
+.decision.send-back { border-color:var(--error); }
+.decision.ux-team { border-color:var(--warn); }
+.decision-top { padding:22px 28px; display:flex; align-items:center; gap:18px; }
+.decision.ship .decision-top { background:var(--bg-success); }
+.decision.send-back .decision-top { background:var(--bg-error); }
+.decision.ux-team .decision-top { background:var(--bg-warning); }
+.decision-icon { width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:700; flex-shrink:0; color:#fff; }
+.decision.ship .decision-icon { background:var(--success); }
+.decision.send-back .decision-icon { background:var(--error); }
+.decision.ux-team .decision-icon { background:var(--warn); }
+.decision-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.6px; opacity:.75; }
+.decision.ship .decision-label { color:var(--success); }
+.decision.send-back .decision-label { color:var(--error); }
+.decision.ux-team .decision-label { color:var(--warn); }
+.decision-title { font-size:21px; font-weight:700; letter-spacing:-0.3px; margin-top:1px; }
+.decision.ship .decision-title { color:var(--success); }
+.decision.send-back .decision-title { color:var(--error); }
+.decision.ux-team .decision-title { color:var(--warn); }
+.decision-counts { display:flex; gap:26px; padding:14px 28px; background:var(--surface-base); }
+.decision-count .n { font-family:var(--font-mono); font-size:20px; font-weight:700; }
+.decision-count .n.fail { color:var(--error); }
+.decision-count .n.warn { color:var(--warn); }
+.decision-count .n.pass { color:var(--success); }
+.decision-count .lbl { font-size:11px; color:var(--text-tertiary); text-transform:uppercase; letter-spacing:.4px; }
+
+/* Section */
+.section { background:var(--surface-base); border:1px solid var(--border-hairline); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); margin-bottom:18px; overflow:hidden; }
+.section-head { padding:18px 24px; border-bottom:1px solid var(--border-hairline); display:flex; align-items:center; gap:12px; }
+.section-emoji { font-size:18px; }
+.section-title { font-size:16px; font-weight:700; flex:1; letter-spacing:-0.2px; }
+.section-rec { font-size:11px; font-weight:700; padding:4px 10px; border-radius:var(--radius-pill); text-transform:uppercase; letter-spacing:.3px; }
+.rec-ship { background:var(--bg-success); color:var(--success); }
+.rec-warn { background:var(--bg-warning); color:var(--warn); }
+.rec-fail { background:var(--bg-error); color:var(--error); }
+.section-body { padding:6px 0; }
+.section-intro { padding:14px 24px 4px; font-size:13px; color:var(--text-tertiary); }
+
+/* Criterion rows */
+.crit { display:flex; gap:14px; align-items:flex-start; padding:12px 24px; border-bottom:1px solid var(--border-hairline); }
+.crit:last-child { border-bottom:none; }
+.verdict { font-size:10px; font-weight:700; padding:3px 7px; border-radius:5px; text-transform:uppercase; letter-spacing:.3px; flex-shrink:0; min-width:46px; text-align:center; margin-top:1px; }
+.v-pass { background:var(--bg-success); color:var(--success); }
+.v-warn { background:var(--bg-warning); color:var(--warn); }
+.v-fail { background:var(--bg-error); color:var(--error); }
+.v-na { background:var(--surface-canvas); color:var(--text-quaternary); }
+.crit-text { flex:1; }
+.crit-label { font-size:13px; font-weight:600; color:var(--text-primary); }
+.crit-rationale { font-size:12px; color:var(--text-tertiary); margin-top:3px; }
+.lb { font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; color:var(--text-quaternary); background:var(--surface-canvas); border:1px solid var(--border-hairline); padding:2px 6px; border-radius:4px; flex-shrink:0; margin-top:2px; }
+.summary-line { padding:13px 24px; background:var(--surface-canvas); font-size:12px; color:var(--text-secondary); display:flex; gap:18px; flex-wrap:wrap; align-items:center; }
+.summary-line strong { color:var(--text-primary); }
+
+/* Spec list */
+.spec-list { padding:8px 24px 18px; }
+.spec-item { display:flex; gap:12px; padding:9px 0; border-bottom:1px dashed var(--border-hairline); font-size:13px; }
+.spec-item:last-child { border-bottom:none; }
+.spec-item .sk { font-weight:600; color:var(--text-secondary); min-width:210px; }
+.spec-item .sv { color:var(--text-tertiary); flex:1; }
+
+.foot { margin-top:28px; padding-top:18px; border-top:1px solid var(--border-hairline); font-size:11px; color:var(--text-tertiary); line-height:1.6; }
+.foot strong { color:var(--text-secondary); }
+
+@page { size:A4; margin:14mm 12mm; }
+@media print {
+  body { background:#fff; }
+  .topbar { padding:0 14mm; }
+  .page { max-width:none; padding:18px 0 0; }
+  .section, .report-head, .decision { box-shadow:none; break-inside:avoid; }
+  .crit { break-inside:avoid; }
+  a { color:inherit; text-decoration:none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <span class="topbar-wordmark">Moonshot</span>
+  <span class="topbar-slash">/</span>
+  <span class="topbar-page">Guardian Audit</span>
+  <span class="topbar-spacer"></span>
+  <span class="topbar-badge">TMS</span>
+</nav>
+
+<div class="page">
+
+  <header class="report-head">
+    <div class="report-eyebrow">Guardian Layer · Pre-development design audit</div>
+    <h1 class="report-title">Guardian Audit — Shipments (TMS)</h1>
+    <p class="report-sub">A two-panel TMS operator view: a shipments data table on the left, a details tile on the right that opens on row selection. Built so a dispatcher can spot a delayed lane (TMS-4798, Dallas → LA), read its lane rate and ETA slip, and approve the route or pull up the map.</p>
+    <div class="meta-grid">
+      <div class="meta-item"><div class="k">Audit run</div><div class="v mono">2026-06-29T09:42:00Z</div></div>
+      <div class="meta-item"><div class="k">Pillar</div><div class="v">TMS — Transportation Mgmt</div></div>
+      <div class="meta-item"><div class="k">Page type</div><div class="v">Simple · Table + Details</div></div>
+      <div class="meta-item"><div class="k">Agents run</div><div class="v">6 (2 specced · 4 stub)</div></div>
+    </div>
+  </header>
+
+  <!-- Overall decision -->
+  <div class="decision ship">
+    <div class="decision-top">
+      <div class="decision-icon">✓</div>
+      <div>
+        <div class="decision-label">Overall Guardian decision</div>
+        <div class="decision-title">Approved for Development</div>
+      </div>
+    </div>
+    <div class="decision-counts">
+      <div class="decision-count"><span class="n fail">0</span> <span class="lbl">Load-bearing FAILs</span></div>
+      <div class="decision-count"><span class="n warn">0</span> <span class="lbl">Advisory FAILs + WARNs</span></div>
+      <div class="decision-count"><span class="n pass">29</span> <span class="lbl">Criteria passed</span></div>
+    </div>
+  </div>
+
+  <!-- Step 1: Design spec -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-emoji">📐</span>
+      <span class="section-title">Step 1 — Derived design spec</span>
+    </div>
+    <div class="spec-list">
+      <div class="spec-item"><span class="sk">Interactive elements above fold</span><span class="sv">5 in the calm state — table title, table body (6 selectable rows as one region), a single "+ New" toolbar action, and the empty details tile. Within the ≤ 6 threshold.</span></div>
+      <div class="spec-item"><span class="sk">Actions — calm state</span><span class="sv">Select a shipment row (primary path) · optional "+ New". No competing call-to-action.</span></div>
+      <div class="spec-item"><span class="sk">Actions — selection state</span><span class="sv">"Approve route" (primary) · "View on map" (secondary) · close details. One dominant primary action.</span></div>
+      <div class="spec-item"><span class="sk">Persistent decorative elements</span><span class="sv">None. No ticker, feed, sparkline, or status band above the table.</span></div>
+      <div class="spec-item"><span class="sk">Empty / calm state</span><span class="sv">Details tile shows an instructional empty state ("Select a shipment / Click any row to see details").</span></div>
+      <div class="spec-item"><span class="sk">Ambiguities affecting the audit</span><span class="sv">"+ New" toolbar button is implied by the layout but not in the brief — counted as one secondary action. "Approve route" is a route-level commitment; whether it needs a confirmation step is flagged to the Interaction agent (I3).</span></div>
+    </div>
+  </section>
+
+  <!-- Heuristics -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-emoji">🔍</span>
+      <span class="section-title">Heuristics Agent</span>
+      <span class="section-rec rec-ship">SHIP</span>
+    </div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H1. Nielsen #8 — Aesthetic &amp; minimalist design</div><div class="crit-rationale">5 visible interactive + content elements above the fold in the calm state; within the ≤ 6 threshold.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H2. Hick's Law — actionable choices at any state</div><div class="crit-rationale">Primary actions (New, Approve route, View on map) total 3 per state; at the ≤ 3 boundary.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H3. Miller's 7±2 — distinct information chunks</div><div class="crit-rationale">Header + table + details tile = 5 distinct chunks in the calm state; well within the ≤ 7 threshold.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H4. Cognitive Load — no extraneous elements</div><div class="crit-rationale">No persistent decorative or zero-value UI elements in the calm or selection states.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H5. Information scent — calm state has one primary focus</div><div class="crit-rationale">The shipments table is the unambiguous first fixation; no competing primary affordance.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H6. Information scent — busy state has exactly one primary action</div><div class="crit-rationale">"Approve route" is visually dominant in the details tile; "View on map" is clearly secondary.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H7. F-pattern alignment <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">Table is left-biased; the primary work surface receives the first fixation on load.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H8. Banner blindness <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">No persistent non-changing widget occupies more than 10% of the viewport.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H9. Recognition over recall <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">Status badges and action labels are recognisable; no unlabelled affordances rely on recall.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">H10. Consistency <span style="font-weight:400;color:var(--text-quaternary)">(advisory)</span></div><div class="crit-rationale">Approval actions use a consistent button pattern throughout the table and details tile.</div></div></div>
+    </div>
+    <div class="summary-line"><span><strong>0</strong> load-bearing FAILs</span><span><strong>0</strong> WARNs</span><span><strong>0</strong> advisory FAILs</span><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Accessibility -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-emoji">♿</span>
+      <span class="section-title">Accessibility Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· WCAG 2.2</span></span>
+      <span class="section-rec rec-ship">SHIP</span>
+    </div>
+    <div class="section-intro">Level AA (load-bearing — FAIL blocks ship)</div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A1. WCAG 1.4.3 — Contrast (Minimum)</div><div class="crit-rationale">All text/background pairs use Infios DS tokens above 4.5:1 for body text and 3:1 for large text.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A2. WCAG 2.1.1 — Keyboard</div><div class="crit-rationale">Table rows, action buttons, and the close button are reachable and operable via Tab + Enter/Space.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A3. WCAG 2.2.1 — Timing Adjustable</div><div class="crit-rationale">Details tile does not auto-dismiss; "Approve route" requires explicit interaction and is not time-limited.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A4. WCAG 2.3.1 — Three Flashes</div><div class="crit-rationale">No animated element changes state more than three times per second; no pulsing or flashing content.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A5. WCAG 2.4.3 — Focus Order</div><div class="crit-rationale">Focus moves toolbar → table header → rows → details-tile actions in reading order; no unexpected jumps.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A6. WCAG 2.4.7 — Focus Visible</div><div class="crit-rationale">Every focusable element renders a visible focus ring using the DS focus-border token.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A7. WCAG 2.5.8 — Target Size (Minimum)</div><div class="crit-rationale">Action targets measure ≥ 36×36 CSS pixels; well above the 24×24 AA minimum.</div></div><span class="lb">LB</span></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A8. WCAG 3.2.4 — Consistent Identification</div><div class="crit-rationale">Shipment action buttons use the same component and ARIA pattern wherever they appear.</div></div><span class="lb">LB</span></div>
+    </div>
+    <div class="section-intro">Level AAA (advisory — never blocks ship)</div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">A9. WCAG 3.3.5 — Help</div><div class="crit-rationale">Each action has a descriptive accessible name; delayed rows carry a contextual ETA warning (⚠).</div></div></div>
+      <div class="crit"><span class="verdict v-na">N/A</span><div class="crit-text"><div class="crit-label">A10. WCAG 1.4.6 — Contrast (Enhanced)</div><div class="crit-rationale">Verdict is N/A because Level AA contrast (A1) is met and not borderline; the AAA target does not surface as a WARN.</div></div></div>
+    </div>
+    <div class="summary-line"><span><strong>0</strong> Level AA FAILs</span><span><strong>0</strong> WARNs</span><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Design System stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">🎨</span><span class="section-title">Design System Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-ship">SHIP</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">DS1. Color tokens reference Infios DS tokens</div><div class="crit-rationale">Fills and text map to --brand-fill, --surface-base, --border-* and status tokens; no raw hex overrides.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">DS2. Typography uses the DS scale</div><div class="crit-rationale">Sizes use the 11/12/13/14/15px scale; weights are 400/500/600/700 only.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">DS3. Spacing matches the DS scale</div><div class="crit-rationale">Padding and gap values align to the 4/8/12/16/20/24px token scale throughout.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Content stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">✍️</span><span class="section-title">Content Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-ship">SHIP</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">C1. Action labels — imperative verb + object</div><div class="crit-rationale">"Approve route" and "View on map" follow the imperative-verb pattern; no ambiguous labels.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">C2. Status labels — consistent capitalisation and tense</div><div class="crit-rationale">In Transit, Delayed, Delivered, Pending are consistent in capitalisation and tense.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">C3. Empty states — instructional copy present</div><div class="crit-rationale">"Select a shipment / Click any row to see details" gives clear empty-state guidance.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Interaction stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">🖱️</span><span class="section-title">Interaction Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-ship">SHIP</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">I1. Row selection — clear selected-state affordance</div><div class="crit-rationale">Selected row uses a distinct background tint and drives the details tile; selection is unambiguous.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">I2. Panel open/close — consistent dismiss pattern</div><div class="crit-rationale">Details tile has an accessible close button that returns to the empty state.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">I3. Action confirmation — irreversible actions gated</div><div class="crit-rationale">"Approve route" is isolated in the details tile and requires deliberate row selection first; the confirmation pattern is appropriate for a single, reversible route approval.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Responsive stub -->
+  <section class="section">
+    <div class="section-head"><span class="section-emoji">📱</span><span class="section-title">Responsive Agent <span style="font-size:12px;font-weight:500;color:var(--text-quaternary)">· stub</span></span><span class="section-rec rec-ship">SHIP</span></div>
+    <div class="section-body">
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">R1. Layout degrades gracefully at 1024px</div><div class="crit-rationale">Grid collapses to a single column; the details tile stacks below the table at narrow viewports.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">R2. Table horizontal scroll before clipping</div><div class="crit-rationale">Table renders in a scrollable container; no column clipping at 1280×720 or 1024×768.</div></div></div>
+      <div class="crit"><span class="verdict v-pass">PASS</span><div class="crit-text"><div class="crit-label">R3. Touch targets maintain minimum size on mobile</div><div class="crit-rationale">Button heights stay ≥ 36px at all tested breakpoints.</div></div></div>
+    </div>
+    <div class="summary-line"><span>Recommendation: <strong>SHIP</strong></span></div>
+  </section>
+
+  <!-- Final -->
+  <div class="decision ship">
+    <div class="decision-top">
+      <div class="decision-icon">✓</div>
+      <div>
+        <div class="decision-label">Overall Guardian decision</div>
+        <div class="decision-title">Approved for Development</div>
+      </div>
+    </div>
+    <div class="decision-counts">
+      <div class="decision-count"><span class="n fail">0</span> <span class="lbl">Load-bearing FAILs</span></div>
+      <div class="decision-count"><span class="n warn">0</span> <span class="lbl">Advisory FAILs + WARNs</span></div>
+      <div class="decision-count"><span class="n pass">29</span> <span class="lbl">Criteria passed</span></div>
+    </div>
+  </div>
+  <p style="font-size:13px;color:var(--text-secondary);margin:-8px 4px 0;">All criteria passed across the six agents (A10 is N/A — AAA enhanced contrast does not apply once AA is met). No load-bearing failures and no warnings. The Shipments page is cleared to proceed to development; no UX-team review required for this configuration.</p>
+
+  <div class="foot">
+    <strong>Joint Guardian audit produced by the Heuristics Agent and the Accessibility Agent</strong>, with stub verdicts from the Design System, Content, Interaction, and Responsive agents.
+    Criteria taken from <span style="font-family:var(--font-mono)">agents/guardian/heuristics-agent.md</span> and <span style="font-family:var(--font-mono)">agents/guardian/accessibility-agent.md</span>.
+    Verdicts are a proposal to the human reviewer — per both agents' Tier-2 guardrails, ship / no-ship remains a human decision. The agents do not self-certify and do not modify the page.
+  </div>
+
+</div>
+</body>
+</html>

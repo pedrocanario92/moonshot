@@ -1,6 +1,6 @@
 ---
 name: design-tokens
-description: Use this skill when the user delivers a design-token spec (zip of screenshots, Figma export, JSON file, or similar) OR asks to integrate/reconcile/sweep design tokens in this moonshot deck. The skill handles extracting the delivery, transcribing tokens into a versioned reference markdown, reconciling new tokens with the existing :root custom-property blocks in moonshot-home.html and moonshot-prototype.html (both at the repo root), and sweeping both files for hardcoded values (hex colors, rgba stacks, raw box-shadows, hardcoded radii, magic-number spacing) that should reference tokens. Auto-trigger keywords include "design tokens", "token zip", "integrate tokens", "tokens.zip", "reconcile tokens", "sweep for hardcoded", "Figma tokens", and any path matching tokens-*.zip or *tokens*.md inside this project. The brand-yellow accent #CADF35 is load-bearing — if a new token spec proposes changing it, the skill stops and flags the discrepancy to the user instead of overwriting.
+description: Use this skill when the user delivers a design-token spec (zip of screenshots, Figma export, JSON file, or similar) OR asks to integrate/reconcile/sweep design tokens in this moonshot deck. The skill handles extracting the delivery, transcribing tokens into a versioned reference markdown, reconciling new tokens with the existing :root custom-property blocks in demos/moonshot-home.html and demos/moonshot-prototype.html (both in demos/), and sweeping both files for hardcoded values (hex colors, rgba stacks, raw box-shadows, hardcoded radii, magic-number spacing) that should reference tokens. Auto-trigger keywords include "design tokens", "token zip", "integrate tokens", "tokens.zip", "reconcile tokens", "sweep for hardcoded", "Figma tokens", and any path matching tokens-*.zip or *tokens*.md inside this project. The brand-yellow accent #CADF35 is load-bearing — if a new token spec proposes changing it, the skill stops and flags the discrepancy to the user instead of overwriting.
 ---
 
 # design-tokens workflow
@@ -9,7 +9,7 @@ This skill runs every time a new design-token spec lands in the moonshot deck re
 
 The deck consists of two single-file vanilla-HTML artifacts, both at the repo root:
 
-- `moonshot-home.html` — polished, ship-ready deck. `:root` block at lines ~11–72.
+- `demos/moonshot-home.html` — polished, ship-ready deck. `:root` block at lines ~11–72.
 - `moonshot-prototype.html` — live demo loaded inside an iframe on the "The Prototype" tab. `:root` block at lines ~10–38.
 
 No build step, no external CSS. Token names are CSS custom properties under `:root { ... }` at the top of each file.
@@ -59,7 +59,7 @@ For PNG deliveries, use the Read tool on each PNG file — it accepts images vis
 
 ### 4. Reconcile with the presentation `:root`
 
-Open `moonshot-home.html` and locate the `:root { ... }` block near the top.
+Open `demos/moonshot-home.html` and locate the `:root { ... }` block near the top.
 
 For each existing custom property:
 
@@ -93,7 +93,7 @@ Replace each clean match with `var(--token-name)`.
 
 Use the `preview_*` MCP tools (never Bash or browser MCP for this):
 
-1. `preview_start` on `moonshot-home.html`.
+1. `preview_start` on `demos/moonshot-home.html`.
 2. `preview_screenshot` the Home view, the Agents view (both Timeline and System modes via the Architecture toggle), and the Prototype tab (which loads the prototype HTML inside an iframe).
 3. The visuals must be identical to before — same colors, shadows, spacing — just driven by tokens instead of hardcoded values.
 4. `preview_console_logs` clean.
